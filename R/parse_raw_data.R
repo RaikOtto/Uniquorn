@@ -8,7 +8,7 @@ parse_data_into_younikorn_db = function( parser_path, db_path = system.file("dat
   # test if package is available
   pkgTest <- function(x)
   {
-    if (!require(x,character.only = TRUE))
+    if ( ! require( x, character.only = TRUE ) )
     {
       install.packages(x,dep=TRUE)
       if(!require(x,character.only = TRUE)) stop(paste0(paste0("Package ", x)," not found"))
