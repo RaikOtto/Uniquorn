@@ -5,20 +5,6 @@
 #' @export
 parse_data_into_younikorn_db = function( parser_path, db_path = system.file("database", package="Younikorn")  ){
 
-  # test if package is available
-  pkgTest <- function(x)
-  {
-    if ( ! require( x, character.only = TRUE ) )
-    {
-      install.packages(x,dep=TRUE)
-      if(!require(x,character.only = TRUE)) stop(paste0(paste0("Package ", x)," not found"))
-    }
-  }
-
-  pkgTest("CancerCellLines")
-
-  library("CancerCellLines")
-
   db_path  = paste0(db_path,"/Younikorn.db")
   print( paste0( "Parsing data and storing in db: ",db_path) )
   full_con = setupSQLite(db_path)
