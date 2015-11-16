@@ -5,9 +5,6 @@
 #' @export
 parse_data_into_younikorn_db = function( parser_path, db_path = system.file("database", package="Younikorn")  ){
 
-  if ( ! dir.exists( db_path  )  )
-    dir.create( db_path )
-  
   require(RSQLite)
   db_path  = paste0(db_path,"/Younikorn.db")
   print( paste0( "Parsing data and storing in db: ",db_path) )
