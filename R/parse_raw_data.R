@@ -5,16 +5,6 @@
 #' @export
 initiate_younikorn_database = function( parser_path, db_path = system.file("", package="Younikorn") ){
 
-  # create db folder
-  
-  db_path = paste(db_path, "inst",sep="/")
-  
-  if ( ! dir.exits( db_path )  )
-    dir.create( db_path )
-  
-  db_path  = paste( db_path,"Younikorn.db", sep ="/")
-  print( paste0( "Parsing data and storing in db: ",db_path) )
-
   if ( F ){
   
     # ids data
@@ -80,10 +70,11 @@ initiate_younikorn_database = function( parser_path, db_path = system.file("", p
   
   message("Parsing data finished")
   
-  # create db
+  # transform data & load into DB
   
-  require( RSQLite )
-  drv = dbDriver("SQLite")
-  full_con = dbConnect( drv, dbname = db_path )
+  raw_data = rbind( ccle_raw_data, cosmic_raw_data )
+  similarity_matrix_data = create_similarity_matrix( raw_data  )
+  
+  transform_load_data( similarity_matrix_data, db_path )
 
 }

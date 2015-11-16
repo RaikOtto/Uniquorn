@@ -34,6 +34,8 @@ parse_ccle_hybrid_data = function( path_to_raw_data  ){
     raw_data = raw_data[ raw_data$CL_ident != "",]
     raw_data = raw_data[ raw_data$HGNC_symbol != "",]
     
+    raw_data$CL_ident = paste( raw_data$CL_ident, "CCLE", sep = "_" )
+    
     message( paste0( "Parsed file ", hybcappath ) )
     
   } else {

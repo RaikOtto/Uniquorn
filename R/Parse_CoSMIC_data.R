@@ -44,6 +44,7 @@ parse_cosmic_clp_data = function( path_to_raw_data  ){
     raw_data = raw_data[ ! is.na( raw_data$CL_ident ),]
     raw_data = raw_data[ raw_data$CL_ident != "",]
     raw_data = raw_data[ raw_data$HGNC_symbol != "",]
+    raw_data$CL_ident = paste( raw_data$CL_ident, "CoSMIC", sep = "_" )
     
     message( paste0( "Parsed file ", hybcappath ) )
     
