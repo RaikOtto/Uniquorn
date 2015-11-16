@@ -4,7 +4,7 @@ Package to identify cancer cell lines based on their unique somatic mutational f
 
 # How to make it work:
 
-1 install R devtools
+1 install('devtools')
 2 install_github("RaikOtto/Younikorn")
 3 library("Younikorn")
 4 setup_younikorn_dependencies()
