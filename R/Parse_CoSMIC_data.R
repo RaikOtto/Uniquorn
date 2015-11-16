@@ -1,41 +1,57 @@
 
-#' Parse the cosmic data
+#' Parse CoSMIC CLP data
 #' @export
-parse_cosmic_raw_data = function( parser_path ){
+parse_cosmic_clp_data = function( path_to_raw_data  ){
   
-  cosmicclppath = paste( parser_path, 'CosmicCLP_CompleteExport.tsv', sep = "/" )
+  library( "stringr" )
   
-  if (file.exists( cosmicclppath) ){
+  clp_data_path = paste(
+    path_to_raw_data,
+    'CosmicCLP_CompleteExport.tsv',
+    sep = "/"
+  )
+  
+  if ( file.exists( clp_data_path )  ){
     
-    require(readr)
-    message("Parse the Cosmic CLP exome data file")
-    data = read_tsv(
-      cosmicclppath,
-      col_names = c(
-        "gene_name",
-        "accession_number",
-        "hgnc_id",
-        "sample_name",
-        "id_sample",
-        "id_tumour",
-        "mutation_id",
-        "mutation_cds",
-        "mutation_aa",
-        "mutation_description",
-        "mutation_zygosity",
-        "loh",
-        "grch",
-        "mutation_genome_position",
-        "strand",
-        "snp",
-        "fathmm_prediction",
-        "fathmm_score",
-        "mutation_somatic_status"
-      ),
-      col_types = "cc_iccc_________cccccccccccdc________",
-      skip = 1
+    clp_data = read.table( clp_data_path, header = T, nrows = 100, fill = T, sep = "\t")
+    
+    coords = clp_data$Mutation.genome.position
+    parse_first_entry = function( cl_string ){ return( as.character( unlist( str_split( cl_string, ":" )  ) )[1] ) }
+    chromosomes = as.character( lapply( coords ,FUN = parse_first_entry ) )
+    
+    parse_second_entry = function( cl_string ){ return( as.character( unlist( str_split( cl_string, "-" )  ) )[2] ) }
+    stop_coords = as.character( lapply( coords ,FUN = parse_second_entry ) )
+    
+    parse_first_entry = function( cl_string ){ return( as.character( unlist( str_split( cl_string, "-" )  ) )[1] ) }
+    raw_start_coords  = as.character( lapply( coords ,FUN = parse_first_entry ) )
+    parse_second_entry = function( cl_string ){ return( as.character( unlist( str_split( cl_string, ":" )  ) )[2] ) }
+    start_coords  = as.character( lapply( raw_start_coords ,FUN = parse_second_entry ) )
+    
+    raw_data = as.matrix(
+      cbind(
+        as.character( clp_data$Sample.name ),
+        as.character( clp_data$Gene.name ),
+        chromosomes,
+        start_coords,
+        stop_coords
+      )
     )
+    raw_data = as.data.frame( raw_data )
+    colnames( raw_data ) = c( "CL_ident", "HGNC_symbol", "Chr", "start", "stop" )
     
-    return( data_matrix )
+    # filter
+    
+    raw_data = raw_data[ ! is.na( raw_data$CL_ident ),]
+    raw_data = raw_data[ raw_data$CL_ident != "",]
+    raw_data = raw_data[ raw_data$HGNC_symbol != "",]
+    
+    message( paste0( "Parsed file ", hybcappath ) )
+    
+  } else {
+    
+    raw_data = matrix( character(), ncol = 5 )
+    colnames( raw_data ) = c( "CL_ident", "HGNC_symbol", "Chr", "start", "stop" )
   }
+  
+  return( raw_data )
 }
