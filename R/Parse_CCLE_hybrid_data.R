@@ -34,12 +34,12 @@ parse_ccle_hybrid_data = function( path_to_raw_data  ){
     raw_data = raw_data[ raw_data$CL_ident != "",]
     
     message( paste0( "Parsed file ", hybcappath ) )
-    result = raw_data
     
   } else {
     
-    result = data.frame()
+    raw_data = matrix( character(), ncol = 5 )
+    colnames( raw_data ) = c( "CL_ident", "HGNC_symbol", "Chr", "start", "stop" )
   }
   
-  return( result )
+  return( raw_data )
 }
