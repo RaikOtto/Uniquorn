@@ -3,9 +3,11 @@
 #' Parses data into the sql database
 #' Requires the currently (Nov 2015) github located package "chapmandu2/CancerCellLines"
 #' @export
-parse_data_into_younikorn_db = function( parser_path, db_path = system.file("", package="Younikorn")  ){
+parse_data_into_younikorn_db = function( parser_path){
 
   require(RSQLite)
+  
+  db_path = system.file("", package="Younikorn")
   db_path = paste(db_path, "inst",sep="/")
   dir.create( db_path )
   db_path  = paste( db_path,"Younikorn.db", sep ="/")
