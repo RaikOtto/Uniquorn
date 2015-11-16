@@ -20,6 +20,6 @@ Package to identify cancer cell lines based on their unique somatic mutational f
 
 7 Run toy example
 
-Active devlopment
+Under active development!
 
 Contact: raik.otto@hu-berlin.de
