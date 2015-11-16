@@ -2,7 +2,8 @@
 #' @export
 identify_vcf_file = function( vcf_file_path ){
   
-  require( "VariantAnnotation" )
-  parse_vcf_file
+  vcf_fingerprint = parse_vcf_file( vcf_file_path )
+  
+  identify_vcf_fingerprint( vcf_fingerprint  )
     
 }

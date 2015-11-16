@@ -20,4 +20,14 @@ load_similarity_data_into_db = function( similarity_matrix_data, db_path ){
     as.data.frame( similarity_matrix_data ),
     overwrite = T
   )
+  
+  message("Indexing the table")
+  
+  dbSendQuery( 
+    full_con,
+    sprintf(
+      " CREATE INDEX `mutational_similarity_marker_index` ON `%s` (`mutational_similarity_marker` ASC); ",
+      "similarity_matrix"
+    )
+  )
 }

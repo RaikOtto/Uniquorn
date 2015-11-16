@@ -20,6 +20,10 @@ create_similarity_matrix = function( raw_data  ){
     collapse = "_"
   )
   
+  coords = toupper(coords)
+  coords = as.character( unlist( lapply( coords, FUN = str_replace_all, " ", "") ) )
+  coords = as.character( unlist( lapply( coords, FUN = str_replace_all, "CHR", "") ) )
+  
   unique_list_coords = unique( coords )
   n_rows = length( unique_list_coords  )
   
@@ -33,8 +37,8 @@ create_similarity_matrix = function( raw_data  ){
   
   lapply( unique_list_coords, FUN = return_membership_status_mutation_cl )
 
-  colnames(res) = unique_list_cls
-  rownames(res) = unique_list_coords
+  res = cbind( as.character( unique_list_coords ) , res )
+  colnames(res) = c( "mutational_similarity_marker", unique_list_cls)
   
   return( res )
 }

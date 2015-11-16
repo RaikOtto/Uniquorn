@@ -4,7 +4,7 @@
 \alias{parse_cellminer_data}
 \title{Parse the Cellminer NCI60 dataset}
 \usage{
-parse_cellminer_data(path_raw_data)
+parse_cellminer_data(path_to_raw_data)
 }
 \description{
 Parse the Cellminer NCI60 dataset

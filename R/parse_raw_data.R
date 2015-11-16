@@ -56,23 +56,30 @@ initiate_younikorn_database = function( parser_path, db_path = system.file("", p
     }
   }
   
+  raw_data = data.frame(
+    "CL_ident" = character(),
+    "HGNC_symbol" = character(),
+    "Chr" = character(),
+    "start" = character(),
+    "stop" = character()
+  )
+  
   # ccle genotype data
 
-  ccle_raw_data = parse_ccle_hybrid_data( parser_path )
+  raw_data = rbind( raw_data , parse_ccle_hybrid_data( parser_path ) )
 
   # Cosmic CLP parsing
 
-  cosmic_raw_data = parse_cosmic_clp_data( parser_path )
+  raw_data = rbind( raw_data , parse_cosmic_clp_data( parser_path ) )
   
   # CellMiner NCI60 data
   
-  cellminer_raw_data = parse_cellminer_data( parse_path )
+  raw_data = rbind( raw_data , parse_cellminer_data( parser_path ) )
   
   message("Parsing data finished")
   
   # transform data & load into DB
   
-  raw_data = rbind( ccle_raw_data, cosmic_raw_data )
   similarity_matrix_data = create_similarity_matrix( raw_data  )
   
   transform_load_data( similarity_matrix_data, db_path )
