@@ -2,5 +2,8 @@
 
 export(identify_cancer_cell_line)
 export(install_younikorn_dependencies)
+export(parse_ccle_hybrid_data)
+export(parse_cosmic_raw_data)
 export(parse_data_into_younikorn_db)
+export(parse_vcf_data_into_db)
 export(tutorial_analysis)

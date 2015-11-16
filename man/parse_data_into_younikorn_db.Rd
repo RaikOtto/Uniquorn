@@ -5,8 +5,8 @@
 \title{Parses data into the sql database
 Requires the currently (Nov 2015) github located package "chapmandu2/CancerCellLines"}
 \usage{
-parse_data_into_younikorn_db(parser_path, db_path = system.file("database",
-  package = "Younikorn"))
+parse_data_into_younikorn_db(parser_path, db_path = system.file("", package =
+  "Younikorn"))
 }
 \description{
 Parses data into the sql database

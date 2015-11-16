@@ -17,7 +17,7 @@ parse_data_into_younikorn_db = function( parser_path, db_path = system.file("", 
   
   # create db
   
-  require(RSQLite)
+  require( RSQLite )
   drv = dbDriver("SQLite")
   full_con = dbConnect( drv, dbname = db_path )
 
@@ -43,7 +43,7 @@ parse_data_into_younikorn_db = function( parser_path, db_path = system.file("", 
   if ( file.exists( infopath ) ){
     
     data = read.table( infopath, header = T, sep = "\t")
-    colnames( data ) = c( 
+    colnames( data ) = c(
       "CCLE_name",
       "Primary_cell_name",
       "Cell_line_aliases",
@@ -71,126 +71,54 @@ parse_data_into_younikorn_db = function( parser_path, db_path = system.file("", 
   
   # ccle genotype data
 
-  hybcappath = paste( 
-    parser_path,
-    'CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.xlsx',
-    sep = "/"
+  ccle_data = parse_ccle_hybrid_data( parser_path )
+
+  dbWriteTable(
+    full_con,
+    "ccle_hybcap",
+    as.data.frame( 
+      data
+    ),
+    overwrite = T
   )
-
-  if ( file.exists( hybcappath ) ){
-
-    require( readxl )
-
-    data = read_excel(
-
-      hybcappath,
-      col_types = c( 
-        "text",
-        "numeric",
-        "text",
-        "numeric",
-        "text",
-        "numeric",
-        "numeric",
-        rep("text",44)
-      )
-    )
-
-    dbWriteTable(
-      full_con,
-      "ccle_hybcap",
-      as.data.frame( 
-        data
-      ),
-      overwrite = T
-    )
-    
-    print(
-      paste0(
-        "Parsed file ",
-        hybcappath
-      )
-    )
-  }
-
+  
   # Cosmic CLP parsing
 
-  cosmicclppath = paste( parser_path, 'CosmicCLP_CompleteExport.tsv', sep = "/" )
+  cosmic_data = parse_cosmic_raw_data( parser_path )
+    
+  message("Write the data to the database")
   
-  if (file.exists( cosmicclppath) ){
-    
-    require(readr)
-    message("Parse the Cosmic CLP exome data file")
-    data = read_tsv(
-      cosmicclppath,
-      col_names = c(
-        "gene_name",
-        "accession_number",
-        "hgnc_id",
-        "sample_name",
-        "id_sample",
-        "id_tumour",
-        "mutation_id",
-        "mutation_cds",
-        "mutation_aa",
-        "mutation_description",
-        "mutation_zygosity",
-        "loh",
-        "grch",
-        "mutation_genome_position",
-        "strand",
-        "snp",
-        "fathmm_prediction",
-        "fathmm_score",
-        "mutation_somatic_status"
-        ),
-      col_types = "cc_iccc_________cccccccccccdc________",
-      skip = 1
+  dbWriteTable( 
+    full_con,
+    "cosmicclp_exome",
+    as.data.frame( data ), 
+    overwrite = T
+  )
+  
+  message("Indexing the table")
+  
+  dbSendQuery( 
+    full_con,
+    sprintf(
+      " CREATE INDEX `cosmicclp_exome_gene_name` ON `%s` (`gene_name` ASC); ",
+      "cosmicclp_exome"
     )
-    
-    message("Write the data to the database")
-    
-    dbWriteTable( 
-      full_con,
-      "cosmicclp_exome",
-      as.data.frame( data ), 
-      overwrite = T
+  )
+  
+  dbSendQuery(
+    full_con,
+    sprintf(
+      " CREATE INDEX `cosmicclp_exome_sample_name` ON `%s` (`sample_name` ASC); ",
+      "cosmicclp_exome"
     )
-    
-    message("Indexing the table")
-    
-    dbSendQuery( 
-      full_con,
-      sprintf(
-        " CREATE INDEX `cosmicclp_exome_gene_name` ON `%s` (`gene_name` ASC); ",
-        "cosmicclp_exome"
-      )
+  )
+  dbSendQuery( 
+    full_con,
+    sprintf(
+      " CREATE INDEX `cosmicclp_exome_gene_name_AND_sample_name` ON `%s` (`gene_name`,`sample_name` ASC); ",
+      "cosmicclp_exome"
     )
-    
-    dbSendQuery(
-      full_con,
-      sprintf(
-        " CREATE INDEX `cosmicclp_exome_sample_name` ON `%s` (`sample_name` ASC); ",
-        "cosmicclp_exome"
-      )
-    )
-    dbSendQuery( 
-      full_con,
-      sprintf(
-        " CREATE INDEX `cosmicclp_exome_gene_name_AND_sample_name` ON `%s` (`gene_name`,`sample_name` ASC); ",
-        "cosmicclp_exome"
-      )
-    )
-    
-    #message("Finished importing Cosmic CLP exome sequencing data")
-    
-    print(paste0("Parsed file ", cosmicclppath))
-  }
+  )
 
   print("Parsed all available data")
-}
-
-#' Loads VCF-based data into the db
-parse_vcf_data_into_db = function(){
-  
 }
