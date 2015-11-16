@@ -10,7 +10,7 @@ Package to identify cancer cell lines based on their unique somatic mutational f
 
 3 library("Younikorn")
 
-4 setup_younikorn_dependencies()
+4 install_younikorn_dependencies()
 
 5 Download all required raw data and place them in a folder of you choice, e.g. "Download/raw_data" 
 	CCLE www.broadinstitute.org/ccle/data/browseData?conversationPropagation=begin

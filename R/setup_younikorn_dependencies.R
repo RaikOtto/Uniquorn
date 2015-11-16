@@ -1,6 +1,6 @@
 #' Install packages required by Younikorn
 #' @export
-prepare_younikorn_dependencies = function(){
+install_younikorn_dependencies = function(){
   
   required_packages = c( "dplyr","readxl")
   source("https://bioconductor.org/biocLite.R")
