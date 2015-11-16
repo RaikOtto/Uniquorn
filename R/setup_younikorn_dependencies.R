@@ -2,7 +2,7 @@
 #' @export
 install_younikorn_dependencies = function(){
   
-  required_packages = c( "dplyr","readxl")
+  required_packages = c( "dplyr", "stringr", "RSQLite" )
   source("https://bioconductor.org/biocLite.R")
   
   pkgTest <- function( x ){

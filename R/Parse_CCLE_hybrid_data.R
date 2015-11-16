@@ -3,38 +3,43 @@
 #' @export
 parse_ccle_hybrid_data = function( path_to_raw_data  ){
   
-  hybcappath = paste( 
+  library( "stringr" )
+  
+  hybcappath = paste(
     path_to_raw_data,
-    'CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.xlsx',
+    'CCLE_hybrid_capture1650_hg19_allVariants_2012.05.07.maf.gz',
     sep = "/"
   )
   
-  if ( file.exists( hybcappath ) ){
+  if ( file.exists( hybcappath )  ){
     
-    require( readxl )
+    data = read.table( gzfile( hybcappath ), header = T, nrows = 100, fill = T)
     
-    data = read_excel(
-      
-      hybcappath,
-      col_types = c( 
-        "text",
-        "numeric",
-        "text",
-        "numeric",
-        "text",
-        "numeric",
-        "numeric",
-        rep("text",44)
+    parse_first_entry = function( cl_string ){ return( as.character( unlist( str_split( cl_string, "_" )  ) )[1] ) }
+    
+    raw_data = as.matrix(
+      cbind(
+        as.character( lapply( as.character( data$Tumor_Sample_Barcode ), FUN = parse_first_entry ) ),
+        as.character( data$Hugo_Symbol ),
+        data$Chromosome,
+        data$Start_position,
+        data$End_position
       )
     )
+    colnames( raw_data ) = c( "CL_ident", "HGNC_symbol", "Chr", "start", "stop" )
+    raw_data = as.data.frame( raw_data )
+    # filter
     
-    print(
-      paste0(
-        "Parsed file ",
-        hybcappath
-      )
-    )
+    raw_data = raw_data[ ! is.na( raw_data$CL_ident ),]
+    raw_data = raw_data[ raw_data$CL_ident != "",]
+    
+    message( paste0( "Parsed file ", hybcappath ) )
+    result = raw_data
+    
+  } else {
+    
+    result = data.frame()
   }
   
-  return( "data_matrix" )
+  return( result )
 }

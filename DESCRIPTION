@@ -2,11 +2,11 @@ Package: Younikorn
 Title: Identification of cancer cell lines based on their unique somatic
     mutational fingerprint
 Version: 0.1
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
+Authors@R: person("Raik", "Otto", email = "raik.otto@hu-berlin.de", role = c("aut", "cre"))
 Description: R framework for identification of cancer cell lines based on their
     unique mutational fingeprrint
 Depends:
-    R (>= 3.0.1),
+    R (>= 3.0.1)
 License: Artistic-2.0
 LazyData: TRUE
 Type: Package
@@ -14,5 +14,5 @@ Maintainer: 'Raik Otto' <raik.otto@hu-berlin.de>
 Date: 2015-10-11
 Author: Raik Otto
 Imports:
-    DBI
+    DBI, RSQLite, stringr
 RoxygenNote: 5.0.1

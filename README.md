@@ -16,7 +16,7 @@ Package to identify cancer cell lines based on their unique somatic mutational f
 	CCLE www.broadinstitute.org/ccle/data/browseData?conversationPropagation=begin
 	Cosmic CLP http://cancer.sanger.ac.uk/cell_lines/download
 	
-6 call parse_data_into_younikorn_db( parser_path = "/Download/raw_data" )
+6 initiate_younikorn_database( parser_path = "/Download/raw_data" )
 
 7 Run toy example
 
