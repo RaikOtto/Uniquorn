@@ -5,6 +5,8 @@
 #' @export
 initiate_younikorn_database = function( parser_path, db_path = system.file("", package="Younikorn") ){
 
+  library( "stringr" )
+  
   if ( F ){
   
     # ids data
@@ -57,6 +59,7 @@ initiate_younikorn_database = function( parser_path, db_path = system.file("", p
   }
   
   raw_data = data.frame(
+
     "CL_ident" = character(),
     "HGNC_symbol" = character(),
     "Chr" = character(),
@@ -66,7 +69,7 @@ initiate_younikorn_database = function( parser_path, db_path = system.file("", p
   
   # ccle genotype data
 
-  raw_data = rbind( raw_data , parse_ccle_hybrid_data( parser_path ) )
+  parse_ccle_hybrid_data( parser_path )
 
   # Cosmic CLP parsing
 
@@ -74,7 +77,7 @@ initiate_younikorn_database = function( parser_path, db_path = system.file("", p
   
   # CellMiner NCI60 data
   
-  raw_data = rbind( raw_data , parse_cellminer_data( parser_path ) )
+  parse_cellminer_data( parser_path )
   
   message("Parsing data finished")
   

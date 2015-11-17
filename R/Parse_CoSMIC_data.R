@@ -13,6 +13,8 @@ parse_cosmic_clp_data = function( path_to_raw_data  ){
   
   if ( file.exists( clp_data_path )  ){
     
+    message( paste0( "Found CoSMIC file, start parsing :", clp_data_path))
+    
     clp_data = read.table( clp_data_path, header = T, nrows = 100, fill = T, sep = "\t")
     
     coords = clp_data$Mutation.genome.position
@@ -27,32 +29,32 @@ parse_cosmic_clp_data = function( path_to_raw_data  ){
     parse_second_entry = function( cl_string ){ return( as.character( unlist( str_split( cl_string, ":" )  ) )[2] ) }
     start_coords  = as.character( lapply( raw_start_coords ,FUN = parse_second_entry ) )
     
-    raw_data = as.matrix(
-      cbind(
-        as.character( clp_data$Sample.name ),
-        as.character( clp_data$Gene.name ),
-        chromosomes,
-        start_coords,
-        stop_coords
-      )
+    new_cosmic_data = data.frame(
+      
+      "CL_ident" =  as.character( clp_data$Sample.name ),
+      "HGNC_symbol" = as.character( clp_data$Gene.name ),
+      "Chr" = chromosomes,
+      "start" = start_coords,
+      "stop" = stop_coords
     )
-    raw_data = as.data.frame( raw_data )
-    colnames( raw_data ) = c( "CL_ident", "HGNC_symbol", "Chr", "start", "stop" )
     
     # filter
     
-    raw_data = raw_data[ ! is.na( raw_data$CL_ident ),]
-    raw_data = raw_data[ raw_data$CL_ident != "",]
-    raw_data = raw_data[ raw_data$HGNC_symbol != "",]
-    raw_data$CL_ident = paste( raw_data$CL_ident, "CoSMIC", sep = "_" )
+    new_cosmic_data = new_cosmic_data[ ! is.na( new_cosmic_data$CL_ident ),]
+    new_cosmic_data = new_cosmic_data[ new_cosmic_data$CL_ident != "",]
+    new_cosmic_data = new_cosmic_data[ new_cosmic_data$HGNC_symbol != "",]
+    new_cosmic_data$CL_ident = paste( new_cosmic_data$CL_ident, "CoSMIC", sep = "_" )
     
-    message( paste0( "Parsed file ", hybcappath ) )
+    raw_data <<- rbind(
+      raw_data,
+      new_cosmic_data
+    )
+    
+    message( paste0( "Parsed CoSMIC file ", clp_data_path ) )
     
   } else {
     
-    raw_data = matrix( character(), ncol = 5 )
-    colnames( raw_data ) = c( "CL_ident", "HGNC_symbol", "Chr", "start", "stop" )
+    message( paste0( "Did not find CoSMIC file:", clp_data_path ))
   }
-  
-  return( raw_data )
+
 }
