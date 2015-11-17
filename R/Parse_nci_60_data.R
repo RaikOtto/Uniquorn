@@ -62,7 +62,7 @@ parse_cellminer_data = function( path_to_raw_data, raw_data ){
     
     suppressMessages( apply( nci_data, MARGIN = 1, FUN = yield_information  ) )
     
-    raw_data <<- rbind(
+    raw_data = rbind(
       raw_data,
       new_nci_60_data
     )

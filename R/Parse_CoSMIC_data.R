@@ -44,7 +44,7 @@ parse_cosmic_clp_data = function( path_to_raw_data, raw_data  ){
     new_cosmic_data = new_cosmic_data[ new_cosmic_data$HGNC_symbol != "",]
     new_cosmic_data$CL_ident = paste( new_cosmic_data$CL_ident, "CoSMIC", sep = "_" )
     
-    raw_data <<- rbind(
+    raw_data = rbind(
       raw_data,
       new_cosmic_data
     )

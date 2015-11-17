@@ -33,7 +33,7 @@ parse_ccle_hybrid_data = function( path_to_raw_data, raw_data ){
     
     new_ccle_data$CL_ident = paste( new_ccle_data$CL_ident, "CCLE", sep = "_" )
     
-    raw_data <<- rbind(
+    raw_data = rbind(
       raw_data,
       new_ccle_data
     )

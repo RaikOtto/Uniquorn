@@ -10,23 +10,20 @@ load_similarity_data_into_db = function( similarity_matrix_data, db_path = syste
   print( paste0( "Storing data in db: ",db_path) )
   
   require( RSQLite )
-  drv = dbDriver("SQLite")
-  full_con = dbConnect( drv, dbname = db_path )
+  suppressMessages( require(dplyr  ) )
   
-  dbWriteTable( 
-    full_con,
-    "similarity_matrix",
-    as.data.frame( similarity_matrix_data ),
-    overwrite = T
-  )
+  file.remove(db_path)
+  similarity_db = src_sqlite( db_path, create = T)
   
-  message("Indexing the table")
+  similarity_matrix = as.data.frame( similarity_matrix_data )
   
-  dbSendQuery( 
-    full_con,
-    sprintf(
-      " CREATE INDEX `mutational_similarity_marker_index` ON `%s` (`mutational_similarity_marker` ASC); ",
-      "similarity_matrix"
+  full_con = copy_to(
+    similarity_db, 
+    df = similarity_matrix, 
+    temporary = F,
+    
+    indexes = list( 
+      "mutational_similarity_marker"
     )
   )
 }
