@@ -4,7 +4,7 @@
 \alias{create_similarity_matrix}
 \title{Create similarity matrix from raw_data}
 \usage{
-create_similarity_matrix(raw_data)
+create_similarity_matrix()
 }
 \description{
 Create similarity matrix from raw_data

@@ -1,6 +1,5 @@
 
 #' Parse the Cellminer NCI60 dataset
-#' @export
 parse_cellminer_data = function( path_to_raw_data ){
   
   nci60_file = paste(
@@ -21,7 +20,7 @@ parse_cellminer_data = function( path_to_raw_data ){
       sep = "\t", 
       strip.white = T, 
       stringsAsFactors = F,
-      nrows = 1000
+      nrows = 100
     )
   
     new_nci_60_data = data.frame(

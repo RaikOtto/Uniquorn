@@ -1,6 +1,5 @@
 
 #' Parse CoSMIC CLP data
-#' @export
 parse_cosmic_clp_data = function( path_to_raw_data  ){
   
   library( "stringr" )
@@ -15,7 +14,7 @@ parse_cosmic_clp_data = function( path_to_raw_data  ){
     
     message( paste0( "Found CoSMIC file, start parsing :", clp_data_path))
     
-    clp_data = read.table( clp_data_path, header = T, nrows = 100, fill = T, sep = "\t")
+    clp_data = read.table( clp_data_path, header = T, nrows = 1000, fill = T, sep = "\t")
     
     coords = clp_data$Mutation.genome.position
     parse_first_entry = function( cl_string ){ return( as.character( unlist( str_split( cl_string, ":" )  ) )[1] ) }

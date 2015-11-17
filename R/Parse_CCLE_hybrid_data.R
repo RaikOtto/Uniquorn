@@ -1,6 +1,5 @@
 
 #' Parse the CCLE hybrid capture data
-#' @export
 parse_ccle_hybrid_data = function( path_to_raw_data ){
   
   hybcappath = paste(
@@ -13,7 +12,7 @@ parse_ccle_hybrid_data = function( path_to_raw_data ){
     
     message( paste0( "Found CCLE file, start parsing :", hybcappath))
     
-    data = read.table( gzfile( hybcappath ), header = T, nrows = 100, fill = T)
+    data = read.table( gzfile( hybcappath ), header = T, nrows = 1000, fill = T)
     
     parse_first_entry = function( cl_string ){ return( as.character( unlist( str_split( cl_string, "_" )  ) )[1] ) }
     
