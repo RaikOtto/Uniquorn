@@ -86,7 +86,16 @@ initiate_younikorn_database = function( parser_path, db_path = system.file("", p
   
   # transform data & load into DB
   
-  similarity_matrix_data = create_similarity_matrix( raw_data  )
+  source("./R/Create_similarity_matrix.R")
+  similarity_matrix_data = create_similarity_matrix(  )
+  
+  ### visualization
+  
+  if (F){
+    
+    source( "./R/Visualize_matrix.R" )
+    visualize_matrix(  )
+  }
   
   transform_load_data( similarity_matrix_data, db_path )
 

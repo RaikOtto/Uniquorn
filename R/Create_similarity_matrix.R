@@ -1,6 +1,6 @@
 #' Create similarity matrix from raw_data
 #' @export
-create_similarity_matrix = function( raw_data  ){
+create_similarity_matrix = function(  ){
   
   library("stringr")
   
