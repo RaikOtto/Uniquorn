@@ -70,17 +70,17 @@ initiate_younikorn_database = function( parser_path, db_path = system.file("", p
   # ccle genotype data
 
   source("./R/Parse_CCLE_hybrid_data.R")
-  parse_ccle_hybrid_data( parser_path )
+  raw_data = parse_ccle_hybrid_data( parser_path, raw_data )
 
   # Cosmic CLP parsing
 
   source("./R/Parse_CoSMIC_data.R")
-  parse_cosmic_clp_data( parser_path )
+  raw_data = parse_cosmic_clp_data( parser_path, raw_data )
   
   # CellMiner NCI60 data
   
   source("./R/Parse_nci_60_data.R")
-  parse_cellminer_data( parser_path )
+  raw_data = parse_cellminer_data( parser_path, raw_data )
   
   message("Parsing data finished")
   

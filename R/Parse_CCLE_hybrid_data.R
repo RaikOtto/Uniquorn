@@ -1,6 +1,6 @@
 
 #' Parse the CCLE hybrid capture data
-parse_ccle_hybrid_data = function( path_to_raw_data ){
+parse_ccle_hybrid_data = function( path_to_raw_data, raw_data ){
   
   hybcappath = paste(
     path_to_raw_data,
@@ -44,5 +44,7 @@ parse_ccle_hybrid_data = function( path_to_raw_data ){
     
     message( paste0( "Did not find CCLE file:", hybcappath ))
   }
+  
+  return(raw_data)
 
 }

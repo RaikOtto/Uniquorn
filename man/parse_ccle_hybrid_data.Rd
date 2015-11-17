@@ -4,7 +4,7 @@
 \alias{parse_ccle_hybrid_data}
 \title{Parse the CCLE hybrid capture data}
 \usage{
-parse_ccle_hybrid_data(path_to_raw_data)
+parse_ccle_hybrid_data(path_to_raw_data, raw_data)
 }
 \description{
 Parse the CCLE hybrid capture data

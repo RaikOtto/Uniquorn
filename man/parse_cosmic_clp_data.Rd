@@ -4,7 +4,7 @@
 \alias{parse_cosmic_clp_data}
 \title{Parse CoSMIC CLP data}
 \usage{
-parse_cosmic_clp_data(path_to_raw_data)
+parse_cosmic_clp_data(path_to_raw_data, raw_data)
 }
 \description{
 Parse CoSMIC CLP data

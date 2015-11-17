@@ -1,6 +1,6 @@
 
 #' Parse CoSMIC CLP data
-parse_cosmic_clp_data = function( path_to_raw_data  ){
+parse_cosmic_clp_data = function( path_to_raw_data, raw_data  ){
   
   library( "stringr" )
   
@@ -55,5 +55,7 @@ parse_cosmic_clp_data = function( path_to_raw_data  ){
     
     message( paste0( "Did not find CoSMIC file:", clp_data_path ))
   }
+  
+  return(raw_data)
 
 }

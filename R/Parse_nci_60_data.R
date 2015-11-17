@@ -1,6 +1,6 @@
 
 #' Parse the Cellminer NCI60 dataset
-parse_cellminer_data = function( path_to_raw_data ){
+parse_cellminer_data = function( path_to_raw_data, raw_data ){
   
   nci60_file = paste(
     path_to_raw_data,
@@ -73,4 +73,6 @@ parse_cellminer_data = function( path_to_raw_data ){
     
     message( paste0( "Did not find NCI-60 file:", nci60_file))
   }
+  
+  return(raw_data)
 }
