@@ -1,6 +1,5 @@
 #' Loads similarity data into db
-#' @export
-load_similarity_data_into_db = function( similarity_matrix_data, db_path ){
+load_similarity_data_into_db = function( similarity_matrix_data, db_path = system.file("", package="Younikorn") ){
   
   db_path = paste( db_path, "inst", sep = "/" )
 
