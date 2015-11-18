@@ -17,13 +17,13 @@ load_similarity_data_into_db = function( similarity_matrix_data, db_path = syste
   
   similarity_matrix = as.data.frame( similarity_matrix_data )
   
-  full_con = copy_to(
+  copy_to(
     similarity_db, 
     df = similarity_matrix, 
     temporary = F,
     
     indexes = list( 
-      "mutational_similarity_marker"
+      colnames( similarity_matrix_data )
     )
   )
 }

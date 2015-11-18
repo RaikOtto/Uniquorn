@@ -1,9 +1,53 @@
 #' Parses the vcf file and predicts the identity of the sample
 #' @export
-identify_vcf_file = function( vcf_file_path ){
+identify_vcf_file = function( vcf_file_path, db_path = system.file("", package="Younikorn" ) ){
+  
+  library( "dplyr" )
+  library( "RSQLite" )
   
   source( "./R/Parse_VCF_data.R" )
   vcf_fingerprint = parse_vcf_file( vcf_file_path )
+  
+  #fres = data.frame( dplyr::filter( full_con, mutational_similarity_marker %in% c("1_10521399_10521399","1_10521520_10521520") ))
+  #res2 = dplyr::arrange( full_con, "select * from similarity_matrix_data" )
+  
+  init_connection = function ( db_path ){
+
+    if ( grepl( "Younikorn.db", c(db_path)) != T )
+      db_path = paste( db_path, "inst/Younikorn.db", sep = "/" )
+
+    drv = dbDriver("SQLite")
+    con = dbConnect(
+      drv,
+      dbname = db_path
+    )
+    con = src_sqlite( con@dbname )
+      
+    return( con )
+  }
+  
+  full_con = init_connection( db_path )
+  
+  raw_res = as.data.frame(
+
+     dplyr::filter( 
+      tbl( full_con, from = "similarity_matrix" ),
+      mutational_similarity_marker %in% vcf_fingerprint
+     )
+  )
+  cl_names = colnames(raw_res)[-1]
+
+  res_common = as.matrix(
+    raw_res[ , -1]
+  )
+  res_common = matrix( as.integer(res_common), ncol = dim(res_common)[2]  )
+  
+  hits            = colSums(res_common)
+  
+  match_index     = hits != 0
+  candidates      = cl_names[ match_index  ]
+  res_common_filt = res_common[ match_index ]
+  #table( res_common_filt)
   
   identify_vcf_fingerprint( vcf_fingerprint  )
     
