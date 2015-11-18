@@ -1,10 +1,11 @@
 
 #' Parse the CCLE hybrid capture data
-parse_ccle_hybrid_data = function( path_to_raw_data, raw_data ){
+parse_ccle_hybrid_data = function( parser_path, raw_data ){
   
   hybcappath = paste(
-    path_to_raw_data,
-    'CCLE_hybrid_capture1650_hg19_allVariants_2012.05.07.maf.gz',
+    parser_path,
+    #'CCLE_hybrid_capture1650_hg19_allVariants_2012.05.07.maf.gz',
+    'CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf',
     sep = "/"
   )
   
@@ -12,22 +13,23 @@ parse_ccle_hybrid_data = function( path_to_raw_data, raw_data ){
     
     message( paste0( "Found CCLE file, start parsing :", hybcappath))
     
-    data = read.table( gzfile( hybcappath ), header = T, nrows = 1000, fill = T)
+    hybrid_data = read.table( hybcappath, header = T, fill = T, sep = "\t")
     
     parse_first_entry = function( cl_string ){ return( as.character( unlist( str_split( cl_string, "_" )  ) )[1] ) }
     
     new_ccle_data = data.frame(
       
-      "CL_ident"    = as.character( lapply( as.character( data$Tumor_Sample_Barcode ), FUN = parse_first_entry ) ),
-      "HGNC_symbol" = as.character( data$Hugo_Symbol ),
-      "Chr"         = data$Chromosome,
-      "start"       = data$Start_position,
-      "stop"        = data$End_position
+      "CL_ident"    = as.character( lapply( as.character( hybrid_data$Tumor_Sample_Barcode ), FUN = parse_first_entry ) ),
+      "HGNC_symbol" = as.character( hybrid_data$Hugo_Symbol ),
+      "Chr"         = hybrid_data$Chromosome,
+      "start"       = hybrid_data$Start_position,
+      "stop"        = hybrid_data$End_position
     )
     
     # filter
     
     new_ccle_data = new_ccle_data[ ! is.na( new_ccle_data$CL_ident ),]
+    new_ccle_data = new_ccle_data[ new_ccle_data$CL_ident != "null"  ,]
     new_ccle_data = new_ccle_data[ new_ccle_data$CL_ident != "",]
     new_ccle_data = new_ccle_data[ new_ccle_data$HGNC_symbol != "",]
     

@@ -19,8 +19,7 @@ parse_cellminer_data = function( path_to_raw_data, raw_data ){
       fill = T, 
       sep = "\t", 
       strip.white = T, 
-      stringsAsFactors = F,
-      nrows = 100
+      stringsAsFactors = F
     )
   
     new_nci_60_data = data.frame(

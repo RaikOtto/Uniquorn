@@ -45,10 +45,13 @@ identify_vcf_file = function( vcf_file_path, db_path = system.file("", package="
   hits            = colSums(res_common)
   
   match_index     = hits != 0
-  candidates      = cl_names[ match_index  ]
-  res_common_filt = res_common[ match_index ]
+  candidates      = cl_names[ order(hits, decreasing = T)  ]
+  
+  print( paste0("Best candidate: ", candidates[1] )  )
+
+  #res_common_filt = res_common[ match_index ]
   #table( res_common_filt)
   
-  identify_vcf_fingerprint( vcf_fingerprint  )
+  #identify_vcf_fingerprint( vcf_fingerprint  )
     
 }

@@ -1,12 +1,13 @@
 
 #' Parse CoSMIC CLP data
-parse_cosmic_clp_data = function( path_to_raw_data, raw_data  ){
+parse_cosmic_clp_data = function( parser_path, raw_data  ){
   
   library( "stringr" )
   
   clp_data_path = paste(
-    path_to_raw_data,
-    'CosmicCLP_CompleteExport.tsv',
+    parser_path,
+    #'CosmicCLP_CompleteExport.tsv',
+    'CosmicCLP_MutantExport.tsv.gz',
     sep = "/"
   )
   
@@ -14,7 +15,7 @@ parse_cosmic_clp_data = function( path_to_raw_data, raw_data  ){
     
     message( paste0( "Found CoSMIC file, start parsing :", clp_data_path))
     
-    clp_data = read.table( clp_data_path, header = T, nrows = 1000, fill = T, sep = "\t")
+    clp_data = read.table( gzfile( clp_data_path ), header = T, fill = T, sep = "\t")
     
     coords = clp_data$Mutation.genome.position
     parse_first_entry = function( cl_string ){ return( as.character( unlist( str_split( cl_string, ":" )  ) )[1] ) }
