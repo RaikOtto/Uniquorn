@@ -4,41 +4,49 @@ create_similarity_matrix = function( fingerprint_data, cl_data ){
   
   library("stringr")
   
-  unique_list_cls = unique( raw_data$CL_ident )
-  n_cols = length( unique_list_cls )
+  nr_fingerprints = dim(fingerprint_data)[1]
+  nr_cls          = dim(cl_data)[1]
   
-  coords = apply(
-    as.matrix(
-      data.frame( 
-        raw_data$Chr,
-        raw_data$start,
-        raw_data$stop
+  adv = 0
+
+  create_fingerprint = function( cl_entry ,fp_list  ){
+   
+    fp = unlist( 
+      str_split( 
+        as.character( 
+          cl_entry
+        ),
+        pattern = ","
       )
-    ),
-    MARGIN = 1,
-    FUN = paste0,
-    collapse = "_"
-  )
-  
-  coords = toupper(coords)
-  coords = as.character( unlist( lapply( coords, FUN = str_replace_all, " ", "") ) )
-  coords = as.character( unlist( lapply( coords, FUN = str_replace_all, "CHR", "") ) )
-  
-  unique_list_coords = unique( coords )
-  n_rows = length( unique_list_coords  )
-  
-  res = matrix( rep( "0", n_rows * n_cols) , nrow = n_rows, ncol = n_cols  )
-  
-  return_membership_status_mutation_cl = function( mutation ){
+    )
     
-    cls_matching = unique( raw_data$CL_ident[ coords == mutation ]  )
-    res[ which( unique_list_coords == mutation ) ,  which( unique_list_cls %in% cls_matching )  ] <<- "1"
+    res = match( 
+      as.vector(
+        fp_list),
+      fp,
+      nomatch = 0
+    )
+    res[ res != 0  ] = 1 
+    
+    
+    stat = round( (adv / as.double(nr_cls)) * 100, 1 )
+    adv <<- adv + 1
+      
+    if ( stat != round( (adv / as.double(nr_cls)) * 100, 1 ) )
+      print( paste( round( (adv / as.double(nr_cls)) * 100, 1 ), "% finished", sep =" " ) )
+
+    return(res)
   }
   
-  lapply( unique_list_coords, FUN = return_membership_status_mutation_cl )
-
-  res = cbind( as.character( unique_list_coords ) , res )
-  colnames(res) = c( "mutational_similarity_marker", unique_list_cls)
+  sim_list = lapply(
+    cl_data$Fingerprints,
+    FUN = create_fingerprint,
+    fingerprint_data$Fingerprint
+  )
   
-  return( res )
+  #res_common = matrix( as.integer( unlist( sim_list ) ), ncol = length( sim_list)  )
+  rownames( res_common ) = fingerprint_data$Fingerprint
+  colnames( res_common ) = cl_data$CL
+  
+  return( sim_list )
 }

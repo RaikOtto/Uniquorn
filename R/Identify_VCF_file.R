@@ -42,6 +42,27 @@ identify_vcf_file = function( vcf_file_path, db_path = system.file("", package="
   )
   res_common = matrix( as.integer(res_common), ncol = dim(res_common)[2]  )
   
+  ### 
+  res_common = matrix( as.integer( unlist( sim_list ) ), ncol = length( sim_list)  )
+  mapping    = match( rownames(res_common), vcf_fingerprint, nomatch = 0 )
+  mapping[ mapping != 0 ] = 1
+  
+  adv = 0
+  
+  match_fp = function( sim_list_entry ){
+    
+    stat = round( (adv / as.double(nr_cls)) * 100, 1 )
+    adv <<- adv + 1
+    
+    if ( stat != round( (adv / as.double(nr_cls)) * 100, 1 ) )
+      print( paste( round( (adv / as.double(nr_cls)) * 100, 1 ), "% finished", sep =" " ) )
+    
+    return( sum( as.integer(mapping) & as.integer( sim_list_entry ) ) )
+  }
+  identification = lapply( sim_list, FUN = match_fp )
+  
+  ###
+  
   hits            = colSums(res_common)
   
   match_index     = hits != 0

@@ -31,11 +31,11 @@ def main_function( parser ):
 				else:
 
 					cl_db[ fingerprint ] = {ident:True}
-					
+
 				if not cl_dict.has_key(ident):
-					
+
 					cl_dict[ident] = {fingerprint:True}
-					
+
 				else: cl_dict[ident][fingerprint] = True
 
 	if os.path.exists(parser.ccle_file):
@@ -104,7 +104,7 @@ def main_function( parser ):
 					else:
 
 						cl_db[ fingerprint ] = {ident:True}
-						
+
 					if not cl_dict.has_key(ident):
 
 						cl_dict[ident] = {fingerprint:True}
