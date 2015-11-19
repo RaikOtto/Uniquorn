@@ -1,14 +1,14 @@
 #' Create similarity matrix from raw_data
 #' @export
-create_similarity_matrix = function(  ){
+create_similarity_matrix = function( fingerprint_data, cl_data ){
   
   library("stringr")
   
-  unique_list_cls = unique( raw_data$CL_ident  )
+  unique_list_cls = unique( raw_data$CL_ident )
   n_cols = length( unique_list_cls )
   
-  coords = apply( 
-    as.matrix( 
+  coords = apply(
+    as.matrix(
       data.frame( 
         raw_data$Chr,
         raw_data$start,

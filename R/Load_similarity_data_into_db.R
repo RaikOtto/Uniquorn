@@ -1,15 +1,5 @@
 #' Loads similarity data into db
 load_similarity_data_into_db = function( similarity_matrix_data, db_path = system.file("", package="Younikorn") ){
-  
-  if ( grepl( "/inst", c( db_path )) != T )
-    
-    db_path = paste( db_path, "inst", sep = "/" )
-    if ( ! dir.exists( db_path )  )
-    dir.create( db_path )
-  
-    if ( grepl( "Younikorn.db", c( db_path )) != T )
-      
-      db_path  = paste( db_path,"Younikorn.db", sep ="/")
 
   print( paste0( "Storing data in db: ",db_path) )
   

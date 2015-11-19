@@ -1,8 +1,11 @@
 
 #' Parse the CCLE hybrid capture data
-parse_ccle_hybrid_data = function( parser_path, raw_data ){
+parse_ccle_hybrid_data = function( parser_path, raw_data,db_path ){
+  
+  library("stringr")
   
   hybcappath = paste(
+
     parser_path,
     #'CCLE_hybrid_capture1650_hg19_allVariants_2012.05.07.maf.gz',
     'CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf',
@@ -12,6 +15,10 @@ parse_ccle_hybrid_data = function( parser_path, raw_data ){
   if ( file.exists( hybcappath )  ){
     
     message( paste0( "Found CCLE file, start parsing :", hybcappath))
+    
+    path_to_python = paste( system.file("", package="Younikorn"), "inst/pre_compute_raw_data.py", sep ="/")
+    command_line = str_c( c(  'python', path_to_python, "-i ", hybcappath, "-db",  ), collapse = " " )
+    system( command_line )
     
     ccle_col_clases = c( NA, rep("NULL",3), NA, NA,NA, rep("NULL",8), NA, rep("NULL",35) )
 
