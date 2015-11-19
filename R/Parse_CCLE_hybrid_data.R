@@ -13,7 +13,18 @@ parse_ccle_hybrid_data = function( parser_path, raw_data ){
     
     message( paste0( "Found CCLE file, start parsing :", hybcappath))
     
-    hybrid_data = read.table( hybcappath, header = T, fill = T, sep = "\t")
+    ccle_col_clases = c( NA, rep("NULL",3), NA, NA,NA, rep("NULL",8), NA, rep("NULL",35) )
+
+    hybrid_data = read.table(
+      check.names = F,
+      na.strings=c(""),
+      hybcappath,
+      header = T,
+      fill = T,
+      #sep = "\t",
+      colClasses = ccle_col_clases,
+      nrows = 10**3
+    )
     
     parse_first_entry = function( cl_string ){ return( as.character( unlist( str_split( cl_string, "_" )  ) )[1] ) }
     

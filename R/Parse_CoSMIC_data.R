@@ -15,7 +15,8 @@ parse_cosmic_clp_data = function( parser_path, raw_data  ){
     
     message( paste0( "Found CoSMIC file, start parsing :", clp_data_path))
     
-    clp_data = read.table( gzfile( clp_data_path ), header = T, fill = T, sep = "\t")
+    cosmic_coll_class = c( NA, rep("NULL",3), NA, rep("NULL",13), NA, rep("NULL",13) )
+    clp_data = read.table( gzfile( clp_data_path ), header = T, fill = T, sep = "\t", colClasses = cosmic_coll_class)
     
     coords = clp_data$Mutation.genome.position
     parse_first_entry = function( cl_string ){ return( as.character( unlist( str_split( cl_string, ":" )  ) )[1] ) }
@@ -40,7 +41,7 @@ parse_cosmic_clp_data = function( parser_path, raw_data  ){
     
     # filter
     
-    new_cosmic_data = new_cosmic_data[ ! is.na( new_cosmic_data$CL_ident ),]
+    #new_cosmic_data = new_cosmic_data[ ! is.na( new_cosmic_data$CL_ident ),]
     new_cosmic_data = new_cosmic_data[ new_cosmic_data$CL_ident != "",]
     new_cosmic_data = new_cosmic_data[ new_cosmic_data$HGNC_symbol != "",]
     new_cosmic_data$CL_ident = paste( new_cosmic_data$CL_ident, "CoSMIC", sep = "_" )
