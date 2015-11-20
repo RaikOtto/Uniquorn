@@ -4,7 +4,7 @@ Package to identify cancer cell lines based on their unique somatic mutational f
 
 # How to make it work: 
 
-0 Start R, e.g. as R-Studio
+0 Start R, e.g. as R-Studio session
 
 1 Preparation # optional if you have the packages installed and loaded
 
