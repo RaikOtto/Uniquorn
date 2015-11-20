@@ -28,7 +28,7 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
     adv <<- adv + 1
     
     if ( stat != round( (adv / as.double(nr_cls)) * 100, 0 ) )
-      print( paste( round( (adv / as.double(nr_cls)) * 100, 0 ), "%", sep =" " ) )
+      print( paste0( round( (adv / as.double(nr_cls)) * 100, 0 ), "%" ) )
     
     return( sum( as.integer(mapping) & as.integer( sim_list_entry ) ) )
   }
