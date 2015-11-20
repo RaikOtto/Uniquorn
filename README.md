@@ -12,6 +12,8 @@ Package to identify cancer cell lines based on their unique somatic mutational f
 
 4 download.file( url="http://watson.nci.nih.gov/projects/nci60/wes/VCF/COLO-205.vcf", destfile = "COLO-205.vcf" ) # Downloading a test file 
 
+--> feel free to download any other testfiel from e.g. http://watson.nci.nih.gov/projects/nci60/wes/VCF
+
 5 identify_vcf_file( "COLO-205.vcf" )
 
 Under active development!

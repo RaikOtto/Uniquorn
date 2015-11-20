@@ -8,7 +8,8 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
   sim_list_file = paste( system.file("", package="Younikorn"), "simlist.RData", sep = "/")
   print( paste0( "Loading similarity data from file ",  sim_list_file )  )
   
-  attach( sim_list_file  )
+  if (! exists("sim_list") )
+    attach( sim_list_file  )
   
   print( "Finished loading similarity data. Mapping vcf's fingerprint to all contained fingerprints"  )
   
