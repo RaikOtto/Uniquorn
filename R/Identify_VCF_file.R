@@ -1,52 +1,55 @@
 #' Parses the vcf file and predicts the identity of the sample
 #' @export
-identify_vcf_file = function( vcf_file_path, db_path = system.file("", package="Younikorn" ) ){
+identify_vcf_file = function( vcf_file_path ){
   
-  library( "dplyr" )
-  library( "RSQLite" )
-  
+  print( paste0( "Creating fingerprint from VCF file ", vcf_file_path  ) )
   vcf_fingerprint = parse_vcf_file( vcf_file_path )
   
-  #fres = data.frame( dplyr::filter( full_con, mutational_similarity_marker %in% c("1_10521399_10521399","1_10521520_10521520") ))
-  #res2 = dplyr::arrange( full_con, "select * from similarity_matrix_data" )
+  sim_list_file = paste( system.file("", package="Younikorn"), "simlist.RData", sep = "/")
+  print( paste0( "Loading similarity data from file ",  sim_list_file )  )
   
-  init_connection = function ( db_path ){
+  attach( sim_list_file  )
+  
+  print( "Finished loading similarity data"  )
+  
+  #init_connection = function ( db_path ){
 
-    if ( grepl( "Younikorn.db", c(db_path)) != T )
-      db_path = paste( db_path, "inst/Younikorn.db", sep = "/" )
+   # if ( grepl( "Younikorn.db", c(db_path)) != T )
+    #  db_path = paste( db_path, "inst/Younikorn.db", sep = "/" )
 
-    drv = dbDriver("SQLite")
-    con = dbConnect(
-      drv,
-      dbname = db_path
-    )
-    con = src_sqlite( con@dbname )
+  #  drv = dbDriver("SQLite")
+  #  con = dbConnect(
+   #   drv,
+  #    dbname = db_path
+  #  )
+  #  con = src_sqlite( con@dbname )
       
-    return( con )
-  }
+  #  return( con )
+  #}
   
-  full_con = init_connection( db_path )
+  #full_con = init_connection( db_path )
   
-  raw_res = as.data.frame(
+  #raw_res = as.data.frame(
 
-     dplyr::filter( 
-      tbl( full_con, from = "similarity_matrix" ),
-      mutational_similarity_marker %in% vcf_fingerprint
-     )
-  )
-  cl_names = colnames(raw_res)[-1]
+  #   dplyr::filter( 
+  #    tbl( full_con, from = "similarity_matrix" ),
+  #    mutational_similarity_marker %in% vcf_fingerprint
+ #    )
+ # )
+ # cl_names = colnames(raw_res)[-1]
 
-  res_common = as.matrix(
-    raw_res[ , -1]
-  )
-  res_common = matrix( as.integer(res_common), ncol = dim(res_common)[2]  )
+ # res_common = as.matrix(
+ #   raw_res[ , -1]
+ # )
+ # res_common = matrix( as.integer(res_common), ncol = dim(res_common)[2]  )
   
-  ### 
-  res_common = matrix( as.integer( unlist( sim_list ) ), ncol = length( sim_list)  )
-  mapping    = match( rownames(res_common), vcf_fingerprint, nomatch = 0 )
-  mapping[ mapping != 0 ] = 1
+  ###
+  #res_common = matrix( as.integer( unlist( sim_list ) ), ncol = length( sim_list)  )
+  #mapping    = match( rownames(res_common), vcf_fingerprint, nomatch = 0 )
+  #mapping[ mapping != 0 ] = 1
   
   adv = 0
+  nr_cls = length( sim_list)
   
   match_fp = function( sim_list_entry ){
     
@@ -58,6 +61,7 @@ identify_vcf_file = function( vcf_file_path, db_path = system.file("", package="
     
     return( sum( as.integer(mapping) & as.integer( sim_list_entry ) ) )
   }
+  
   hits = unlist( lapply( sim_list, FUN = match_fp ) )
   hits = unlist(identification)
   

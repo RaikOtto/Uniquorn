@@ -1,5 +1,8 @@
 #' Loads VCF-based data into the db
+#' @export
 parse_vcf_file = function( vcf_file_path  ){
+  
+  library("stringr")
   
   if ( file.exists( vcf_file_path ) ){
   

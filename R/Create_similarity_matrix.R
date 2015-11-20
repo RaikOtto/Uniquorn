@@ -22,7 +22,8 @@ create_sim_list = function( fingerprint_data, cl_data ){
     
     res = match( 
       as.vector(
-        fp_list),
+        fp_list
+      ),
       fp,
       nomatch = 0
     )
@@ -39,8 +40,9 @@ create_sim_list = function( fingerprint_data, cl_data ){
   }
   
   sim_list = lapply(
+
     cl_data$Fingerprint,
-    FUN = create_fingerprint,
+    FUN = create_fingerprint
     fingerprint_data$Fingerprint
   )
   
