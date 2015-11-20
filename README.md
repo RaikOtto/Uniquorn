@@ -4,9 +4,15 @@ Package to identify cancer cell lines based on their unique somatic mutational f
 
 # How to make it work:
 
-1 install.packages("devtools")
+1 Preparation # optional if you have the packages installed and loaded
 
-2 library("devtools")
+install.packages("devtools")
+
+library("devtools")
+
+source("https://bioconductor.org/biocLite.R")
+
+biocLite("VariantAnnotation")
 
 3 install_github("RaikOtto/Younikorn")
 
