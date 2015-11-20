@@ -6,7 +6,7 @@ Package to identify cancer cell lines based on their unique somatic mutational f
 
 1 Preparation # optional if you have the packages installed and loaded
 
-install.packages("devtools")
+`install.packages("devtools")`
 
 library("devtools")
 
