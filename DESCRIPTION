@@ -14,5 +14,5 @@ Maintainer: 'Raik Otto' <raik.otto@hu-berlin.de>
 Date: 2015-10-11
 Author: Raik Otto
 Imports:
-    DBI, RSQLite, stringr, VariantAnnotation
+    stringr
 RoxygenNote: 5.0.1
