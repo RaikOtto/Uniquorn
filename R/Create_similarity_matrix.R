@@ -42,7 +42,7 @@ create_sim_list = function( fingerprint_data, cl_data ){
   sim_list = lapply(
 
     cl_data$Fingerprint,
-    FUN = create_fingerprint
+    FUN = create_fingerprint,
     fingerprint_data$Fingerprint
   )
   
