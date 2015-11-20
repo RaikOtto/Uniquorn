@@ -2,7 +2,9 @@
 
 Package to identify cancer cell lines based on their unique somatic mutational fingerprint.
 
-# How to make it work:
+# How to make it work: 
+
+0 Start R, e.g. as R-Studio
 
 1 Preparation # optional if you have the packages installed and loaded
 
@@ -14,17 +16,17 @@ Package to identify cancer cell lines based on their unique somatic mutational f
 
 `biocLite("VariantAnnotation")`
 
-2 Installing and loading the Younikorn
+2 Procuring test data
+
+`download.file( url="http://watson.nci.nih.gov/projects/nci60/wes/VCF/COLO-205.vcf", destfile = "COLO-205.vcf" )` # Downloading a test file
+
+--> more vcf testfiles from e.g. http://watson.nci.nih.gov/projects/nci60/wes/VCF
+
+3 Installing and loading the Younikorn
 
 `install_github("RaikOtto/Younikorn")`
 
 `library("Younikorn")`
-
-3 Procuring test data
-
-`download.file( url="http://watson.nci.nih.gov/projects/nci60/wes/VCF/COLO-205.vcf", destfile = "COLO-205.vcf" )` # Downloading a test file 
-
---> more vcf testfiles from e.g. http://watson.nci.nih.gov/projects/nci60/wes/VCF
 
 4 Run test analysis
 
