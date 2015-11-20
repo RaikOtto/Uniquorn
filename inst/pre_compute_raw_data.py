@@ -162,7 +162,8 @@ def load_data( parser ):
 
 			for fingerprint in sorted( cl_db[ type_panel ].keys() ):
 
-				o_h.write( "\t".join( [ fingerprint, ",".join( cl_db[ type_panel ][fingerprint] ) ] ) + "\r\n" )
+				#o_h.write( "\t".join( [ fingerprint, ",".join( cl_db[ type_panel ][fingerprint] ) ] ) + "\r\n" )
+				o_h.write( "\t".join( [ fingerprint, cl_db[ type_panel ][fingerprint] ] ) + "\r\n" )
 
 	print( 'Writing cl output' )
 
@@ -174,6 +175,7 @@ def load_data( parser ):
 
 			for CL in sorted( cl_dict[ type_panel ].keys() ):
 
+				#o_h.write( "\t".join( [ CL, ",".join( cl_dict[ type_panel ][ CL ]) ] ) +"\r\n" )
 				o_h.write( "\t".join( [ CL, ",".join( cl_dict[ type_panel ][ CL ]) ] ) +"\r\n" )
 
 	print("Finished data parsing")
