@@ -44,6 +44,7 @@ identify_vcf_file = function( vcf_file_path ){
  # res_common = matrix( as.integer(res_common), ncol = dim(res_common)[2]  )
   
   ###
+  
   #res_common = matrix( as.integer( unlist( sim_list ) ), ncol = length( sim_list)  )
   #mapping    = match( rownames(res_common), vcf_fingerprint, nomatch = 0 )
   #mapping[ mapping != 0 ] = 1
