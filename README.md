@@ -14,15 +14,21 @@ Package to identify cancer cell lines based on their unique somatic mutational f
 
 `biocLite("VariantAnnotation")`
 
-3 `install_github("RaikOtto/Younikorn")`
+2 Installing and loading the Younikorn
 
-4 `library("Younikorn")`
+`install_github("RaikOtto/Younikorn")`
 
-5 `download.file( url="http://watson.nci.nih.gov/projects/nci60/wes/VCF/COLO-205.vcf", destfile = "COLO-205.vcf" )` # Downloading a test file 
+`library("Younikorn")`
+
+3 Procuring test data
+
+`download.file( url="http://watson.nci.nih.gov/projects/nci60/wes/VCF/COLO-205.vcf", destfile = "COLO-205.vcf" )` # Downloading a test file 
 
 --> more vcf testfiles from e.g. http://watson.nci.nih.gov/projects/nci60/wes/VCF
 
-6 `identify_vcf_file( "COLO-205.vcf" )`
+4 Run test analysis
+
+`identify_vcf_file( "COLO-205.vcf" )`
 
 Under active development!
 
