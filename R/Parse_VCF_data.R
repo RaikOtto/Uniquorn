@@ -7,8 +7,7 @@ parse_vcf_file = function( vcf_file_path  ){
   if ( file.exists( vcf_file_path ) ){
   
     message( paste0("Found VCF file: ", vcf_file_path)  )
-    
-    suppressMessages( require("VariantAnnotation") )
+
     vcf_handle = readVcf( vcf_file_path, genome = "hg19" )
     ranges     = rowRanges(vcf_handle)@ranges
     start      = as.integer( unclass(ranges)@start )
