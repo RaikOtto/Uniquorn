@@ -5,7 +5,6 @@ identify_vcf_file = function( vcf_file_path, db_path = system.file("", package="
   library( "dplyr" )
   library( "RSQLite" )
   
-  source( "./R/Parse_VCF_data.R" )
   vcf_fingerprint = parse_vcf_file( vcf_file_path )
   
   #fres = data.frame( dplyr::filter( full_con, mutational_similarity_marker %in% c("1_10521399_10521399","1_10521520_10521520") ))

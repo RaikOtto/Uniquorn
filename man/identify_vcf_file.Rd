@@ -4,7 +4,8 @@
 \alias{identify_vcf_file}
 \title{Parses the vcf file and predicts the identity of the sample}
 \usage{
-identify_vcf_file(vcf_file_path)
+identify_vcf_file(vcf_file_path, db_path = system.file("", package =
+  "Younikorn"))
 }
 \description{
 Parses the vcf file and predicts the identity of the sample

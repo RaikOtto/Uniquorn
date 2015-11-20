@@ -36,7 +36,6 @@ initiate_younikorn_database = function( parser_path, db_path = system.file("", p
   hybcappath = paste(
     
     parser_path,
-    #'CCLE_hybrid_capture1650_hg19_allVariants_2012.05.07.maf.gz',
     'CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf',
     sep = "/"
   )
@@ -66,11 +65,17 @@ initiate_younikorn_database = function( parser_path, db_path = system.file("", p
   print( "Loading aggregated fingerprint raw data from all sources"  )
   fingerprint_data = read.table( path_to_output_db,   sep ="\t", header = T )
   cl_data          = read.table( path_to_output_dict, sep ="\t", header = T )
-  
-  source("./R/Create_similarity_matrix.R")
-  sim_list = create_sim_list( fingerprint_data, cl_data )
 
-  source("./R/Load_similarity_data_into_db.R")
-  load_similarity_data_into_db( sim_list, fingerprint_data ,db_path )
+  sim_list = create_sim_list( fingerprint_data, cl_data )
+  
+  sim_list_file = paste( system.file("", package="Younikorn"), "simlist.var", sep = "/")
+  print( paste0("Storing similarity information ", sim_list_file)  )
+  
+  save( sim_list, file = sim_list_file )
+  
+  print("Finished")
+  #source("./R/Load_similarity_data_into_db.R")
+  #load_similarity_data_into_db( sim_list, fingerprint_data ,db_path )
+  #load_data_into_db( fingerprint_data, cl_data, db_path )
 
 }

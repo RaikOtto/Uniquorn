@@ -2,11 +2,13 @@
 % Please edit documentation in R/Parse_CCLE_hybrid_data.R
 \name{parse_ccle_hybrid_data}
 \alias{parse_ccle_hybrid_data}
-\title{Parse the CCLE hybrid capture data}
+\title{Parse the CCLE hybrid capture data
+CCLE_hybrid_capture1650_hg19_allVariants_2012.05.07.maf.gz',}
 \usage{
-parse_ccle_hybrid_data(path_to_raw_data, raw_data)
+parse_ccle_hybrid_data(parser_path, raw_data, db_path)
 }
 \description{
 Parse the CCLE hybrid capture data
+CCLE_hybrid_capture1650_hg19_allVariants_2012.05.07.maf.gz',
 }
 

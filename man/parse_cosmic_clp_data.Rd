@@ -2,11 +2,13 @@
 % Please edit documentation in R/Parse_CoSMIC_data.R
 \name{parse_cosmic_clp_data}
 \alias{parse_cosmic_clp_data}
-\title{Parse CoSMIC CLP data}
+\title{Parse CoSMIC CLP data
+CosmicCLP_CompleteExport.tsv',}
 \usage{
-parse_cosmic_clp_data(path_to_raw_data, raw_data)
+parse_cosmic_clp_data(parser_path, raw_data)
 }
 \description{
 Parse CoSMIC CLP data
+CosmicCLP_CompleteExport.tsv',
 }
 

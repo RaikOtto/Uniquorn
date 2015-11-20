@@ -4,8 +4,7 @@
 \alias{load_similarity_data_into_db}
 \title{Loads similarity data into db}
 \usage{
-load_similarity_data_into_db(similarity_matrix_data, db_path = system.file("",
-  package = "Younikorn"))
+load_similarity_data_into_db(sim_list, fingerprint_data, db_path)
 }
 \description{
 Loads similarity data into db
