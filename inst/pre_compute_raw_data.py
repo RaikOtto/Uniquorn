@@ -12,14 +12,14 @@ import argparse, os, sqlite3
 
 def load_data( parser ):
 
-	cl_db   = { 'CCLE':{}, 'COSMIC':{}, 'CELLMINER':{} } # stores mutation for every cell line
-	cl_dict = { 'CCLE':{}, 'COSMIC':{}, 'CELLMINER':{} } # stores cell lines for every mutation
+	cl_db   = { 'CCLE':{}, 'COSMIC':{}, 'CELLMINER':{} } # stores cell lines for every mutation
+	cl_dict = { 'CCLE':{}, 'COSMIC':{}, 'CELLMINER':{} } # stores mutation for every cell line
 	seen_db = { 'CCLE':{}, 'COSMIC':{}, 'CELLMINER':{} } # which mutations have already been found
 
 	cellminer_cl_names = ["MCF7","MDA_MB_231","HS578T","BT_549","T47D","SF_268","SF_295","SF_539","SNB_19","SNB_75","U251","COLO205","HCC_2998","HCT_116","HCT_15","HT29","KM12","SW_620","CCRF_CEM","HL_60","K_562","MOLT_4","RPMI_8226","SR","LOXIMVI","MALME_3M","M14","SK_MEL_2","SK_MEL_28","SK_MEL_5","UACC_257","UACC_62","MDA_MB_435","MDA_N","A549","EKVX","HOP_62","HOP_92","NCI_H226","NCI_H23","NCI_H322M","NCI_H460","NCI_H522","IGROV1","OVCAR_3","OVCAR_4","OVCAR_5","OVCAR_8","SK_OV_3","NCI_ADR_RES","PC_3","DU_145","786_0","A498","ACHN","CAKI_1","RXF_393","SN12C","TK_10","UO_31"]
 	cellminer_indices = range( len( cellminer_cl_names ) )
 
-	for type_panel in [ "CCLE","COSMIC", "CELLMINER" ]:
+	for type_panel in [ "CCLE", "CELLMINER", "COSMIC" ]:
 
 		if type_panel == 'COSMIC':
 
@@ -154,29 +154,27 @@ def load_data( parser ):
 
 	print( 'Writing db output' )
 
-	with open( parser.output_db, "w" ) as o_h:
+	with open( parser.output_dict, "w" ) as o_h:
 
 		o_h.write( "\t".join( [ "Fingerprint", "CLs" ] ) + "\r\n" )
 
 		for type_panel in [ "CCLE", "CELLMINER", "COSMIC" ]:
 
-			for fingerprint in sorted( cl_db[ type_panel ].keys() ):
+			for fingerprint in sorted( cl_dict[ type_panel ].keys() ):
 
-				#o_h.write( "\t".join( [ fingerprint, ",".join( cl_db[ type_panel ][fingerprint] ) ] ) + "\r\n" )
-				o_h.write( "\t".join( [ fingerprint, cl_db[ type_panel ][fingerprint] ] ) + "\r\n" )
+				o_h.write( "\t".join( [ fingerprint, cl_dict[ type_panel ][fingerprint] ] ) + "\r\n" )
 
 	print( 'Writing cl output' )
 
-	with open( parser.output_dict, "w" ) as o_h:
+	with open( parser.output_db, "w" ) as o_h:
 
 		o_h.write( "\t".join( [ "CL", "Fingerprints" ] )  + "\r\n")
 
 		for type_panel in [ "CCLE", "CELLMINER", "COSMIC" ]:
 
-			for CL in sorted( cl_dict[ type_panel ].keys() ):
+			for CL in sorted( cl_db[ type_panel ].keys() ):
 
-				#o_h.write( "\t".join( [ CL, ",".join( cl_dict[ type_panel ][ CL ]) ] ) +"\r\n" )
-				o_h.write( "\t".join( [ CL, ",".join( cl_dict[ type_panel ][ CL ]) ] ) +"\r\n" )
+				o_h.write( "\t".join( [ CL, ",".join( cl_db[ type_panel ][ CL ] ) ] ) +"\r\n" )
 
 	print("Finished data parsing")
 
