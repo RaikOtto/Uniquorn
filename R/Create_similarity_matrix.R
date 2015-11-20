@@ -1,6 +1,6 @@
 #' Create similarity matrix from raw_data
 #' @export
-create_similarity_matrix = function( fingerprint_data, cl_data ){
+create_sim_list = function( fingerprint_data, cl_data ){
   
   library("stringr")
   
@@ -44,9 +44,7 @@ create_similarity_matrix = function( fingerprint_data, cl_data ){
     fingerprint_data$Fingerprint
   )
   
-  #res_common = matrix( as.integer( unlist( sim_list ) ), ncol = length( sim_list)  )
-  rownames( res_common ) = fingerprint_data$Fingerprint
-  colnames( res_common ) = cl_data$CL
+  names( sim_list ) = cl_data$CL
   
   return( sim_list )
 }

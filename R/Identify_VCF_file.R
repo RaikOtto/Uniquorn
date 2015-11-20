@@ -59,15 +59,12 @@ identify_vcf_file = function( vcf_file_path, db_path = system.file("", package="
     
     return( sum( as.integer(mapping) & as.integer( sim_list_entry ) ) )
   }
-  identification = lapply( sim_list, FUN = match_fp )
-  
-  ###
-  
-  hits            = colSums(res_common)
+  hits = unlist( lapply( sim_list, FUN = match_fp ) )
+  hits = unlist(identification)
   
   match_index     = hits != 0
-  candidates      = cl_names[ order(hits, decreasing = T)  ]
-  
+  candidates      = cl_data$CL[ order(hits, decreasing = T)  ]
+
   print( paste0("Best candidate: ", candidates[1] )  )
 
   #res_common_filt = res_common[ match_index ]

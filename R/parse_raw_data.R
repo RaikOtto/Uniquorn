@@ -22,8 +22,7 @@ initiate_younikorn_database = function( parser_path, db_path = system.file("", p
   clp_data_path = paste(
     
     parser_path,
-    #'CosmicCLP_CompleteExport.tsv',
-    'CosmicCLP_MutantExport.tsv.gz',
+    'CosmicCLP_CompleteExport.tsv',
     sep = "/"
   )
     
@@ -69,17 +68,9 @@ initiate_younikorn_database = function( parser_path, db_path = system.file("", p
   cl_data          = read.table( path_to_output_dict, sep ="\t", header = T )
   
   source("./R/Create_similarity_matrix.R")
-  similarity_matrix_data = create_similarity_matrix( fingerprint_data, cl_data )
-  
-  ### visualization
-  
-  if (F){
-    
-    source( "./R/Visualize_matrix.R" )
-    visualize_matrix(  )
-  }
-  
+  sim_list = create_sim_list( fingerprint_data, cl_data )
+
   source("./R/Load_similarity_data_into_db.R")
-  load_similarity_data_into_db( similarity_matrix_data, db_path )
+  load_similarity_data_into_db( sim_list, fingerprint_data ,db_path )
 
 }

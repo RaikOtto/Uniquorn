@@ -1,15 +1,23 @@
 #' Loads similarity data into db
-load_similarity_data_into_db = function( similarity_matrix_data, db_path = system.file("", package="Younikorn") ){
+load_similarity_data_into_db = function( sim_list, fingerprint_data, db_path){
 
   print( paste0( "Storing data in db: ",db_path) )
   
   require( RSQLite )
-  suppressMessages( require(dplyr  ) )
+  suppressMessages( require( dplyr ) )
   
-  file.remove(db_path)
+  if ( file.exists( db_path ) )
+    file.remove(db_path)
+  
   similarity_db = src_sqlite( db_path, create = T)
   
-  similarity_matrix = as.data.frame( similarity_matrix_data )
+  similarity_matrix = as.data.frame( 
+    matrix( unlist( sim_list ) , ncol = length(sim_list) )
+  )
+  similarity_matrix = rbind( similarity_matrix, fingerprint_data$Fingerprint )
+
+  colnames( similarity_matrix )[1] = "Mutational_fingerprint"
+  rownames( similarity_matrix ) = fingerprint_data$Fingerprint
   
   copy_to(
     similarity_db, 
