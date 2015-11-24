@@ -37,7 +37,7 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
   hits = unlist( lapply( sim_list, FUN = match_fp ) )
   candidates = cl_data$CL[ order(hits, decreasing = T)  ]
 
-  print( paste0("Best candidate: ", candidates[1] )  )
+  
   
   res_tab = data.frame(
     
@@ -45,12 +45,25 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
     "CL_identifier" = candidates
   )
   
-  library("stringr")
+  res_tab = res_tab[ res_tab$Amount_hits >= 3  ,]
   
-  res_tab[1:5,]
+  if ( dim(res_tab)[1] >= 1 ){
+    
+    print( paste0("Best candidate: ", candidates[1] )  )  
+    
+    library("stringr")
+    
+    res_tab[1:5,]
+    
+    if ( output_path == "" )
+      output_path = paste0( vcf_file_path, ".identification.tab" )
+    
+    print( paste0("Storing information in table: ",output_path ) )
+    
+    write.table( file = output_path, res_tab, sep ="\t", row.names = F, quote = F  )
+    
+  } else{
+    print( paste0("No CL mutational fingerprint with sufficient similarity found." ) )
+  }
   
-  if ( output_path == "" )
-    output_path = paste0( vcf_file_path, ".identification.tab" )
-  
-  write.table( file = output_path, res_tab, sep ="\t", row.names = F, quote = F  )
 }
