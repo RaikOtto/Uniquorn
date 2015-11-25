@@ -24,9 +24,9 @@ Package to identify cancer cell lines based on their unique somatic mutational f
 
 3 Installing and loading the Younikorn
 
-`install_github("RaikOtto/Younikorn")`
+`install_github("RaikOtto/Uniquorn")`
 
-`library("Younikorn")`
+`library("Uniquorn")`
 
 4 Run test analysis
 
