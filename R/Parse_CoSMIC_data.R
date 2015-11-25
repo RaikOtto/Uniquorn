@@ -6,7 +6,7 @@ parse_cosmic_clp_data = function( parser_path, raw_data  ){
   
   clp_data_path = paste(
     parser_path,
-    'CosmicCLP_CompleteExport.tsv'
+    'CosmicCLP_CompleteExport.tsv',
     sep = "/"
   )
   
