@@ -22,11 +22,13 @@ Package to identify cancer cell lines based on their unique somatic mutational f
 
 `library("Uniquorn")`
 
-3 Run test analysis
+3 Load example data, here the NCI-60 exome sequencing HT29 Cancer Cell line
 
-`data("HT29_cl_vcf",package="Uniquorn")`
+`HT29_CL_VCF = paste( system.file("extdata", package="Uniquorn"), "HT29.vcf.gz", sep ="/")`
 
 --> FYI: VCF testfiles for NCI-60 panel e.g. from http://watson.nci.nih.gov/projects/nci60/wes/VCF
+
+4 Run test analysis
 
 `identify_vcf_file( "HT29_cl_vcf"  )`
 
