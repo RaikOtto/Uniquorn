@@ -1,4 +1,4 @@
-# Younikorn R package
+# Uniquorn R package
 
 Package to identify cancer cell lines based on their unique somatic mutational fingerprint.
 

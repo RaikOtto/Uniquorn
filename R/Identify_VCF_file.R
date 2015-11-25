@@ -45,7 +45,7 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
     "CL_identifier" = candidates
   )
   
-  res_tab = res_tab[ res_tab$Amount_hits >= 3  ,]
+  res_tab = res_tab[ res_tab$Amount_hits >= 2  ,]
   
   if ( dim(res_tab)[1] >= 1 ){
     
