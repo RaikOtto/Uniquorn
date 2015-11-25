@@ -16,7 +16,7 @@ Package to identify cancer cell lines based on their unique somatic mutational f
 
 `biocLite("VariantAnnotation")`
 
-2 Installing and loading the Uniquorn
+2 Install the Uniquorn
 
 `install_github("RaikOtto/Uniquorn")`
 
