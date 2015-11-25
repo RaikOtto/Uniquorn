@@ -1,24 +1,13 @@
 ### parse files
 
-#' Parses data into the sql database
-#' Requires the currently (Nov 2015) github located package "chapmandu2/CancerCellLines"
+#' Parses data into r list variable
 #' @export
 initiate_younikorn_database = function( parser_path ){
 
   library("stringr")
   
   ### pre processing
-  
-  #if ( grepl( "/inst", c( db_path )) != T )
-    
-  #  db_path = paste( db_path, "inst", sep = "/" )
-    
-  #  if ( ! dir.exists( db_path )  )
-  #    dir.create( db_path )
-  
-  #  if ( grepl( "Younikorn.db", c( db_path )) != T )
-  #    db_path  = paste( db_path,"Younikorn.db", sep ="/")
-  
+
   clp_data_path = paste(
     
     parser_path,
@@ -40,9 +29,9 @@ initiate_younikorn_database = function( parser_path ){
     sep = "/"
   )
   
-  path_to_output_db = paste( system.file("", package="Younikorn"), "parsed_DB.tab", sep ="/")  
-  path_to_output_dict = paste( system.file("", package="Younikorn"), "parsed_dict.tab", sep ="/")  
-  path_to_python = paste( system.file("", package="Younikorn"), "pre_compute_raw_data.py", sep ="/")
+  path_to_output_db = paste( system.file("", package="Uniquorn"), "parsed_DB.tab", sep ="/")  
+  path_to_output_dict = paste( system.file("", package="Uniquorn"), "parsed_dict.tab", sep ="/")  
+  path_to_python = paste( system.file("", package="Uniquorn"), "pre_compute_raw_data.py", sep ="/")
   
   command_line = str_c( 
     c(  
@@ -68,14 +57,10 @@ initiate_younikorn_database = function( parser_path ){
 
   sim_list = create_sim_list( fingerprint_data, cl_data )
   
-  sim_list_file = paste( system.file("", package="Younikorn"), "simlist.RData", sep = "/")
+  sim_list_file = paste( system.file("", package = "Uniquorn"), "simlist.RData", sep = "/")
   print( paste0("Storing similarity information ", sim_list_file)  )
   
   save( sim_list, file = sim_list_file )
   
   print("Finished")
-  #source("./R/Load_similarity_data_into_db.R")
-  #load_similarity_data_into_db( sim_list, fingerprint_data ,db_path )
-  #load_data_into_db( fingerprint_data, cl_data, db_path )
-
 }

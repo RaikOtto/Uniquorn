@@ -6,8 +6,7 @@ parse_cosmic_clp_data = function( parser_path, raw_data  ){
   
   clp_data_path = paste(
     parser_path,
-    #'CosmicCLP_CompleteExport.tsv',
-    'CosmicCLP_MutantExport.tsv.gz',
+    'CosmicCLP_CompleteExport.tsv'
     sep = "/"
   )
   
@@ -41,7 +40,6 @@ parse_cosmic_clp_data = function( parser_path, raw_data  ){
     
     # filter
     
-    #new_cosmic_data = new_cosmic_data[ ! is.na( new_cosmic_data$CL_ident ),]
     new_cosmic_data = new_cosmic_data[ new_cosmic_data$CL_ident != "",]
     new_cosmic_data = new_cosmic_data[ new_cosmic_data$HGNC_symbol != "",]
     new_cosmic_data$CL_ident = paste( new_cosmic_data$CL_ident, "CoSMIC", sep = "_" )

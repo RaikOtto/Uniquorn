@@ -7,7 +7,6 @@ parse_ccle_hybrid_data = function( parser_path, raw_data,db_path ){
   hybcappath = paste(
 
     parser_path,
-    #'CCLE_hybrid_capture1650_hg19_allVariants_2012.05.07.maf.gz',
     'CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf',
     sep = "/"
   )
@@ -16,7 +15,7 @@ parse_ccle_hybrid_data = function( parser_path, raw_data,db_path ){
     
     message( paste0( "Found CCLE file, start parsing :", hybcappath))
     
-    path_to_python = paste( system.file("", package="Younikorn"), "inst/pre_compute_raw_data.py", sep ="/")
+    path_to_python = paste( system.file("", package="Uniquorn"), "inst/pre_compute_raw_data.py", sep ="/")
     command_line = str_c( c(  'python', path_to_python, "-i ", hybcappath, "-db",  ), collapse = " " )
     system( command_line )
     

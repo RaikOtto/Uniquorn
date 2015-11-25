@@ -5,7 +5,7 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
   print( paste0( "Creating fingerprint from VCF file ", vcf_file_path  ) )
   vcf_fingerprint = parse_vcf_file( vcf_file_path )
   
-  sim_list_file = paste( system.file("", package="Younikorn"), "simlist.RData", sep = "/")
+  sim_list_file = paste( system.file("", package = "Uniquorn"), "simlist.RData", sep = "/")
   print( paste0( "Loading similarity data from file ",  sim_list_file )  )
   
   if (! exists("sim_list") )
@@ -13,8 +13,8 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
   
   print( "Finished loading similarity data. Mapping vcf's fingerprint to all contained fingerprints"  )
   
-  path_to_output_db = paste( system.file("", package="Younikorn"), "parsed_DB.tab", sep ="/") 
-  path_to_output_dict = paste( system.file("", package="Younikorn"), "parsed_dict.tab", sep ="/")
+  path_to_output_db = paste( system.file("", package = "Uniquorn"), "parsed_DB.tab", sep ="/") 
+  path_to_output_dict = paste( system.file("", package = "Uniquorn"), "parsed_dict.tab", sep ="/")
   cl_data          = read.table( path_to_output_db,   sep ="\t", header = T )
   all_fingerprints = read.table( path_to_output_dict, sep ="\t", colClasses = c( "character", 'NULL'), header =T )$Fingerprint
   
