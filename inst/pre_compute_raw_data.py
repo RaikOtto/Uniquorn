@@ -9,7 +9,6 @@ epilog="""Raik Otto <raik.otto@hu-berlin.de> 20.1.2015"""
 
 import argparse, os, sqlite3
 
-
 def load_data( parser ):
 
 	cl_db   = { 'CCLE':{}, 'COSMIC':{}, 'CELLMINER':{} } # stores cell lines for every mutation

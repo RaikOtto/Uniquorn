@@ -21,7 +21,7 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
   mapping = match( all_fingerprints, vcf_fingerprint, nomatch = 0 )
   
   adv = 0
-  nr_cls = length( sim_list)
+  nr_cls = length( sim_list )
   
   match_fp = function( sim_list_entry ){
     
