@@ -40,20 +40,24 @@ initiate_younikorn_database = function( parser_path ){
   
   path_to_output_db = paste( system.file("", package="Uniquorn"), "parsed_DB.tab", sep ="/")  
   path_to_output_dict = paste( system.file("", package="Uniquorn"), "parsed_dict.tab", sep ="/")  
-  path_to_python_dbsnp = paste( system.file("", package="Uniquorn"), "parse_db_snp.py", sep ="/")
+  path_to_python_dbsnp_python_parser = paste( system.file("", package="Uniquorn"), "parse_db_snp.py", sep ="/")
+  path_to_python_dbsnp_python_parser_db = paste( system.file("", package="Uniquorn"), "parse_db_snp_python.pickle", sep ="/")
   path_to_python = paste( system.file("", package="Uniquorn"), "pre_compute_raw_data.py", sep ="/")
   
   if (  file.exists( dbsnp_path  ) ){
     
-    command_line = str_c( 
+    print( paste0( c( "Found DbSNP file ",  dbsnp_path, ", preprocessing.") ) )
+    command_line = str_c(
       c(  
-        'python', path_to_python, 
-        "-o_db", path_to_output_db,
-        "-o_dict", path_to_output_dict
+        'python', path_to_python_dbsnp_python_parser, 
+        "-i", dbsnp_path,
+        "-o", path_to_python_dbsnp_python_parser_db
       ), 
-      collapse = " " )
-      print( paste0( c( "Found DbSNP file ",  dbsnp_path, ", preprocessing.") ) )
-      system( command_line )
+      collapse = " "
+    )
+      
+    system( command_line )
+    print( "Finished DbSNP pre-processing" )
   }
   
   command_line = str_c( 

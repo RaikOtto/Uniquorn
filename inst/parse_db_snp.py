@@ -43,7 +43,7 @@ if __name__ == "__main__":
 
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-i',	'--db_snp_file',		type = str, help = 'Input file for db snp, tab separated UCSC',	required = True)
-	parser.add_argument('-o',	'--pickle_output_file',	type = str, help = 'pickle_output_file',	required = False, default = "./db_snp_python_obj.pickle")
+	parser.add_argument('-o',	'--pickle_output_file',	type = str, help = 'pickle_output_file',	required = True)
 
 	parser = parser.parse_args()
 	parse_dbsnp( parser )
