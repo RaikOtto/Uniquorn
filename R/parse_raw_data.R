@@ -46,7 +46,7 @@ initiate_uniquorn_database = function( parser_path ){
   
   if (  file.exists( dbsnp_path  ) ){
     
-    print( paste0( c( "Found DbSNP file ",  dbsnp_path, ", preprocessing.") ) )
+    print( paste0( c( "Found DbSNP file",  dbsnp_path, ", preprocessing."), collapse = " " ) )
     command_line = str_c(
       c(  
         'python', path_to_python_dbsnp_python_parser, 
@@ -56,23 +56,24 @@ initiate_uniquorn_database = function( parser_path ){
       collapse = " "
     )
       
-    system( command_line )
+    #system( command_line )
     print( "Finished DbSNP pre-processing" )
   }
   
   command_line = str_c( 
     c(  
-      'python', path_to_python, 
+      'python', path_to_python,
       "-ccle ", hybcappath,
       "-cosmic ", clp_data_path,
       "-cellminer", cellminer_path,
       "-o_db", path_to_output_db,
-      "-o_dict", path_to_output_dict
-    ), 
+      "-o_dict", path_to_output_dict,
+      "i_dbsnp", path_to_python_dbsnp_python_parser_db
+    ),
   collapse = " " )
   
   ## aggregate fingerprint with python due to time contrains
-  system( command_line )
+  #system( command_line )
   
   message("Parsing data finished")
   
