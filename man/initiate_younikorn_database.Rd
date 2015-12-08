@@ -2,13 +2,11 @@
 % Please edit documentation in R/parse_raw_data.R
 \name{initiate_younikorn_database}
 \alias{initiate_younikorn_database}
-\title{Parses data into the sql database
-Requires the currently (Nov 2015) github located package "chapmandu2/CancerCellLines"}
+\title{Parses data into r list variable}
 \usage{
 initiate_younikorn_database(parser_path)
 }
 \description{
-Parses data into the sql database
-Requires the currently (Nov 2015) github located package "chapmandu2/CancerCellLines"
+Parses data into r list variable
 }
 

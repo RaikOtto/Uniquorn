@@ -8,7 +8,6 @@ Description: R framework for identification of cancer cell lines based on their
 Depends:
     R, stringr, VariantAnnotation
 License: Artistic-2.0
-Imports: Python (>=2.6)
 LazyData: TRUE
 Type: Package
 Maintainer: 'Raik Otto' <raik.otto@hu-berlin.de>
