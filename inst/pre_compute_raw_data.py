@@ -1,4 +1,3 @@
-from __future__ import print_function
 """
 
 Input: The three mutation/ variantion holding text files from CCLE, CoSMIC CLP and CellMiner NCI-60 
@@ -7,7 +6,7 @@ Outout: Dataset holding unique fingerprints. Uniqueness only valid within a part
 """
 epilog="""Raik Otto <raik.otto@hu-berlin.de> 20.1.2015"""
 
-import argparse, os, sqlite3
+import argparse, os, cPickle as pickle
 
 def load_data( parser ):
 
@@ -17,6 +16,22 @@ def load_data( parser ):
 
 	cellminer_cl_names = ["MCF7","MDA_MB_231","HS578T","BT_549","T47D","SF_268","SF_295","SF_539","SNB_19","SNB_75","U251","COLO205","HCC_2998","HCT_116","HCT_15","HT29","KM12","SW_620","CCRF_CEM","HL_60","K_562","MOLT_4","RPMI_8226","SR","LOXIMVI","MALME_3M","M14","SK_MEL_2","SK_MEL_28","SK_MEL_5","UACC_257","UACC_62","MDA_MB_435","MDA_N","A549","EKVX","HOP_62","HOP_92","NCI_H226","NCI_H23","NCI_H322M","NCI_H460","NCI_H522","IGROV1","OVCAR_3","OVCAR_4","OVCAR_5","OVCAR_8","SK_OV_3","NCI_ADR_RES","PC_3","DU_145","786_0","A498","ACHN","CAKI_1","RXF_393","SN12C","TK_10","UO_31"]
 	cellminer_indices = range( len( cellminer_cl_names ) )
+	
+	# pre loading dbsnp
+	
+	db_snp_mode = os.path.isfile( parser.pickle_dbsnp_file )
+	
+	if db_snp_mode:
+
+		print "Reading DbSNP dump " + parser.pickle_dbsnp_file
+		unpickler = pickle.Unpickler( file( parser.pickle_dbsnp_file , "r"))
+		db_snp_d = unpickler.load()
+		snp_count = 0
+		print "Finished unpickling"
+		
+	else:
+		
+		print "Did not find UCSC python DbSNP file, e.g. "
 
 	for type_panel in [ "CCLE", "CELLMINER", "COSMIC" ]:
 
@@ -83,11 +98,20 @@ def load_data( parser ):
 
 					fingerprint	= "_".join([chromosome,start_pos,end_pos]) # definition fp
 
-					# query for membership - unique version
+					# query for membership - non_unique version with db SNP
+
+					if db_snp_mode: # check if db snp dictionary is available
+
+						if db_snp_d.has_key(fingerprint): 
+							
+							print("Found SNP: "+fingerprint)
+							snp_count = snp_count + 1
+							continue
 
 					for cl_ident in ident_list:
 
-						if not seen_db[ type_panel ].has_key( fingerprint ):
+						#if not seen_db[ type_panel ].has_key( fingerprint ):
+						if True:
 
 							if not cl_db[   type_panel ].has_key( cl_ident ): cl_db[   type_panel ][ cl_ident ] = {}
 
@@ -150,6 +174,7 @@ def load_data( parser ):
 
 
 	"""
+	if db_snp_mode: print "Excluded " + str(snp_count) + " many SNPs"
 
 	print( 'Writing db output' )
 
@@ -184,8 +209,9 @@ if __name__ == "__main__":
 	parser.add_argument('-cosmic',	'--cosmic_file',	type = str, help = 'Input file for cosmic',	required = False)
 	parser.add_argument('-cellminer','--cellminer_file',	type = str, help = 'Input  file for cellminer',	required = False)
 	#parser.add_argument('-db',	'--db_path',	type = str, help = 'Path to output_db',	required = True)
+	parser.add_argument('-i_dbsnp',	'--pickle_dbsnp_file',	type = str, help = 'pickle_output_file of db snp',	required = False, default = "")
 	parser.add_argument('-o_db',	'--output_db',	type = str, help = 'Path to output_db',	required = True)
-	parser.add_argument('-o_dict',	'--output_dict',	type = str, help = 'Path to output dictionary for cl informaiton',	required = True)
+	parser.add_argument('-o_dict',	'--output_dict',	type = str, help = 'Path to output dictionary for cl information',	required = True)
 
 	parser = parser.parse_args()
 	load_data( parser )

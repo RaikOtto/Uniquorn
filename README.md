@@ -35,3 +35,9 @@ Package to identify cancer cell lines based on their unique somatic mutational f
 Under active development!
 
 Contact: raik.otto@hu-berlin.de
+
+Additional information:
+
+You can find suitable DbSNP data for creating your own signatures here http://hgdownload.cse.ucsc.edu/goldenPath/hg19/database/
+Filename: snp142Common.txt
+Place the file in the raw data parser folder
