@@ -2,7 +2,7 @@
 
 #' Parses data into r list variable
 #' @export
-initiate_younikorn_database = function( parser_path ){
+initiate_uniquorn_database = function( parser_path ){
 
   library("stringr")
   
