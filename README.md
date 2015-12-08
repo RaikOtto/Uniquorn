@@ -30,7 +30,7 @@ Package to identify cancer cell lines based on their unique somatic mutational f
 
 4 Run test analysis
 
-`identify_vcf_file( "HT29_cl_vcf"  )`
+`identify_vcf_file( HT29_CL_VCF  )`
 
 Under active development!
 
