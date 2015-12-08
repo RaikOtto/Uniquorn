@@ -37,8 +37,6 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
   hits = unlist( lapply( sim_list, FUN = match_fp ) )
   candidates = cl_data$CL[ order(hits, decreasing = T)  ]
 
-  
-  
   res_tab = data.frame(
     
     "Amount_hits" = hits[order(hits, decreasing = T)],
