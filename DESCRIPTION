@@ -6,8 +6,9 @@ Authors@R: person("Raik", "Otto", email = "raik.otto@hu-berlin.de", role = c("au
 Description: R framework for identification of cancer cell lines based on their
     unique mutational fingerprint
 Depends:
-    R, stringr, VariantAnnotation, Python (>=2.6)
+    R, stringr, VariantAnnotation
 License: Artistic-2.0
+Imports: Python (>=2.6)
 LazyData: TRUE
 Type: Package
 Maintainer: 'Raik Otto' <raik.otto@hu-berlin.de>
