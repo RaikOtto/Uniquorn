@@ -68,7 +68,7 @@ initiate_uniquorn_database = function( parser_path ){
       "-cellminer", cellminer_path,
       "-o_db", path_to_output_db,
       "-o_dict", path_to_output_dict,
-      "i_dbsnp", path_to_python_dbsnp_python_parser_db
+      "-i_dbsnp", path_to_python_dbsnp_python_parser_db
     ),
     collapse = " "
   )
