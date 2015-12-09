@@ -2,6 +2,8 @@
 #' @export
 identify_vcf_file = function( vcf_file_path, output_path = "" ){
   
+  library("stringr")
+  
   print( paste0( "Creating fingerprint from VCF file ", vcf_file_path  ) )
   vcf_fingerprint = parse_vcf_file( vcf_file_path )
   
@@ -11,7 +13,12 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
   for( type in types  ){
   for( panel in panels ){
   
-    output_path_panel = paste( vcf_file_path, paste0( c( paste( panel, type, sep ="_" ),".tab"), collapse = ""), sep ="_ident_")
+    if ( output_path == ""  ){
+      output_path_panel = paste( vcf_file_path, paste0( c( paste( panel, type, sep ="_" ),".tab"), collapse = ""), sep ="_ident_")
+    } else {
+      output_path_panel = paste( paste0( output_path, tail( unlist(str_split(vcf_file_path, "/" ) ), 1 )  ), paste0( c( paste( panel, type, sep ="_" ),".tab"), collapse = ""), sep ="_ident_")
+    }
+    
     
     sim_list_file = paste( system.file("", package = "Uniquorn"), 
        paste0( 
@@ -40,6 +47,7 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
     
     #if (! exists("sim_list") )
     attach( sim_list_file  )
+    
     if (type == "unique"){
       sim_list = sim_list_unique
     } else {
