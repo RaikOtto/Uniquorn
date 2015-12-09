@@ -64,21 +64,23 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
       
       return( sum( as.integer(mapping) & as.integer( sim_list_entry ) ) )
     }
+    adv <<- 0
     
-    hits = unlist( lapply( sim_list, FUN = match_fp ) )
-    candidates = names(sim_list)[ order(hits, decreasing = T)  ]
-  
-    res_tab = data.frame(
+    res_table = data.frame(
       
-      "Amount_hits" = hits[order(hits, decreasing = T)],
-      "CL_identifier" = candidates
+      "CL_name" = names(sim_list),
+      "Intersect" = as.double( unlist( lapply( sim_list, FUN = match_fp ) ) ),
+      "All_mutations" = unlist( lapply( sim_list, FUN = sum ) ),
+      "Passed_treshold" = rep(F, nr_cls )
     )
     
-    res_tab = res_tab[ res_tab$Amount_hits >= 2  ,]
+    res_table = res_table[ order( res_table$Intersect, decreasing = T),  ]
+    res_table$Passed_threshold[  res_table$Intersect >= 2] = T
+    res_table$Passed_threshold[  res_table$Intersect < 2]  = F
     
-    if ( dim(res_tab)[1] >= 1 ){
+    if ( dim(res_lab)[1] >= 1 ){
       
-      print( paste0("Best candidate: ", candidates[1] )  )
+      print( paste0( "Candidate(s): ", paste0( (res_table$CL_name[ res_table$Passed_threshold  ] ), collapse = "," ) )  )
       
       library("stringr")
       
@@ -89,10 +91,10 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
       
       print( paste0("Storing information in table: ",output_path ) )
       
-      write.table( file = output_path_panel, res_tab, sep ="\t", row.names = F, quote = F  )
-      
     } else{
       print( paste0("No CL mutational fingerprint with sufficient similarity found." ) )
     }
+    
+    write.table( file = output_path_panel, res_table, sep ="\t", row.names = F, quote = F  )
   }
 }}
