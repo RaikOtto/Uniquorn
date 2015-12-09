@@ -92,7 +92,7 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
       
       library("stringr")
       
-      res_tab[1:5,]
+      res_table[ res_table$Passed_threshold,]
       
       if ( output_path == "" )
         output_path = paste0( vcf_file_path, ".identification.tab" )
