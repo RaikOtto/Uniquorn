@@ -6,32 +6,50 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
   vcf_fingerprint = parse_vcf_file( vcf_file_path )
   
   panels = c("CELLMINER","CCLE","COSMIC")
+  types = c( "unique", "non_unique")
   
+  for( type in types  ){
   for( panel in panels ){
   
-    output_path_panel = paste( vcf_file_path, paste0( c( panel,".tab"), collapse = ""), sep ="_ident_")
+    output_path_panel = paste( vcf_file_path, paste0( c( paste( panel, type, sep ="_" ),".tab"), collapse = ""), sep ="_ident_")
     
     sim_list_file = paste( system.file("", package = "Uniquorn"), 
-                           paste0( c("simlist_",panel,".RData"), collapse= "" ), 
-                           sep = "/"
+       paste0( 
+         c(
+           paste0( c("simlist", type,panel), collapse = "_" ),
+           ".RData"
+         ), 
+         collapse= ""
+       ), 
+       sep = "/"
     )
+
+    fingerprint_names_file = paste( system.file("", package = "Uniquorn"), 
+        paste0( 
+           c(
+             type,
+             "_parsed_DB_",
+             panel,
+             "_mut_labels.tab"
+            ), collapse= ""
+        ), 
+        sep = "/"
+    )
+    
     print( paste0( "Loading similarity data from file ",  sim_list_file )  )
     
     #if (! exists("sim_list") )
     attach( sim_list_file  )
+    if (type == "unique"){
+      sim_list = sim_list_unique
+    } else {
+      sim_list = sim_list_non_unique
+    }
+    all_fingerprints_in_cl_set = read.table( fingerprint_names_file, sep ="\t", header= F )[,1]
     
     print( "Finished loading similarity data. Mapping vcf's fingerprint to all contained fingerprints"  )
     
-    #path_to_output_db = paste( system.file("", package = "Uniquorn"), "parsed_DB", sep ="/") 
-    #path_to_output_dict = paste( system.file("", package = "Uniquorn"), "parsed_dict", sep ="/")
-    
-    #path_to_output_db_panel   = paste0( c( paste( path_to_output_db,  panel, sep ="_" ), ".tab" ), collapse = "")
-    #path_to_output_dict_panel = paste0( c( paste( path_to_output_dict,panel, sep ="_" ), ".tab" ), collapse = "")
-    
-    #cl_data          = read.table( path_to_output_db_panel,   sep ="\t", header = T )
-    #all_fingerprints = read.table( path_to_output_dict_panel, sep ="\t", colClasses = c( "character", 'NULL'), header =T )$Fingerprint
-    
-    mapping = match( all_fingerprints, vcf_fingerprint, nomatch = 0 )
+    mapping = match( all_fingerprints_in_cl_set, vcf_fingerprint, nomatch = 0 )
     
     adv = 0
     nr_cls = length( sim_list )
@@ -48,7 +66,7 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
     }
     
     hits = unlist( lapply( sim_list, FUN = match_fp ) )
-    candidates = cl_data$CL[ order(hits, decreasing = T)  ]
+    candidates = names(sim_list)[ order(hits, decreasing = T)  ]
   
     res_tab = data.frame(
       
@@ -77,4 +95,4 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
       print( paste0("No CL mutational fingerprint with sufficient similarity found." ) )
     }
   }
-}
+}}

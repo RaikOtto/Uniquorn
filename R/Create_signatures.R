@@ -36,7 +36,6 @@ create_sim_list = function( fingerprint_data, cl_data, type ="", panel = "" ){
     if ( stat != round( (adv / as.double(nr_cls)) * 100, 1 ) )
       print( paste0( c( panel, type, round( (adv / as.double(nr_cls)) * 100, 1 ), " %"), collapse =" " ) )
 
-    names(res) = fp_list
     return(res)
   }
   

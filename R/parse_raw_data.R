@@ -84,13 +84,20 @@ initiate_uniquorn_database = function(
   
   for( panel in panels ){
    
+    print(paste0( c(panel) ))
+    
     path_to_output_db_panel_unique       = paste0( c( paste( path_to_output_db_unique,      panel, sep ="_" ), ".tab" ), collapse = "")
     path_to_output_db_panel_non_unique   = paste0( c( paste( path_to_output_db_non_unique,  panel, sep ="_" ), ".tab" ), collapse = "")
+    
+    fingerprint_names_unique_file        = paste0( c( paste( path_to_output_db_unique,      panel, sep ="_" ), "_mut_labels.tab" ), collapse = "")
+    fingerprint_names_non_unique_file    = paste0( c( paste( path_to_output_db_non_unique,  panel, sep ="_" ), "_mut_labels.tab" ), collapse = "")
+    
     path_to_output_dict_panel_unique     = paste0( c( paste( path_to_output_dict_unique,    panel, sep ="_" ), ".tab" ), collapse = "")
     path_to_output_dict_panel_non_unique = paste0( c( paste( path_to_output_dict_non_unique,panel, sep ="_" ), ".tab" ), collapse = "")
     
     cl_data_unique              = read.table( path_to_output_db_panel_unique,       sep ="\t", header = T )
     cl_data_non_unique          = read.table( path_to_output_db_panel_non_unique,   sep ="\t", header = T )
+    
     fingerprint_data_unique     = read.table( path_to_output_dict_panel_unique,     sep ="\t", header = T )
     fingerprint_data_non_unique = read.table( path_to_output_dict_panel_non_unique, sep ="\t", header = T )
     
@@ -102,15 +109,19 @@ initiate_uniquorn_database = function(
       sep = "/"
     )
     
+    write.table( x = fingerprint_data_unique$Fingerprint, fingerprint_names_unique_file, sep = "\t", quote = F, row.names = F, col.names = F  )
+    write.table( x = fingerprint_data_non_unique$Fingerprint, fingerprint_names_non_unique_file, sep = "\t", quote = F, row.names = F, col.names = F  )
+    
     sim_list_file_non_unique = paste( system.file("", package = "Uniquorn"), 
       paste0( c("simlist_non_unique_",panel,".RData"), 
       collapse= "" ), 
       sep = "/"
     )
     
-    print( paste0("Storing similarity information ", sim_list_file)  )
-    
+    print( paste0("Storing similarity information ", sim_list_file_unique)  )
     save( sim_list_unique, file = sim_list_file_unique )
+    
+    print( paste0("Storing similarity information ", sim_list_file_non_unique)  )
     save( sim_list_non_unique, file = sim_list_file_non_unique )
      
   }
