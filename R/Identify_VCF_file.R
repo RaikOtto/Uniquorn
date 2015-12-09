@@ -86,7 +86,7 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
     res_table$Passed_threshold[  res_table$Intersect >= 2] = T
     res_table$Passed_threshold[  res_table$Intersect < 2]  = F
     
-    if ( dim(res_lab)[1] >= 1 ){
+    if ( dim(res_table[ res_table$Passed_threshold,])[1] >= 1 ){
       
       print( paste0( "Candidate(s): ", paste0( (res_table$CL_name[ res_table$Passed_threshold  ] ), collapse = "," ) )  )
       
