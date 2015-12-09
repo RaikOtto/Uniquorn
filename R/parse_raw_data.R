@@ -56,7 +56,7 @@ initiate_uniquorn_database = function( parser_path ){
       collapse = " "
     )
       
-    system( command_line, intern = F, ignore.stdout = F )
+    system( command_line, ignore.stdout = F, intern = F )
     print( "Finished DbSNP pre-processing" )
   }
   
@@ -74,7 +74,7 @@ initiate_uniquorn_database = function( parser_path ){
   )
   
   ## aggregate fingerprint with python due to time contrains
-  system( command_line, intern = F, ignore.stdout = F )
+  system( command_line, ignore.stdout = F )
   
   message("Parsing data finished")
   

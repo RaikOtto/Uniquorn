@@ -27,7 +27,7 @@ def parse_dbsnp( parser ):
 				
 				verbose_d[chrom] = True
 				print chrom
-			
+			else: break
 			start = line[2]
 			end   = line[3]
 			signature = "_".join( [ chrom, start, end ] )
@@ -35,7 +35,7 @@ def parse_dbsnp( parser ):
 			db_snp_d[signature ] = True
 			
 	print "Dumping dat to " + parser.pickle_output_file
-	pickler = pickle.Pickler( file( "db_snp_python_obj.pickle" , "wb"), -1)
+	pickler = pickle.Pickler( file( parser.pickle_output_file , "wb"), -1)
 	pickler.dump( db_snp_d )
 	print "Dumping finished"
 
