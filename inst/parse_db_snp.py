@@ -27,7 +27,7 @@ def parse_dbsnp( parser ):
 				
 				verbose_d[chrom] = True
 				print chrom
-			else: break
+
 			start = line[2]
 			end   = line[3]
 			signature = "_".join( [ chrom, start, end ] )
