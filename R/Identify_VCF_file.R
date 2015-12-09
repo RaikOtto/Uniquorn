@@ -102,7 +102,7 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
     res_table$Passed_treshold[ is.na(res_table$Passed_treshold) ]  = F
     
     res_table$Passed_treshold_weighted[  
-      ( as.double(res_table$Intersect) >= 10.0) & ( ( as.double(res_table$Intersect_weighted) / as.double(res_table$All_mutations)) >= .03  )
+      ( as.double(res_table$Intersect_weighted) >= 10.0) & ( ( as.double(res_table$Intersect_weighted) / as.double(res_table$All_mutations)) >= .03  )
       ] = T
     res_table$Passed_treshold_weighted[ is.na(res_table$Passed_treshold_weighted) ]  = F
     
