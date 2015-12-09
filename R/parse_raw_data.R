@@ -110,8 +110,14 @@ initiate_uniquorn_database = function(
       sep = "/"
     )
     
-    write.table( x = fingerprint_data_unique$Fingerprint, fingerprint_names_unique_file, sep = "\t", quote = F, row.names = F, col.names = F  )
-    write.table( x = fingerprint_data_non_unique$Fingerprint, fingerprint_names_non_unique_file, sep = "\t", quote = F, row.names = F, col.names = F  )
+    write.table( x = 
+                   cbind( fingerprint_data_unique$Fingerprint, fingerprint_data_unique$Weights ),
+                          fingerprint_names_unique_file, 
+                          sep = "\t", quote = F, row.names = F, col.names = F  )
+    write.table( x = 
+                   cbind( fingerprint_data_non_unique$Fingerprint, fingerprint_data_non_unique$Weigths  ), 
+                 fingerprint_names_non_unique_file, 
+                 sep = "\t", quote = F, row.names = F, col.names = F  )
     
     sim_list_file_non_unique = paste( system.file("", package = "Uniquorn"), 
       paste0( c("simlist_non_unique_",panel,".RData"), 
