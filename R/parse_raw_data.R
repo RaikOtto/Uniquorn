@@ -110,12 +110,10 @@ initiate_uniquorn_database = function(
       sep = "/"
     )
     
-    write.table( x = 
-                   cbind( fingerprint_data_unique$Fingerprint, fingerprint_data_unique$Weights ),
+    write.table( x = cbind( as.character( fingerprint_data_unique$Fingerprint ), as.character( fingerprint_data_unique$Weight ) ),
                           fingerprint_names_unique_file, 
                           sep = "\t", quote = F, row.names = F, col.names = F  )
-    write.table( x = 
-                   cbind( fingerprint_data_non_unique$Fingerprint, fingerprint_data_non_unique$Weigths  ), 
+    write.table( x = cbind( as.character( fingerprint_data_non_unique$Fingerprint) , as.character( fingerprint_data_non_unique$Weight )  ), 
                  fingerprint_names_non_unique_file, 
                  sep = "\t", quote = F, row.names = F, col.names = F  )
     

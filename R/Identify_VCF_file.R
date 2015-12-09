@@ -53,7 +53,10 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
     } else {
       sim_list = sim_list_non_unique
     }
-    all_fingerprints_in_cl_set = read.table( fingerprint_names_file, sep ="\t", header= F )[,1]
+    
+    fingerprint_stats = read.table( fingerprint_names_file, sep ="\t", header= F )
+    all_fingerprints_in_cl_set = fingerprint_stats[,1]
+    all_weights_muts_in_cl_set = fingerprint_stats[,2]
     
     print( "Finished loading similarity data. Mapping vcf's fingerprint to all contained fingerprints"  )
     
@@ -70,39 +73,49 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
       if ( stat != round( (adv / as.double(nr_cls)) * 100, 0 ) )
         print( paste0( c( panel,  round( (adv / as.double(nr_cls)) * 100, 0 ), " %" ), collapse = " " ) )
       
-      return( sum( as.integer(mapping) & as.integer( sim_list_entry ) ) )
+      res_map = ( as.integer(mapping) & as.integer( sim_list_entry ) ) 
+      res_score = sum( all_weights_muts_in_cl_set[ res_map ] )
+      
+      res_scores = c( sum(res_map), res_score )
+      
+      return( res_scores )
     }
     adv <<- 0
     
+    res_intersect = as.data.frame( lapply( sim_list, FUN = match_fp ) )
+    
     res_table = data.frame(
       
-      "CL_name" = names(sim_list),
-      "Intersect" = as.double( unlist( lapply( sim_list, FUN = match_fp ) ) ),
-      "All_mutations" = unlist( lapply( sim_list, FUN = sum ) ),
-      "Passed_treshold" = rep(F, nr_cls )
+      "CL_name" = as.character( names(sim_list) ),
+      "Intersect" = as.double( res_intersect[1,] ),
+      "Intersect_weighted" = as.double( res_intersect[2,] ),
+      "All_mutations" = as.integer( unlist( lapply( sim_list, FUN = sum ) ) ),
+      "Passed_treshold" = rep( F, nr_cls ),
+      "Passed_treshold_weighted" = rep( F, nr_cls )
     )
     
-    res_table = res_table[ order( res_table$Intersect, decreasing = T),  ]
-    res_table$Passed_threshold[  (res_table$Intersect >= 2) & ( (res_table$Intersect / as.double(res_table$All_mutations)) >= .03  )] = T
-    res_table$Passed_threshold[  res_table$Intersect < 2]  = F
+    res_table = res_table[ order( as.double( res_table$Intersect_weighted ), decreasing = T),  ]
     
-    if ( dim(res_table[ res_table$Passed_threshold,])[1] >= 1 ){
+    res_table$Passed_treshold[  
+      ( as.double(res_table$Intersect) >= 2.0) & ( ( as.double(res_table$Intersect) / as.double(res_table$All_mutations)) >= .01  )
+    ] = T
+    res_table$Passed_treshold[ is.na(res_table$Passed_treshold) ]  = F
+    
+    res_table$Passed_treshold_weighted[  
+      ( as.double(res_table$Intersect) >= 10.0) & ( ( as.double(res_table$Intersect_weighted) / as.double(res_table$All_mutations)) >= .03  )
+      ] = T
+    res_table$Passed_treshold_weighted[ is.na(res_table$Passed_treshold_weighted) ]  = F
+    
+    
+    if ( dim( res_table[ res_table$Passed_treshold_weighted ,])[1] >= 1 ){
       
-      print( paste0( "Candidate(s): ", paste0( (res_table$CL_name[ res_table$Passed_threshold  ] ), collapse = "," ) )  )
-      
-      library("stringr")
-      
-      res_table[ res_table$Passed_threshold,]
-      
-      if ( output_path == "" )
-        output_path = paste0( vcf_file_path, ".identification.tab" )
-      
-      print( paste0("Storing information in table: ",output_path ) )
+      print( paste0( "Candidate(s): ", paste0( (res_table$CL_name[ res_table$Passed_treshold_weighted  ] ), collapse = "," ) )  )
       
     } else{
       print( paste0("No CL mutational fingerprint with sufficient similarity found." ) )
     }
     
+    print( paste0("Storing information in table: ",output_path_panel ) )
     write.table( file = output_path_panel, res_table, sep ="\t", row.names = F, quote = F  )
   }
 }}
