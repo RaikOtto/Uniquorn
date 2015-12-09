@@ -40,6 +40,7 @@ def load_data( parser ):
 	cl_db   = { 'CCLE':{}, 'COSMIC':{}, 'CellMiner':{} } # stores cell lines for every mutation
 	cl_dict = { 'CCLE':{}, 'COSMIC':{}, 'CellMiner':{} } # stores mutation for every cell line
 	stat_d  = { 'CCLE':{}, 'COSMIC':{}, 'CellMiner':{} } # counts how often you see a mutation to filter for the often occuring ones
+	seen_d  = { 'CCLE':{}, 'COSMIC':{}, 'CellMiner':{} } # counts how often you see a mutation 
 
 	cellminer_cl_names = ["MCF7","MDA_MB_231","HS578T","BT_549","T47D","SF_268","SF_295","SF_539","SNB_19","SNB_75","U251","COLO205","HCC_2998","HCT_116","HCT_15","HT29","KM12","SW_620","CCRF_CEM","HL_60","K_562","MOLT_4","RPMI_8226","SR","LOXIMVI","MALME_3M","M14","SK_MEL_2","SK_MEL_28","SK_MEL_5","UACC_257","UACC_62","MDA_MB_435","MDA_N","A549","EKVX","HOP_62","HOP_92","NCI_H226","NCI_H23","NCI_H322M","NCI_H460","NCI_H522","IGROV1","OVCAR_3","OVCAR_4","OVCAR_5","OVCAR_8","SK_OV_3","NCI_ADR_RES","PC_3","DU_145","786_0","A498","ACHN","CAKI_1","RXF_393","SN12C","TK_10","UO_31"]
 	cellminer_indices = range( len( cellminer_cl_names ) )
@@ -130,16 +131,15 @@ def load_data( parser ):
 					if db_snp_mode: # check if db snp dictionary is available
 
 						if db_snp_d.has_key(fingerprint): 
-							
-							#print("Found SNP: " + fingerprint)
+
 							snp_count = snp_count + 1
 							continue
 
 					for cl_ident in ident_list:
 
-						#if not seen_db[ type_panel ].has_key( fingerprint ):
-						if True:
+						if ( ( not seen_d[ type_panel ].has_key( fingerprint ) ) or ( not parser.unique_mode ) ):
 
+							seen_d[ type_panel ][fingerprint] = True
 							if not cl_db[   type_panel ].has_key( cl_ident ):     cl_db[   type_panel ][ cl_ident ] = {}
 							if not cl_dict[   type_panel ].has_key( fingerprint ):cl_dict[ type_panel ][ fingerprint ] = {}
 							if not stat_d[   type_panel ].has_key( fingerprint ): stat_d[  type_panel ][ fingerprint ] = 0
@@ -151,20 +151,23 @@ def load_data( parser ):
 						else:
 
 
-							if cl_db[   type_panel ][ seen_cl_ident ].has_key(fingerprint):
+							if cl_db[ type_panel ].has_key(cl_ident):
+								if cl_db[   type_panel ][ cl_ident ].has_key(fingerprint):
 
-								del cl_db[   type_panel ][ seen_cl_ident ][ fingerprint ]
+									del cl_db[   type_panel ][ cl_ident ][ fingerprint ]
 
 
 							if cl_dict[   type_panel ].has_key(fingerprint):
 
 								del cl_dict[ type_panel ][ fingerprint ]
+								
+							if parser.unique_mode and stat_d[ type_panel ].has_key(fingerprint) : del stat_d[ type_panel ] [ fingerprint ]
 
 		# filter part
 
-		print "Before filtering ", type_panel, ": " , len(stat_d[type_panel].keys())
+		print "Size ", type_panel, ": " , len(stat_d[type_panel].keys())
 
-		if not parser.retain_frequent_mutations:
+		if ( ( not parser.retain_frequent_mutations ) and ( not parser.unique_mode ) ):
 
 			print( 'Filtering the most frequent mutations' )
 			
@@ -212,15 +215,15 @@ def load_data( parser ):
 if __name__ == "__main__":
 
 	parser = argparse.ArgumentParser()
-	parser.add_argument('-ccle',	'--ccle_file',	type = str, help = 'Input file for ccle',				required = False)
+	parser.add_argument('-ccle',	'--ccle_file',		type = str, help = 'Input file for ccle',				required = False)
 	parser.add_argument('-cosmic',	'--cosmic_file',	type = str, help = 'Input file for cosmic',		required = False)
-	parser.add_argument('-cellminer','--cellminer_file',	type = str, help = 'Input  file for cellminer',	required = False)
+	parser.add_argument('-cellminer','--cellminer_file',type = str, help = 'Input  file for cellminer',	required = False)
 	#parser.add_argument('-db',	'--db_path',	type = str, help = 'Path to output_db',	required = True)
-	parser.add_argument('-i_dbsnp',	'--pickle_dbsnp_file',	type = str, help = 'pickle_output_file of db snp',	required = False, default = "")
-	parser.add_argument('-o_db',	'--output_db',	type = str, help = 'Path to output_db',	required = True)
+	parser.add_argument('-i_dbsnp',	'--pickle_dbsnp_file',type = str, help = 'pickle_output_file of db snp',	required = False, default = "")
+	parser.add_argument('-o_db',	'--output_db',		type = str, help = 'Path to output_db',	required = True)
 	parser.add_argument('-o_dict',	'--output_dict',	type = str, help = 'Path to output dictionary for cl information',	required = True)
 	parser.add_argument('-retain_frequent',	'--retain_frequent_mutations', action='store_true',	help = 'Filter 50% most frequent mutations' )
-	
+	parser.add_argument('-unique_mode',	'--unique_mode', action='store_true',	help = 'Only use unique mutations' )
 
 	parser = parser.parse_args()
 	load_data( parser )

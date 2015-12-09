@@ -2,55 +2,35 @@
 
 #' Parses data into r list variable
 #' @export
-initiate_uniquorn_database = function( parser_path ){
+initiate_uniquorn_database = function( 
+    cosmic_genotype_file = "CosmicCLP_CompleteExport.tsv",
+    cellminer_genotype_file = 'DNA__Exome_Seq_none.txt',
+    ccle_genotype_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf",
+    ucsc_db_snp_file = 'snp142Common.txt'
+  ){
 
   library("stringr")
   
   ### pre processing
 
-  clp_data_path = paste(
-    
-    parser_path,
-    'CosmicCLP_CompleteExport.tsv',
-    sep = "/"
-  )
-    
-  cellminer_path = paste(
-    
-    parser_path,
-    'DNA__Exome_Seq_none.txt',
-    sep = "/"
-  )
-  
-  hybcappath = paste(
-    
-    parser_path,
-    'CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf',
-    sep = "/"
-  )
-  
   #db snp integration
   
-  dbsnp_path = paste( 
-    
-    parser_path,
-    'snp142Common.txt',
-    sep = "/"
-  )
+  path_to_output_db_unique       = paste( system.file("", package="Uniquorn"), "unique_parsed_DB", sep ="/")
+  path_to_output_db_non_unique   = paste( system.file("", package="Uniquorn"), "non_unique_parsed_DB", sep ="/")
+  path_to_output_dict_unique     = paste( system.file("", package="Uniquorn"), "unique_parsed_dict", sep ="/")
+  path_to_output_dict_non_unique = paste( system.file("", package="Uniquorn"), "non_unique_parsed_dict", sep ="/")
   
-  path_to_output_db = paste( system.file("", package="Uniquorn"), "parsed_DB", sep ="/")  
-  path_to_output_dict = paste( system.file("", package="Uniquorn"), "parsed_dict", sep ="/")  
   path_to_python_dbsnp_python_parser = paste( system.file("", package="Uniquorn"), "parse_db_snp.py", sep ="/")
   path_to_python_dbsnp_python_parser_db = paste( system.file("", package="Uniquorn"), "parse_db_snp_python.pickle", sep ="/")
   path_to_python = paste( system.file("", package="Uniquorn"), "pre_compute_raw_data.py", sep ="/")
   
-  if (  file.exists( dbsnp_path  ) ){
+  if (  file.exists( ucsc_db_snp_file  ) ){
     
-    print( paste0( c( "Found DbSNP file",  dbsnp_path, ", preprocessing."), collapse = " " ) )
+    print( paste0( c( "Found DbSNP file",  ucsc_db_snp_file, ", preprocessing."), collapse = " " ) )
     command_line = str_c(
       c(  
         'python', path_to_python_dbsnp_python_parser, 
-        "-i", dbsnp_path,
+        "-i", ucsc_db_snp_file,
         "-o", path_to_python_dbsnp_python_parser_db
       ), 
       collapse = " "
@@ -60,20 +40,38 @@ initiate_uniquorn_database = function( parser_path ){
     print( "Finished DbSNP pre-processing" )
   }
   
+  # unique
+  
   command_line = str_c( 
     c(  
-      'python', path_to_python,
-      "-ccle ", hybcappath,
-      "-cosmic ", clp_data_path,
-      "-cellminer", cellminer_path,
-      "-o_db", path_to_output_db,
-      "-o_dict", path_to_output_dict,
-      "-i_dbsnp", path_to_python_dbsnp_python_parser_db
+      'python',     path_to_python,
+      "-ccle ",     ccle_genotype_file,
+      "-cosmic ",   cosmic_genotype_file,
+      "-cellminer", cellminer_genotype_file,
+      "-o_db",      path_to_output_db_unique,
+      "-o_dict",    path_to_output_dict_unique,
+      "-i_dbsnp",   path_to_python_dbsnp_python_parser_db,
+      "-unique_mode"
     ),
     collapse = " "
   )
   
-  ## aggregate fingerprint with python due to time contrains
+  system( command_line, ignore.stdout = F, intern = F )
+  
+  # non-unique
+  
+  command_line = str_c( 
+    c(  
+      'python',     path_to_python,
+      "-ccle ",     ccle_genotype_file,
+      "-cosmic ",   cosmic_genotype_file,
+      "-cellminer", cellminer_genotype_file,
+      "-o_db",      path_to_output_db_non_unique,
+      "-o_dict",    path_to_output_dict_non_unique,
+      "-i_dbsnp",   path_to_python_dbsnp_python_parser_db
+    ),
+    collapse = " "
+  )
   system( command_line, ignore.stdout = F, intern = F )
   
   message("Parsing data finished")
@@ -86,21 +84,34 @@ initiate_uniquorn_database = function( parser_path ){
   
   for( panel in panels ){
    
-    path_to_output_db_panel   = paste0( c( paste( path_to_output_db,  panel, sep ="_" ), ".tab" ), collapse = "")
-    path_to_output_dict_panel = paste0( c( paste( path_to_output_dict,panel, sep ="_" ), ".tab" ), collapse = "")
+    path_to_output_db_panel_unique       = paste0( c( paste( path_to_output_db_unique,      panel, sep ="_" ), ".tab" ), collapse = "")
+    path_to_output_db_panel_non_unique   = paste0( c( paste( path_to_output_db_non_unique,  panel, sep ="_" ), ".tab" ), collapse = "")
+    path_to_output_dict_panel_unique     = paste0( c( paste( path_to_output_dict_unique,    panel, sep ="_" ), ".tab" ), collapse = "")
+    path_to_output_dict_panel_non_unique = paste0( c( paste( path_to_output_dict_non_unique,panel, sep ="_" ), ".tab" ), collapse = "")
     
-    cl_data          = read.table( path_to_output_db_panel,   sep ="\t", header = T )
-    fingerprint_data = read.table( path_to_output_dict_panel, sep ="\t", header = T )
+    cl_data_unique              = read.table( path_to_output_db_panel_unique,       sep ="\t", header = T )
+    cl_data_non_unique          = read.table( path_to_output_db_panel_non_unique,   sep ="\t", header = T )
+    fingerprint_data_unique     = read.table( path_to_output_dict_panel_unique,     sep ="\t", header = T )
+    fingerprint_data_non_unique = read.table( path_to_output_dict_panel_non_unique, sep ="\t", header = T )
     
-    sim_list = create_sim_list( fingerprint_data, cl_data, panel )
+    sim_list_unique     = create_sim_list( fingerprint_data_unique, cl_data_unique, panel = panel, type = " unique " )
+    sim_list_non_unique = create_sim_list( fingerprint_data_non_unique, cl_data_non_unique, panel = panel, type = " non-unique "  )
     
-    sim_list_file = paste( system.file("", package = "Uniquorn"), 
-      paste0( c("simlist_",panel,".RData"), collapse= "" ), 
+    sim_list_file_unique = paste( system.file("", package = "Uniquorn"), 
+      paste0( c("simlist_unique_",panel,".RData"), collapse= "" ), 
       sep = "/"
     )
+    
+    sim_list_file_non_unique = paste( system.file("", package = "Uniquorn"), 
+      paste0( c("simlist_non_unique_",panel,".RData"), 
+      collapse= "" ), 
+      sep = "/"
+    )
+    
     print( paste0("Storing similarity information ", sim_list_file)  )
     
-    save( sim_list, file = sim_list_file )
+    save( sim_list_unique, file = sim_list_file_unique )
+    save( sim_list_non_unique, file = sim_list_file_non_unique )
      
   }
   

@@ -1,6 +1,6 @@
 #' Create similarity matrix from raw_data
 #' @export
-create_sim_list = function( fingerprint_data, cl_data, panel = "" ){
+create_sim_list = function( fingerprint_data, cl_data, type ="", panel = "" ){
   
   library("stringr")
   
@@ -34,8 +34,9 @@ create_sim_list = function( fingerprint_data, cl_data, panel = "" ){
     adv <<- adv + 1
       
     if ( stat != round( (adv / as.double(nr_cls)) * 100, 1 ) )
-      print( paste0( c( panel, round( (adv / as.double(nr_cls)) * 100, 1 ), " %"), collapse =" " ) )
+      print( paste0( c( panel, type, round( (adv / as.double(nr_cls)) * 100, 1 ), " %"), collapse =" " ) )
 
+    names(res) = fp_list
     return(res)
   }
   

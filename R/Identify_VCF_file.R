@@ -18,18 +18,18 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
     print( paste0( "Loading similarity data from file ",  sim_list_file )  )
     
     #if (! exists("sim_list") )
-      attach( sim_list_file  )
+    attach( sim_list_file  )
     
     print( "Finished loading similarity data. Mapping vcf's fingerprint to all contained fingerprints"  )
     
-    path_to_output_db = paste( system.file("", package = "Uniquorn"), "parsed_DB", sep ="/") 
-    path_to_output_dict = paste( system.file("", package = "Uniquorn"), "parsed_dict", sep ="/")
+    #path_to_output_db = paste( system.file("", package = "Uniquorn"), "parsed_DB", sep ="/") 
+    #path_to_output_dict = paste( system.file("", package = "Uniquorn"), "parsed_dict", sep ="/")
     
-    path_to_output_db_panel   = paste0( c( paste( path_to_output_db,  panel, sep ="_" ), ".tab" ), collapse = "")
-    path_to_output_dict_panel = paste0( c( paste( path_to_output_dict,panel, sep ="_" ), ".tab" ), collapse = "")
+    #path_to_output_db_panel   = paste0( c( paste( path_to_output_db,  panel, sep ="_" ), ".tab" ), collapse = "")
+    #path_to_output_dict_panel = paste0( c( paste( path_to_output_dict,panel, sep ="_" ), ".tab" ), collapse = "")
     
-    cl_data          = read.table( path_to_output_db_panel,   sep ="\t", header = T )
-    all_fingerprints = read.table( path_to_output_dict_panel, sep ="\t", colClasses = c( "character", 'NULL'), header =T )$Fingerprint
+    #cl_data          = read.table( path_to_output_db_panel,   sep ="\t", header = T )
+    #all_fingerprints = read.table( path_to_output_dict_panel, sep ="\t", colClasses = c( "character", 'NULL'), header =T )$Fingerprint
     
     mapping = match( all_fingerprints, vcf_fingerprint, nomatch = 0 )
     
@@ -60,7 +60,7 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
     
     if ( dim(res_tab)[1] >= 1 ){
       
-      print( paste0("Best candidate: ", candidates[1] )  )  
+      print( paste0("Best candidate: ", candidates[1] )  )
       
       library("stringr")
       
