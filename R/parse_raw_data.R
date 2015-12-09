@@ -38,8 +38,8 @@ initiate_uniquorn_database = function( parser_path ){
     sep = "/"
   )
   
-  path_to_output_db = paste( system.file("", package="Uniquorn"), "parsed_DB.tab", sep ="/")  
-  path_to_output_dict = paste( system.file("", package="Uniquorn"), "parsed_dict.tab", sep ="/")  
+  path_to_output_db = paste( system.file("", package="Uniquorn"), "parsed_DB", sep ="/")  
+  path_to_output_dict = paste( system.file("", package="Uniquorn"), "parsed_dict", sep ="/")  
   path_to_python_dbsnp_python_parser = paste( system.file("", package="Uniquorn"), "parse_db_snp.py", sep ="/")
   path_to_python_dbsnp_python_parser_db = paste( system.file("", package="Uniquorn"), "parse_db_snp_python.pickle", sep ="/")
   path_to_python = paste( system.file("", package="Uniquorn"), "pre_compute_raw_data.py", sep ="/")
@@ -80,15 +80,28 @@ initiate_uniquorn_database = function( parser_path ){
   # transform data & load into DB
   
   print( "Loading aggregated fingerprint raw data from all sources"  )
-  cl_data          = read.table( path_to_output_db,   sep ="\t", header = T )
-  fingerprint_data = read.table( path_to_output_dict, sep ="\t", header = T )
-
-  sim_list = create_sim_list( fingerprint_data, cl_data )
   
-  sim_list_file = paste( system.file("", package = "Uniquorn"), "simlist.RData", sep = "/")
-  print( paste0("Storing similarity information ", sim_list_file)  )
+  panels = c("CELLMINER","CCLE","COSMIC")
   
-  save( sim_list, file = sim_list_file )
+  for( panel in panels ){
+   
+    path_to_output_db_panel   = paste0( c( paste( path_to_output_db,  panel, sep ="_" ), ".tab" ), collapse = "")
+    path_to_output_dict_panel = paste0( c( paste( path_to_output_dict,panel, sep ="_" ), ".tab" ), collapse = "")
+    
+    cl_data          = read.table( path_to_output_db_panel,   sep ="\t", header = T )
+    fingerprint_data = read.table( path_to_output_dict_panel, sep ="\t", header = T )
+    
+    sim_list = create_sim_list( fingerprint_data, cl_data, panel )
+    
+    sim_list_file = paste( system.file("", package = "Uniquorn"), 
+      paste0( c("simlist_",panel,".RData"), collapse= "" ), 
+      sep = "/"
+    )
+    print( paste0("Storing similarity information ", sim_list_file)  )
+    
+    save( sim_list, file = sim_list_file )
+     
+  }
   
   print("Finished")
 }
