@@ -68,7 +68,8 @@ initiate_uniquorn_database = function(
       "-cellminer", cellminer_genotype_file,
       "-o_db",      path_to_output_db_non_unique,
       "-o_dict",    path_to_output_dict_non_unique,
-      "-i_dbsnp",   path_to_python_dbsnp_python_parser_db
+      "-i_dbsnp",   path_to_python_dbsnp_python_parser_db,
+      "-retain_frequent"
     ),
     collapse = " "
   )

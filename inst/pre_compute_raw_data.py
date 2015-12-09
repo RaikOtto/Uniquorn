@@ -179,11 +179,11 @@ def load_data( parser ):
 
 		print "Before filtering ", type_panel, ": " , len(stat_d[type_panel].keys())
 
-		if ( ( not parser.retain_frequent_mutations ) and ( not parser.unique_mode ) ):
+		if ( not parser.retain_frequent_mutations ):
 
 			print( 'Filtering the most frequent mutations' )
 			
-			perc = 1.0
+			perc = .1
 			cutoff = percentile( N = stat_d[ type_panel ].values()  , percent = perc )
 
 			print round(cutoff,2), " percentile filter: " , perc, type_panel
