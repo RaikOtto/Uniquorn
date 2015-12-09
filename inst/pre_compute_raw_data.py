@@ -137,9 +137,36 @@ def load_data( parser ):
 
 					for cl_ident in ident_list:
 
-						if ( ( not seen_d[ type_panel ].has_key( fingerprint ) ) or ( not parser.unique_mode ) ):
+						if parser.unique_mode:
 
-							seen_d[ type_panel ][fingerprint] = True
+							if ( not seen_d[ type_panel ].has_key( fingerprint ) ):
+
+								seen_d[ type_panel ][fingerprint] = True
+								if not cl_db[   type_panel ].has_key( cl_ident ):     cl_db[   type_panel ][ cl_ident ] = {}
+								if not cl_dict[   type_panel ].has_key( fingerprint ):cl_dict[ type_panel ][ fingerprint ] = {}
+								if not stat_d[   type_panel ].has_key( fingerprint ): stat_d[  type_panel ][ fingerprint ] = 0
+
+								cl_dict[ type_panel ][ fingerprint ][ cl_ident ] = True
+								cl_db[   type_panel ][ cl_ident    ][ fingerprint ] = True # save fingerprint for cl
+								stat_d[ type_panel ] [ fingerprint ] = stat_d[ type_panel ] [ fingerprint ] + 1
+
+							else:
+
+
+								if cl_db[ type_panel ].has_key(cl_ident):
+									if cl_db[   type_panel ][ cl_ident ].has_key(fingerprint):
+
+										del cl_db[   type_panel ][ cl_ident ][ fingerprint ]
+
+
+								if cl_dict[   type_panel ].has_key(fingerprint):
+
+									del cl_dict[ type_panel ][ fingerprint ]
+
+								if parser.unique_mode and stat_d[ type_panel ].has_key(fingerprint) : del stat_d[ type_panel ] [ fingerprint ]
+								
+						else: 
+
 							if not cl_db[   type_panel ].has_key( cl_ident ):     cl_db[   type_panel ][ cl_ident ] = {}
 							if not cl_dict[   type_panel ].has_key( fingerprint ):cl_dict[ type_panel ][ fingerprint ] = {}
 							if not stat_d[   type_panel ].has_key( fingerprint ): stat_d[  type_panel ][ fingerprint ] = 0
@@ -148,30 +175,15 @@ def load_data( parser ):
 							cl_db[   type_panel ][ cl_ident    ][ fingerprint ] = True # save fingerprint for cl
 							stat_d[ type_panel ] [ fingerprint ] = stat_d[ type_panel ] [ fingerprint ] + 1
 
-						else:
-
-
-							if cl_db[ type_panel ].has_key(cl_ident):
-								if cl_db[   type_panel ][ cl_ident ].has_key(fingerprint):
-
-									del cl_db[   type_panel ][ cl_ident ][ fingerprint ]
-
-
-							if cl_dict[   type_panel ].has_key(fingerprint):
-
-								del cl_dict[ type_panel ][ fingerprint ]
-								
-							if parser.unique_mode and stat_d[ type_panel ].has_key(fingerprint) : del stat_d[ type_panel ] [ fingerprint ]
-
 		# filter part
 
-		print "Size ", type_panel, ": " , len(stat_d[type_panel].keys())
+		print "Before filtering ", type_panel, ": " , len(stat_d[type_panel].keys())
 
 		if ( ( not parser.retain_frequent_mutations ) and ( not parser.unique_mode ) ):
 
 			print( 'Filtering the most frequent mutations' )
 			
-			perc = .9
+			perc = 1.0
 			cutoff = percentile( N = stat_d[ type_panel ].values()  , percent = perc )
 
 			print round(cutoff,2), " percentile filter: " , perc, type_panel
@@ -193,12 +205,12 @@ def load_data( parser ):
 
 		with open( parser.output_dict + "_" + type_panel + ".tab", "w" ) as o_h:
 
-			o_h.write( "\t".join( [ "Fingerprint", "CLs" ] ) + "\r\n" )
+			o_h.write( "\t".join( [ "Fingerprint", "CLs", "Weight" ] ) + "\r\n" )
 
 			for fingerprint in sorted( cl_dict[ type_panel ].keys() ):
 
 				member_cls = ",".join( cl_dict[ type_panel ][fingerprint].keys() )
-				o_h.write( "\t".join( [ fingerprint, member_cls ] ) + "\r\n" )
+				o_h.write( "\t".join( [ fingerprint, member_cls, str( round( 1.0 / len(cl_dict[ type_panel ][fingerprint].keys()), 3 ) ) ] ) + "\r\n" )
 
 		with open( parser.output_db + "_" + type_panel + ".tab", "w" ) as o_h:
 
@@ -223,7 +235,7 @@ if __name__ == "__main__":
 	parser.add_argument('-o_db',	'--output_db',		type = str, help = 'Path to output_db',	required = True)
 	parser.add_argument('-o_dict',	'--output_dict',	type = str, help = 'Path to output dictionary for cl information',	required = True)
 	parser.add_argument('-retain_frequent',	'--retain_frequent_mutations', action='store_true',	help = 'Filter 50% most frequent mutations' )
-	parser.add_argument('-unique_mode',	'--unique_mode', action='store_true',	help = 'Only use unique mutations' )
+	parser.add_argument('-unique_mode',	'--unique_mode', action='store_true',	help = 'Only use unique mutations', default = False )
 
 	parser = parser.parse_args()
 	load_data( parser )

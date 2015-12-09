@@ -5,7 +5,7 @@
 initiate_uniquorn_database = function( 
     cosmic_genotype_file = "CosmicCLP_CompleteExport.tsv",
     cellminer_genotype_file = 'DNA__Exome_Seq_none.txt',
-    ccle_genotype_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf",
+    ccle_genotype_file = "CCLE_hybrid_capture1650_hg19_allVariants_2012.05.07.maf",
     ucsc_db_snp_file = 'snp142Common.txt'
   ){
 
