@@ -74,7 +74,7 @@ initiate_uniquorn_database = function( parser_path ){
   )
   
   ## aggregate fingerprint with python due to time contrains
-  system( command_line, ignore.stdout = F )
+  system( command_line, ignore.stdout = F, intern = F )
   
   message("Parsing data finished")
   
