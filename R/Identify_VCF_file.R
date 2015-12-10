@@ -1,14 +1,20 @@
 #' Parses the vcf file and predicts the identity of the sample
 #' @export
-identify_vcf_file = function( vcf_file_path, output_path = "" ){
+identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLMINER","CCLE","COSMIC"), types = c( "unique", "non_unique") ){
   
   library("stringr")
   
   print( paste0( "Creating fingerprint from VCF file ", vcf_file_path  ) )
   vcf_fingerprint = parse_vcf_file( vcf_file_path )
   
-  panels = c("CELLMINER","CCLE","COSMIC")
-  types = c( "unique", "non_unique")
+  sim_list_store_mat = matrix( list(), ncol = length( types ), nrow = length( panels ) , dimnames = list( panels, types ) )
+
+  for( i in seq_along(types)  ){
+    for( j in seq_along( panels ) ){
+
+      names(sim_list_list)[ ( (i-1) * length( panels ) ) + j ] = paste0( c(types[i], panels[j]), collapse = "_" )
+    }
+  }
   
   for( type in types  ){
   for( panel in panels ){
@@ -18,7 +24,6 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
     } else {
       output_path_panel = paste( paste0( output_path, tail( unlist(str_split(vcf_file_path, "/" ) ), 1 )  ), paste0( c( paste( panel, type, sep ="_" ),".tab"), collapse = ""), sep ="_ident_")
     }
-    
     
     sim_list_file = paste( system.file("", package = "Uniquorn"), 
        paste0( 
@@ -32,26 +37,34 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
     )
 
     fingerprint_names_file = paste( system.file("", package = "Uniquorn"), 
-        paste0( 
+        paste0(
            c(
              type,
              "_parsed_DB_",
              panel,
              "_mut_labels.tab"
-            ), collapse= ""
-        ), 
+           ),
+           collapse= ""
+        ),
         sep = "/"
     )
     
     print( paste0( "Loading similarity data from file ",  sim_list_file )  )
     
-    #if (! exists("sim_list") )
-    attach( sim_list_file  )
-    
-    if (type == "unique"){
-      sim_list = sim_list_unique
+    if ( length( sim_list_store_mat[[ panel, type ]])  != 0 ){
+        
+      sim_list = sim_list_store_mat[[ panel, type ]]
+      
     } else {
-      sim_list = sim_list_non_unique
+      
+      attach( sim_list_file )
+      if (type == "non_unique"){
+        sim_list = sim_list_non_unique
+      } else {
+        sim_list = sim_list_unique
+      }
+      sim_list_store_mat[[ panel, type ]] = sim_list
+
     }
     
     fingerprint_stats = read.table( fingerprint_names_file, sep ="\t", header= F )
@@ -97,19 +110,20 @@ identify_vcf_file = function( vcf_file_path, output_path = "" ){
     res_table = res_table[ order( as.double( res_table$Intersect_weighted ), decreasing = T),  ]
     
     res_table$Passed_treshold[  
-      ( as.double(res_table$Intersect) >= 2.0) & ( ( as.double(res_table$Intersect) / as.double(res_table$All_mutations)) >= .01  )
+      #( as.double(res_table$Intersect) >= 2.0) & ( ( as.double(res_table$Intersect) / as.double(res_table$All_mutations)) >= .01  )
+      as.double(res_table$Intersect) >= 2.0)
     ] = T
     res_table$Passed_treshold[ is.na(res_table$Passed_treshold) ]  = F
     
     res_table$Passed_treshold_weighted[  
-      ( as.double(res_table$Intersect_weighted) >= 10.0) & ( ( as.double(res_table$Intersect_weighted) / as.double(res_table$All_mutations)) >= .03  )
+      as.double(res_table$Intersect_weighted) >= 1.0
       ] = T
     res_table$Passed_treshold_weighted[ is.na(res_table$Passed_treshold_weighted) ]  = F
     
     
     if ( dim( res_table[ res_table$Passed_treshold_weighted ,])[1] >= 1 ){
       
-      print( paste0( "Candidate(s): ", paste0( (res_table$CL_name[ res_table$Passed_treshold_weighted  ] ), collapse = "," ) )  )
+      print( paste0( "Candidate(s): ", paste0( ( res_table$CL_name[ res_table$Passed_treshold_weighted  ] )[1:2], collapse = "," ) )  )
       
     } else{
       print( paste0("No CL mutational fingerprint with sufficient similarity found." ) )
