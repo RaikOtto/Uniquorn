@@ -60,7 +60,7 @@ identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLM
 
     }
 
-    print( type  )
+    print( panel  )
     
     mapping = which( sim_list$Fingerprint %in% vcf_fingerprint )
     
