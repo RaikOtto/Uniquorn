@@ -203,24 +203,38 @@ def load_data( parser ):
 	
 	for type_panel in [ "CCLE", "CellMiner", "COSMIC" ]:
 
-		with open( parser.output_dict + "_" + type_panel + ".tab", "w" ) as o_h:
+		if type_panel == 'COSMIC':
 
-			o_h.write( "\t".join( [ "Fingerprint", "CLs", "Weight" ] ) + "\r\n" )
+			in_file = parser.cosmic_file
 
-			for fingerprint in sorted( cl_dict[ type_panel ].keys() ):
+		elif type_panel == 'CCLE':
 
-				member_cls = ",".join( cl_dict[ type_panel ][fingerprint].keys() )
-				o_h.write( "\t".join( [ fingerprint, member_cls, str( round( 1.0 / len(cl_dict[ type_panel ][fingerprint].keys()), 3 ) ) ] ) + "\r\n" )
+			in_file = parser.ccle_file
 
-		with open( parser.output_db + "_" + type_panel + ".tab", "w" ) as o_h:
+		elif type_panel == 'CellMiner':
 
-			o_h.write( "\t".join( [ "CL", "Fingerprints" ] )  + "\r\n")
+			in_file = parser.cellminer_file
+
+		if os.path.exists( in_file ):
+			
+			with open( parser.output_dict + "_" + type_panel + ".tab", "w" ) as o_h:
+
+				o_h.write( "\t".join( [ "Fingerprint", "CLs", "Weight" ] ) + "\r\n" )
+
+				for fingerprint in sorted( cl_dict[ type_panel ].keys() ):
+
+					member_cls = ",".join( cl_dict[ type_panel ][fingerprint].keys() )
+					o_h.write( "\t".join( [ fingerprint, member_cls, str( round( 1.0 / len(cl_dict[ type_panel ][fingerprint].keys()), 3 ) ) ] ) + "\r\n" )
+
+			with open( parser.output_db + "_" + type_panel + ".tab", "w" ) as o_h:
+
+				o_h.write( "\t".join( [ "CL", "Fingerprints" ] )  + "\r\n")
 
 
-			for CL in sorted( cl_db[ type_panel ].keys() ):
+				for CL in sorted( cl_db[ type_panel ].keys() ):
 
-				found_mutations = [ mut_ident for mut_ident in cl_db[ type_panel ][ CL ] if cl_dict[type_panel].has_key(mut_ident) ]
-				o_h.write( "\t".join( [ CL, ",".join( found_mutations ) ] ) +"\r\n" )
+					found_mutations = [ mut_ident for mut_ident in cl_db[ type_panel ][ CL ] if cl_dict[type_panel].has_key(mut_ident) ]
+					o_h.write( "\t".join( [ CL, ",".join( found_mutations ) ] ) +"\r\n" )
 
 	print("Finished data parsing")
 

@@ -11,6 +11,11 @@ initiate_uniquorn_database = function(
 
   library("stringr")
   
+  print( c( "Found CoSMIC: ", file.exists(cosmic_genotype_file) )  )
+  print( c( "Found CCLE: ", file.exists(ccle_genotype_file) )  )
+  print( c( "Found CellMiner: ", file.exists(cellminer_genotype_file) )  )
+  print( c( "Found DbSNP: ", file.exists(ucsc_db_snp_file) )  )
+  
   ### pre processing
 
   #db snp integration
@@ -36,7 +41,7 @@ initiate_uniquorn_database = function(
       collapse = " "
     )
       
-    system( command_line, ignore.stdout = F, intern = F )
+    #system( command_line, ignore.stdout = F, intern = F )
     print( "Finished DbSNP pre-processing" )
   }
   

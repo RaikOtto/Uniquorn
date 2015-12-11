@@ -9,13 +9,6 @@ identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLM
   
   sim_list_store_mat = matrix( list(), ncol = length( types ), nrow = length( panels ) , dimnames = list( panels, types ) )
 
-  for( i in seq_along(types)  ){
-    for( j in seq_along( panels ) ){
-
-      names(sim_list_list)[ ( (i-1) * length( panels ) ) + j ] = paste0( c(types[i], panels[j]), collapse = "_" )
-    }
-  }
-  
   for( type in types  ){
   for( panel in panels ){
   
