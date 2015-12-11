@@ -79,11 +79,11 @@ identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLM
     # don't sort me bro!
     
     res_table = data.frame( 
-      "CL"                 = c( res_table$CL, as.character( unique( sim_list$CL ) ) ),
-      "Found_muts_abs"     = c( res_table$Found_muts_abs, as.character( candidate_hits_abs ) ),
-      "Found_muts_rel"     = c( res_table$Found_muts_rel, as.character(  candidate_hits_rel ) ),
-      "Count_mutations_cl" = c( res_table$Count_mutations_cl, as.character(  sim_list$Count[cl_match] ) ),
-      "Passed_threshold"   = c( res_table$Passed_threshold, as.character( passed_threshold_vec ) )
+      "CL"                 = c( as.character( res_table$CL) , as.character( unique( sim_list$CL ) ) ),
+      "Found_muts_abs"     = c( as.character( res_table$Found_muts_abs), as.character( candidate_hits_abs ) ),
+      "Found_muts_rel"     = c( as.character( res_table$Found_muts_rel), as.character(  candidate_hits_rel ) ),
+      "Count_mutations_cl" = c( as.character( res_table$Count_mutations_cl), as.character(  sim_list$Count[cl_match] ) ),
+      "Passed_threshold"   = c( as.character( res_table$Passed_threshold), as.character( passed_threshold_vec ) )
     )
 
   }
