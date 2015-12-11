@@ -79,7 +79,7 @@ identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLM
     # don't sort me bro!
     
     res_table = data.frame( 
-      "CL"                 = c( as.character( res_table$CL) , as.character( unique( sim_list$CL ) ) ),
+      "CL"                 = c( as.character( res_table$CL) , as.character( sim_list$CL[cl_match] ) ),
       "Found_muts_abs"     = c( as.character( res_table$Found_muts_abs), as.character( candidate_hits_abs ) ),
       "Found_muts_rel"     = c( as.character( res_table$Found_muts_rel), as.character(  candidate_hits_rel ) ),
       "Count_mutations_cl" = c( as.character( res_table$Count_mutations_cl), as.character(  sim_list$Count[cl_match] ) ),
@@ -94,9 +94,9 @@ identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLM
     
     print( paste0( "Candidate(s): ", paste0( ( res_table$CL_name[ res_table$Passed_treshold  ] ), collapse = "," ) )  )
     
-  } else if ( dim( res_table[ res_table$Passed_threshold ,])[1] == 2 ){
+  } else if ( dim( res_table[ res_table$Passed_threshold ,])[1] > 1 ){
     
-    print( paste0( "Candidate(s): ", paste0( ( res_table$CL_name[ res_table$Passed_treshold  ] )[1:2], collapse = "," ) )  )
+    print( paste0( "Candidates: ", paste0( ( res_table$CL_name[ res_table$Passed_treshold  ] )[1:2], collapse = "," ) )  )
     
   } else {
     
