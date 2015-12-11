@@ -111,7 +111,7 @@ identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLM
     
     res_table$Passed_treshold[  
       #( as.double(res_table$Intersect) >= 2.0) & ( ( as.double(res_table$Intersect) / as.double(res_table$All_mutations)) >= .01  )
-      as.double(res_table$Intersect) >= 2.0)
+      as.double(res_table$Intersect) >= 2.0
     ] = T
     res_table$Passed_treshold[ is.na(res_table$Passed_treshold) ]  = F
     
