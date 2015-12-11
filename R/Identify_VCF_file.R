@@ -60,7 +60,7 @@ identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLM
 
     }
 
-    print( "Finished loading similarity data. Mapping vcf's fingerprint to all contained fingerprints"  )
+    print( type  )
     
     mapping = which( sim_list$Fingerprint %in% vcf_fingerprint )
     
