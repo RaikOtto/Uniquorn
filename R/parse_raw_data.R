@@ -41,7 +41,7 @@ initiate_uniquorn_database = function(
       collapse = " "
     )
       
-    #system( command_line, ignore.stdout = F, intern = F )
+    system( command_line, ignore.stdout = F, intern = F )
     print( "Finished DbSNP pre-processing" )
   }
   
