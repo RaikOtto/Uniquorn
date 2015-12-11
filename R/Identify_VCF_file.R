@@ -1,22 +1,30 @@
 #' Parses the vcf file and predicts the identity of the sample
 #' @export
-identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLMINER","CCLE","COSMIC"), types = c( "unique") ){
+identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLMINER","CCLE","COSMIC"), type = "unique" ){
   # types = c("unique","non_unique")
   library("stringr")
   
   print( paste0( "Creating fingerprint from VCF file ", vcf_file_path  ) )
   vcf_fingerprint = parse_vcf_file( vcf_file_path )
   
-  sim_list_store_mat = matrix( list(), ncol = length( types ), nrow = length( panels ) , dimnames = list( panels, types ) )
-
-  for( type in types  ){
-  for( panel in panels ){
+  sim_list_store_mat = matrix( list(), ncol = length( type ), nrow = length( panels ) , dimnames = list( panels, type ) )
   
-    if ( output_path == ""  ){
-      output_path_panel = paste( vcf_file_path, paste0( c( paste( panel, type, sep ="_" ),".tab"), collapse = ""), sep ="_ident_")
-    } else {
-      output_path_panel = paste( paste0( output_path, tail( unlist(str_split(vcf_file_path, "/" ) ), 1 )  ), paste0( c( paste( panel, type, sep ="_" ),".tab"), collapse = ""), sep ="_ident_")
-    }
+  if ( output_path == ""  ){
+    output_file = paste( vcf_file_path, "ident.tab", sep ="_")
+  } else {
+    output_file = paste( paste0( output_path, tail( unlist(str_split(vcf_file_path, "/" ) ), 1 )  ), ".tab", sep ="_ident")
+  }
+  
+  res_table <<- data.frame(
+    
+    "CL" = as.character(),
+    "Found_muts_abs" = as.character(),
+    "Found_muts_rel" = as.character(),
+    "Count_mutations_cl" = as.character(),
+    "Passed_threshold" = as.character()
+  )
+
+  for( panel in panels ){
     
     sim_list_file = paste( system.file("", package = "Uniquorn"), 
       paste0(
@@ -60,6 +68,7 @@ identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLM
     cl_match = match( names(table( sim_list$CL[mapping] )), sim_list$CL )
     candidate_hits_rel = round( candidate_hits_abs / sim_list$Count[cl_match], 3 ) * 100
     
+    nr_cls = length( unique( sim_list$CL  )  )
     passed_threshold_vec = rep( F, nr_cls )
     passed_threshold_vec[ ( candidate_hits_abs >= 2 ) & ( candidate_hits_rel >= 3 ) ] = T
     
@@ -69,31 +78,31 @@ identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLM
 
     # don't sort me bro!
     
-    res_table = data.frame(
-      
-      "CL" = as.character( unique( sim_list$CL ) ),
-      "Found_muts_abs" = as.character( candidate_hits_abs ),
-      "Found_muts_rel" = as.character(  candidate_hits_rel ),
-      "Count_mutations_cl" = as.character(  sim_list$Count[cl_match] ),
-      "Passed_threshold" = as.character( passed_threshold_vec )
+    res_table = data.frame( 
+      "CL"                 = c( res_table$CL, as.character( unique( sim_list$CL ) ) ),
+      "Found_muts_abs"     = c( res_table$Found_muts_abs, as.character( candidate_hits_abs ) ),
+      "Found_muts_rel"     = c( res_table$Found_muts_rel, as.character(  candidate_hits_rel ) ),
+      "Count_mutations_cl" = c( res_table$Count_mutations_cl, as.character(  sim_list$Count[cl_match] ) ),
+      "Passed_threshold"   = c( res_table$Passed_threshold, as.character( passed_threshold_vec ) )
     )
-    
-    res_table = res_table[ order( as.double( res_table$Found_muts_rel ), decreasing = T),  ]
-    
-    if ( dim( res_table[ res_table$Passed_threshold ,])[1] == 1 ){
-      
-      print( paste0( "Candidate(s): ", paste0( ( res_table$CL_name[ res_table$Passed_treshold  ] ), collapse = "," ) )  )
-    
-     } else if ( dim( res_table[ res_table$Passed_threshold ,])[1] == 2 ){
-        
-      print( paste0( "Candidate(s): ", paste0( ( res_table$CL_name[ res_table$Passed_treshold  ] )[1:2], collapse = "," ) )  )
-      
-    } else{
-      
-      print( paste0("No CL mutational fingerprint with sufficient similarity found." ) )
-    }
-    
-    print( paste0("Storing information in table: ",output_path_panel ) )
-    write.table( file = output_path_panel, res_table, sep ="\t", row.names = F, quote = F  )
+
   }
-}}
+  
+  res_table = res_table[ order( as.double( res_table$Found_muts_rel ), decreasing = T),  ]
+  
+  if ( dim( res_table[ res_table$Passed_threshold ,])[1] == 1 ){
+    
+    print( paste0( "Candidate(s): ", paste0( ( res_table$CL_name[ res_table$Passed_treshold  ] ), collapse = "," ) )  )
+    
+  } else if ( dim( res_table[ res_table$Passed_threshold ,])[1] == 2 ){
+    
+    print( paste0( "Candidate(s): ", paste0( ( res_table$CL_name[ res_table$Passed_treshold  ] )[1:2], collapse = "," ) )  )
+    
+  } else {
+    
+    print( paste0("No CL mutational fingerprint with sufficient similarity found." ) )
+  }  
+  
+  print( paste0("Storing information in table: ",output_file ) )
+  write.table( res_table, output_file, sep ="\t", row.names = F, quote = F  )
+}
