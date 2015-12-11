@@ -24,7 +24,9 @@ initiate_uniquorn_database = function(
   path_to_output_db_non_unique   = paste( system.file("", package="Uniquorn"), "non_unique_parsed_DB", sep ="/")
   path_to_output_dict_unique     = paste( system.file("", package="Uniquorn"), "unique_parsed_dict", sep ="/")
   path_to_output_dict_non_unique = paste( system.file("", package="Uniquorn"), "non_unique_parsed_dict", sep ="/")
-  
+
+  fingerprint_names_file         = paste0( c( paste( path_to_output_db_unique,      panel, sep ="_" ), "_mut_labels.tab" ), collapse = "")
+
   path_to_python_dbsnp_python_parser = paste( system.file("", package="Uniquorn"), "parse_db_snp.py", sep ="/")
   path_to_python_dbsnp_python_parser_db = paste( system.file("", package="Uniquorn"), "parse_db_snp_python.pickle", sep ="/")
   path_to_python = paste( system.file("", package="Uniquorn"), "pre_compute_raw_data.py", sep ="/")
@@ -41,7 +43,8 @@ initiate_uniquorn_database = function(
       collapse = " "
     )
       
-    system( command_line, ignore.stdout = F, intern = F )
+    if ( ! file.exists(path_to_python_dbsnp_python_parser_db) )
+      system( command_line, ignore.stdout = F, intern = F )
     print( "Finished DbSNP pre-processing" )
   }
   
@@ -55,6 +58,7 @@ initiate_uniquorn_database = function(
       "-cellminer", cellminer_genotype_file,
       "-o_db",      path_to_output_db_unique,
       "-o_dict",    path_to_output_dict_unique,
+      "-o_mut_dict",fingerprint_names_file,
       "-i_dbsnp",   path_to_python_dbsnp_python_parser_db,
       "-unique_mode"
     ),
@@ -62,12 +66,12 @@ initiate_uniquorn_database = function(
   )
   
   system( command_line, ignore.stdout = F, intern = F )
-  
+  '
   # non-unique
   
   command_line = str_c( 
     c(  
-      'python',     path_to_python,
+      "python",     path_to_python,
       "-ccle ",     ccle_genotype_file,
       "-cosmic ",   cosmic_genotype_file,
       "-cellminer", cellminer_genotype_file,
@@ -78,7 +82,7 @@ initiate_uniquorn_database = function(
     ),
     collapse = " "
   )
-  system( command_line, ignore.stdout = F, intern = F )
+  #system( command_line, ignore.stdout = F, intern = F )
   
   message("Parsing data finished")
   
@@ -135,6 +139,6 @@ initiate_uniquorn_database = function(
     save( sim_list_non_unique, file = sim_list_file_non_unique )
      
   }
-  
+  '
   print("Finished")
 }

@@ -176,9 +176,9 @@ def load_data( parser ):
 							stat_d[ type_panel ] [ fingerprint ] = stat_d[ type_panel ] [ fingerprint ] + 1
 
 		# filter part
-
+		"""
 		print "Before filtering ", type_panel, ": " , len(stat_d[type_panel].keys())
-
+		
 		if ( not parser.retain_frequent_mutations ):
 
 			print( 'Filtering the most frequent mutations' )
@@ -196,11 +196,12 @@ def load_data( parser ):
 					del stat_d[type_panel][fingerprint]
 
 			print "After filtering ", type_panel, ": " , len(stat_d[type_panel].keys())
+		"""
 
 	if db_snp_mode: print "Excluded " + str(snp_count) + " many SNPs"
 
 	print( 'Writing output' )
-	
+
 	for type_panel in [ "CCLE", "CellMiner", "COSMIC" ]:
 
 		if type_panel == 'COSMIC':
@@ -216,7 +217,18 @@ def load_data( parser ):
 			in_file = parser.cellminer_file
 
 		if os.path.exists( in_file ):
-			
+
+
+			with open( parser.output_mut_dict + "_" + type_panel + ".tab", "w" ) as o_h:
+
+				o_h.write( "\t".join( [ "Fingerprint", "CL" ] ) + "\r\n" )
+
+				for fingerprint in sorted( cl_dict[ type_panel ].keys() ):
+
+					member_cl = cl_dict[ type_panel ][fingerprint]
+					o_h.write( "\t".join( [ fingerprint, member_cl ] ) + "\r\n" )
+
+			"""
 			with open( parser.output_dict + "_" + type_panel + ".tab", "w" ) as o_h:
 
 				o_h.write( "\t".join( [ "Fingerprint", "CLs", "Weight" ] ) + "\r\n" )
@@ -225,6 +237,7 @@ def load_data( parser ):
 
 					member_cls = ",".join( cl_dict[ type_panel ][fingerprint].keys() )
 					o_h.write( "\t".join( [ fingerprint, member_cls, str( round( 1.0 / len(cl_dict[ type_panel ][fingerprint].keys()), 3 ) ) ] ) + "\r\n" )
+
 
 			with open( parser.output_db + "_" + type_panel + ".tab", "w" ) as o_h:
 
@@ -235,6 +248,7 @@ def load_data( parser ):
 
 					found_mutations = [ mut_ident for mut_ident in cl_db[ type_panel ][ CL ] if cl_dict[type_panel].has_key(mut_ident) ]
 					o_h.write( "\t".join( [ CL, ",".join( found_mutations ) ] ) +"\r\n" )
+			"""
 
 	print("Finished data parsing")
 
@@ -248,6 +262,7 @@ if __name__ == "__main__":
 	parser.add_argument('-i_dbsnp',	'--pickle_dbsnp_file',type = str, help = 'pickle_output_file of db snp',	required = False, default = "")
 	parser.add_argument('-o_db',	'--output_db',		type = str, help = 'Path to output_db',	required = True)
 	parser.add_argument('-o_dict',	'--output_dict',	type = str, help = 'Path to output dictionary for cl information',	required = True)
+	parser.add_argument('-o_mut_dict',	'--output_mut_dict',	type = str, help = 'Path to output dictionary for cl information',	required = True)
 	parser.add_argument('-retain_frequent',	'--retain_frequent_mutations', action='store_true',	help = 'Filter 50% most frequent mutations' )
 	parser.add_argument('-unique_mode',	'--unique_mode', action='store_true',	help = 'Only use unique mutations', default = False )
 

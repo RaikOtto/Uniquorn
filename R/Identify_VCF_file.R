@@ -1,7 +1,7 @@
 #' Parses the vcf file and predicts the identity of the sample
 #' @export
-identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLMINER","CCLE","COSMIC"), types = c( "unique", "non_unique") ){
-  
+identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLMINER","CCLE","COSMIC"), types = c( "unique") ){
+  # types = c("unique","non_unique")
   library("stringr")
   
   print( paste0( "Creating fingerprint from VCF file ", vcf_file_path  ) )
@@ -19,29 +19,18 @@ identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLM
     }
     
     sim_list_file = paste( system.file("", package = "Uniquorn"), 
-       paste0( 
-         c(
-           paste0( c("simlist", type,panel), collapse = "_" ),
-           ".RData"
-         ), 
-         collapse= ""
-       ), 
-       sep = "/"
+      paste0(
+      c(
+        type,
+       "_parsed_DB_",
+       panel,
+       "_mut_labels.tab"
+      ),
+        collapse= ""
+      ),
+      sep = "/"
     )
 
-    fingerprint_names_file = paste( system.file("", package = "Uniquorn"), 
-        paste0(
-           c(
-             type,
-             "_parsed_DB_",
-             panel,
-             "_mut_labels.tab"
-           ),
-           collapse= ""
-        ),
-        sep = "/"
-    )
-    
     print( paste0( "Loading similarity data from file ",  sim_list_file )  )
     
     if ( length( sim_list_store_mat[[ panel, type ]])  != 0 ){
@@ -50,17 +39,21 @@ identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLM
       
     } else {
       
-      attach( sim_list_file )
+        ( sim_list_file )
+      
       if (type == "non_unique"){
-        sim_list = sim_list_non_unique
+        
+        
       } else {
-        sim_list = sim_list_unique
+        
+        sim_list = read.table( sim_list_file, sep = "\t", header =F, col.names = c("Mutation","Weight"))
+
       }
       sim_list_store_mat[[ panel, type ]] = sim_list
 
     }
     
-    fingerprint_stats = read.table( fingerprint_names_file, sep ="\t", header= F )
+    #fingerprint_stats = read.table( fingerprint_names_file, sep ="\t", header= F )
     all_fingerprints_in_cl_set = fingerprint_stats[,1]
     all_weights_muts_in_cl_set = fingerprint_stats[,2]
     
