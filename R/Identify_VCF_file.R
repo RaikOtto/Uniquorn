@@ -22,9 +22,9 @@ identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLM
       paste0(
       c(
         type,
-       "_parsed_DB_",
+       "_parsed_DB_mut_labels_",
        panel,
-       "_mut_labels.tab"
+       ".tab"
       ),
         collapse= ""
       ),
@@ -39,79 +39,57 @@ identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLM
       
     } else {
       
-        ( sim_list_file )
-      
       if (type == "non_unique"){
         
+        # pass
         
       } else {
         
-        sim_list = read.table( sim_list_file, sep = "\t", header =F, col.names = c("Mutation","Weight"))
+        sim_list = read.table( sim_list_file, sep = "\t", header = T)
 
       }
       sim_list_store_mat[[ panel, type ]] = sim_list
 
     }
-    
-    #fingerprint_stats = read.table( fingerprint_names_file, sep ="\t", header= F )
-    all_fingerprints_in_cl_set = fingerprint_stats[,1]
-    all_weights_muts_in_cl_set = fingerprint_stats[,2]
-    
+
     print( "Finished loading similarity data. Mapping vcf's fingerprint to all contained fingerprints"  )
     
-    mapping = match( all_fingerprints_in_cl_set, vcf_fingerprint, nomatch = 0 )
+    mapping = which( sim_list$Fingerprint %in% vcf_fingerprint )
     
-    adv = 0
-    nr_cls = length( sim_list )
+    candidate_hits_abs = table( sim_list$CL[mapping] )
+    cl_match = match( names(table( sim_list$CL[mapping] )), sim_list$CL )
+    candidate_hits_rel = round( candidate_hits_abs / sim_list$Count[cl_match], 3 ) * 100
     
-    match_fp = function( sim_list_entry ){
-      
-      stat = round( (adv / as.double(nr_cls)) * 100, 0 )
-      adv <<- adv + 1
-      
-      if ( stat != round( (adv / as.double(nr_cls)) * 100, 0 ) )
-        print( paste0( c( panel,  round( (adv / as.double(nr_cls)) * 100, 0 ), " %" ), collapse = " " ) )
-      
-      res_map = ( as.integer(mapping) & as.integer( sim_list_entry ) ) 
-      res_score = sum( all_weights_muts_in_cl_set[ res_map ] )
-      
-      res_scores = c( sum(res_map), res_score )
-      
-      return( res_scores )
-    }
-    adv <<- 0
+    passed_threshold_vec = rep( F, nr_cls )
+    passed_threshold_vec[ ( candidate_hits_abs >= 2 ) & ( candidate_hits_rel >= 3 ) ] = T
     
-    res_intersect = as.data.frame( lapply( sim_list, FUN = match_fp ) )
+    #"Found_muts_weighted" = as.double( res_intersect[2,] ),
+    #"Found_muts_rel_weighted" = as.double( res_intersect[2,] ),
+    #"Passed_threshold_weighted" = rep( F, nr_cls )
+
+    # don't sort me bro!
     
     res_table = data.frame(
       
-      "CL_name" = as.character( names(sim_list) ),
-      "Intersect" = as.double( res_intersect[1,] ),
-      "Intersect_weighted" = as.double( res_intersect[2,] ),
-      "All_mutations" = as.integer( unlist( lapply( sim_list, FUN = sum ) ) ),
-      "Passed_treshold" = rep( F, nr_cls ),
-      "Passed_treshold_weighted" = rep( F, nr_cls )
+      "CL" = as.character( unique( sim_list$CL ) ),
+      "Found_muts_abs" = as.character( candidate_hits_abs ),
+      "Found_muts_rel" = as.character(  candidate_hits_rel ),
+      "Count_mutations_cl" = as.character(  sim_list$Count[cl_match] ),
+      "Passed_threshold" = as.character( passed_threshold_vec )
     )
     
-    res_table = res_table[ order( as.double( res_table$Intersect_weighted ), decreasing = T),  ]
+    res_table = res_table[ order( as.double( res_table$Found_muts_rel ), decreasing = T),  ]
     
-    res_table$Passed_treshold[  
-      #( as.double(res_table$Intersect) >= 2.0) & ( ( as.double(res_table$Intersect) / as.double(res_table$All_mutations)) >= .01  )
-      as.double(res_table$Intersect) >= 2.0
-    ] = T
-    res_table$Passed_treshold[ is.na(res_table$Passed_treshold) ]  = F
-    
-    res_table$Passed_treshold_weighted[  
-      as.double(res_table$Intersect_weighted) >= 1.0
-      ] = T
-    res_table$Passed_treshold_weighted[ is.na(res_table$Passed_treshold_weighted) ]  = F
-    
-    
-    if ( dim( res_table[ res_table$Passed_treshold_weighted ,])[1] >= 1 ){
+    if ( dim( res_table[ res_table$Passed_threshold ,])[1] == 1 ){
       
-      print( paste0( "Candidate(s): ", paste0( ( res_table$CL_name[ res_table$Passed_treshold_weighted  ] )[1:2], collapse = "," ) )  )
+      print( paste0( "Candidate(s): ", paste0( ( res_table$CL_name[ res_table$Passed_treshold  ] ), collapse = "," ) )  )
+    
+     } else if ( dim( res_table[ res_table$Passed_threshold ,])[1] == 2 ){
+        
+      print( paste0( "Candidate(s): ", paste0( ( res_table$CL_name[ res_table$Passed_treshold  ] )[1:2], collapse = "," ) )  )
       
     } else{
+      
       print( paste0("No CL mutational fingerprint with sufficient similarity found." ) )
     }
     

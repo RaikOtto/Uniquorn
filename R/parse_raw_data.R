@@ -25,7 +25,7 @@ initiate_uniquorn_database = function(
   path_to_output_dict_unique     = paste( system.file("", package="Uniquorn"), "unique_parsed_dict", sep ="/")
   path_to_output_dict_non_unique = paste( system.file("", package="Uniquorn"), "non_unique_parsed_dict", sep ="/")
 
-  fingerprint_names_file         = paste0( c( paste( path_to_output_db_unique,      panel, sep ="_" ), "_mut_labels.tab" ), collapse = "")
+  fingerprint_names_file         = paste0( c( path_to_output_db_unique, "_mut_labels" ), collapse = "")
 
   path_to_python_dbsnp_python_parser = paste( system.file("", package="Uniquorn"), "parse_db_snp.py", sep ="/")
   path_to_python_dbsnp_python_parser_db = paste( system.file("", package="Uniquorn"), "parse_db_snp_python.pickle", sep ="/")

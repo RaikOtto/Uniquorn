@@ -61,7 +61,7 @@ def load_data( parser ):
 		
 		print "Did not find UCSC python DbSNP file, e.g. "
 
-	for type_panel in [ "CCLE", "CellMiner", "COSMIC" ]:
+	for type_panel in [ "CellMiner", "CCLE", "COSMIC" ]:
 
 		if type_panel == 'COSMIC':
 
@@ -156,7 +156,7 @@ def load_data( parser ):
 								if cl_db[ type_panel ].has_key(cl_ident):
 									if cl_db[   type_panel ][ cl_ident ].has_key(fingerprint):
 
-										del cl_db[   type_panel ][ cl_ident ][ fingerprint ]
+										del cl_db[ type_panel ][ cl_ident ][ fingerprint ]
 
 
 								if cl_dict[   type_panel ].has_key(fingerprint):
@@ -221,12 +221,13 @@ def load_data( parser ):
 
 			with open( parser.output_mut_dict + "_" + type_panel + ".tab", "w" ) as o_h:
 
-				o_h.write( "\t".join( [ "Fingerprint", "CL" ] ) + "\r\n" )
+				o_h.write( "\t".join( [ "Fingerprint", "CL", "Count" ] ) + "\r\n" )
 
 				for fingerprint in sorted( cl_dict[ type_panel ].keys() ):
 
-					member_cl = cl_dict[ type_panel ][fingerprint]
-					o_h.write( "\t".join( [ fingerprint, member_cl ] ) + "\r\n" )
+					member_cl = cl_dict[ type_panel ][fingerprint].keys()[0]
+					member_count = str( len( cl_db[   type_panel ][ member_cl ].keys() ) )
+					o_h.write( "\t".join( [ fingerprint, member_cl, member_count ] ) + "\r\n" )
 
 			"""
 			with open( parser.output_dict + "_" + type_panel + ".tab", "w" ) as o_h:
