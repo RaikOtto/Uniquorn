@@ -1,5 +1,4 @@
 ### parse files
-
 #' Parses data into r list variable
 #' @export
 initiate_uniquorn_database = function( 
@@ -8,11 +7,11 @@ initiate_uniquorn_database = function(
     cellminer_genotype_file = 'DNA__Exome_Seq_none.txt',
     ccle_genotype_file = "CCLE_hybrid_capture1650_hg19_allVariants_2012.05.07.maf",
     ucsc_db_snp_file = 'snp142Common.txt',
-    ref_gen = "hg19"
+    ref_gen = "hg19",
+    weighted = T
   ){
-
-  library("stringr")
   
+  suppressPackageStartupMessages(library("stringr"))
   print( c( "Found CoSMIC: ", file.exists(cosmic_genotype_file) )  )
   print( c( "Found CCLE: ", file.exists(ccle_genotype_file) )  )
   print( c( "Found CellMiner: ", file.exists(cellminer_genotype_file) )  )
@@ -29,6 +28,9 @@ initiate_uniquorn_database = function(
 
   fingerprint_names_file         = paste0( c( path_to_output_db_unique, "_mut_labels" ), collapse = "")
   fingerprint_names_file_weighted= paste0( c( path_to_output_db_non_unique, "_weighted_mut_labels" ), collapse = "")
+  
+  stats_file_path          = paste0( c( path_to_output_db_unique,     "_mut_labels_stats" ),    collapse = "" )
+  stats_file_path_weighted = paste0( c( path_to_output_db_non_unique, "_weighted_mut_labels_stats" ), collapse = "" )
 
   path_to_python_dbsnp_python_parser = paste( system.file("", package="Uniquorn"), "parse_db_snp.py", sep ="/")
   path_to_python_dbsnp_python_parser_db = paste( system.file("", package="Uniquorn"), "parse_db_snp_python.pickle", sep ="/")
@@ -63,12 +65,15 @@ initiate_uniquorn_database = function(
       "-o_dict",    path_to_output_dict_unique,
       "-o_mut_dict",fingerprint_names_file,
       "-i_dbsnp",   path_to_python_dbsnp_python_parser_db,
+      "-o_stats_file", stats_file_path,
       "-unique_mode"
     ),
     collapse = " "
   )
   
-  #system( command_line, ignore.stdout = F, intern = F )
+  if ( ! weighted ){
+    system( command_line, ignore.stdout = F, intern = F )
+  }
 
   # non-unique
   
@@ -81,11 +86,16 @@ initiate_uniquorn_database = function(
       "-o_db",      path_to_output_db_non_unique,
       "-o_dict",    path_to_output_dict_non_unique,
       "-o_mut_dict",fingerprint_names_file_weighted,
-      "-i_dbsnp",   path_to_python_dbsnp_python_parser_db
+      "-o_stats_file", stats_file_path_weighted,
+      "-i_dbsnp",   path_to_python_dbsnp_python_parser_db,
+      "-filter_frequent"
     ),
     collapse = " "
   )
-  system( command_line, ignore.stdout = F, intern = F )
+  
+  if ( weighted ){
+    system( command_line, ignore.stdout = F, intern = F )
+  }
   
   message("Parsing data finished")
   '

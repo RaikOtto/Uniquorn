@@ -1,6 +1,6 @@
 #' Parses the vcf file and predicts the identity of the sample
 #' @export
-identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLMINER","CCLE","COSMIC"), type = "unique" ){
+identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLMINER","CCLE","COSMIC"), type = "non_unique" ){
   # types = c("unique","non_unique")
   library("stringr")
   
@@ -8,11 +8,16 @@ identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLM
   vcf_fingerprint = parse_vcf_file( vcf_file_path )
   
   sim_list_store_mat = matrix( list(), ncol = length( type ), nrow = length( panels ) , dimnames = list( panels, type ) )
+  sim_list_stats_store_mat = matrix( list(), ncol = length( type ), nrow = length( panels ) , dimnames = list( panels, type ) )
   
   if ( output_path == ""  ){
+    
     output_file = paste( vcf_file_path, "ident.tab", sep ="_")
+    
   } else {
+    
     output_file = paste( paste0( output_path, tail( unlist(str_split(vcf_file_path, "/" ) ), 1 )  ), ".tab", sep ="_ident")
+    
   }
   
   res_table <<- data.frame(
@@ -27,37 +32,40 @@ identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLM
 
   for( panel in panels ){
     
-    sim_list_file = paste( system.file("", package = "Uniquorn"), 
-      paste0(
-      c(
-        type,
+    if (type == "unique"){
+    sim_list_file = paste( system.file("", package = "Uniquorn"), paste0( c( type,
        "_parsed_DB_mut_labels_",
-       panel,
-       ".tab"
-      ),
-        collapse= ""
-      ),
-      sep = "/"
-    )
+        panel,".tab"),collapse= ""),sep = "/")
+    
+    sim_list_stats_file = paste( system.file("", package = "Uniquorn"),paste0( c( type, 
+      "_parsed_DB_mut_labels_stats",
+      panel,".tab"),collapse= ""),sep = "/")
+    } else {
+      sim_list_file = paste( system.file("", package = "Uniquorn"), paste0( c( type,
+         "_parsed_DB_weighted_mut_labels_",
+         panel,".tab"),collapse= ""),sep = "/")
+      
+      sim_list_stats_file = paste( system.file("", package = "Uniquorn"),paste0( c( type, 
+        "_parsed_DB_weighted_mut_labels_stats_",
+        panel,".tab"),collapse= ""),sep = "/")
+    }
 
     print( paste0( "Loading similarity data from file ",  sim_list_file )  )
     
     if ( length( sim_list_store_mat[[ panel, type ]])  != 0 ){
         
-      sim_list = sim_list_store_mat[[ panel, type ]]
+      sim_list       = sim_list_store_mat[[ panel, type ]]
+      sim_list_stats = sim_list_stats_store_mat[[ panel, type ]]
       
     } else {
-      
-      if (type == "non_unique"){
         
-        # pass
-        
-      } else {
-        
-        sim_list = read.table( sim_list_file, sep = "\t", header = T)
+        sim_list       = read.table( sim_list_file, sep = "\t", header = T)
+        sim_list_stats = read.table( sim_list_stats_file, sep = "\t", header = T)
 
-      }
+    }
+    
       sim_list_store_mat[[ panel, type ]] = sim_list
+      sim_list_stats_store_mat[[ panel, type ]] = sim_list_stats
 
     }
 
@@ -66,8 +74,9 @@ identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLM
     mapping = which( sim_list$Fingerprint %in% vcf_fingerprint )
     
     candidate_hits_abs = table( sim_list$CL[mapping] )
-    cl_match = match( names(table( sim_list$CL[mapping] )), sim_list$CL )
-    candidate_hits_rel = round( candidate_hits_abs / sim_list$Count[cl_match], 3 ) * 100
+    cl_match           = match( names(table( sim_list$CL[mapping] )), sim_list$CL )
+    cl_match_stats     = match( names(table( sim_list$CL          )), sim_list_stats$CL )
+    candidate_hits_rel = round( candidate_hits_abs / sim_list_stats$Count[cl_match_stats], 3 ) * 100
     
     nr_cls = length( unique( sim_list$CL  )  )
     passed_threshold_vec = rep( F, nr_cls )
@@ -84,7 +93,7 @@ identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLM
       "CL_source"          = c( as.character( res_table$CL_source), as.character( rep(panel, nr_cls) ) ),
       "Found_muts_abs"     = c( as.character( res_table$Found_muts_abs), as.character( candidate_hits_abs ) ),
       "Found_muts_rel"     = c( as.character( res_table$Found_muts_rel), as.character(  candidate_hits_rel ) ),
-      "Count_mutations_cl" = c( as.character( res_table$Count_mutations_cl), as.character(  sim_list$Count[cl_match] ) ),
+      "Count_mutations_cl" = c( as.character( res_table$Count_mutations_cl), as.character(  sim_list_stats$Count[cl_match_stats] ) ),
       "Passed_threshold"   = c( as.character( res_table$Passed_threshold), as.character( passed_threshold_vec ) )
     )
   }
