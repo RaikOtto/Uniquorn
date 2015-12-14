@@ -71,7 +71,7 @@ identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLM
     
     nr_cls = length( unique( sim_list$CL  )  )
     passed_threshold_vec = rep( F, nr_cls )
-    passed_threshold_vec[ ( candidate_hits_abs >= 2 ) & ( candidate_hits_rel >= 3 ) ] = T
+    passed_threshold_vec[ ( candidate_hits_abs >= 3 ) & ( candidate_hits_rel >= 2 ) ] = T
     
     #"Found_muts_weighted" = as.double( res_intersect[2,] ),
     #"Found_muts_rel_weighted" = as.double( res_intersect[2,] ),
@@ -87,7 +87,6 @@ identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLM
       "Count_mutations_cl" = c( as.character( res_table$Count_mutations_cl), as.character(  sim_list$Count[cl_match] ) ),
       "Passed_threshold"   = c( as.character( res_table$Passed_threshold), as.character( passed_threshold_vec ) )
     )
-
   }
   
   res_table = res_table[ order( as.double( res_table$Found_muts_rel ), decreasing = T),  ]

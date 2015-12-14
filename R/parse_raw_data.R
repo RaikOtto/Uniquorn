@@ -3,10 +3,12 @@
 #' Parses data into r list variable
 #' @export
 initiate_uniquorn_database = function( 
-    cosmic_genotype_file = "CosmicCLP_CompleteExport.tsv",
+    #cosmic_genotype_file = "CosmicCLP_CompleteExport.tsv",
+    cosmic_genotype_file = "CosmicCLP_MutantExport.tsv",
     cellminer_genotype_file = 'DNA__Exome_Seq_none.txt',
     ccle_genotype_file = "CCLE_hybrid_capture1650_hg19_allVariants_2012.05.07.maf",
-    ucsc_db_snp_file = 'snp142Common.txt'
+    ucsc_db_snp_file = 'snp142Common.txt',
+    ref_gen = "hg19"
   ){
 
   library("stringr")
@@ -26,6 +28,7 @@ initiate_uniquorn_database = function(
   path_to_output_dict_non_unique = paste( system.file("", package="Uniquorn"), "non_unique_parsed_dict", sep ="/")
 
   fingerprint_names_file         = paste0( c( path_to_output_db_unique, "_mut_labels" ), collapse = "")
+  fingerprint_names_file_weighted= paste0( c( path_to_output_db_non_unique, "_weighted_mut_labels" ), collapse = "")
 
   path_to_python_dbsnp_python_parser = paste( system.file("", package="Uniquorn"), "parse_db_snp.py", sep ="/")
   path_to_python_dbsnp_python_parser_db = paste( system.file("", package="Uniquorn"), "parse_db_snp_python.pickle", sep ="/")
@@ -65,27 +68,27 @@ initiate_uniquorn_database = function(
     collapse = " "
   )
   
-  system( command_line, ignore.stdout = F, intern = F )
-  '
+  #system( command_line, ignore.stdout = F, intern = F )
+
   # non-unique
   
   command_line = str_c( 
     c(  
-      "python",     path_to_python,
+      'python',     path_to_python,
       "-ccle ",     ccle_genotype_file,
       "-cosmic ",   cosmic_genotype_file,
       "-cellminer", cellminer_genotype_file,
       "-o_db",      path_to_output_db_non_unique,
       "-o_dict",    path_to_output_dict_non_unique,
-      "-i_dbsnp",   path_to_python_dbsnp_python_parser_db,
-      "-retain_frequent"
+      "-o_mut_dict",fingerprint_names_file_weighted,
+      "-i_dbsnp",   path_to_python_dbsnp_python_parser_db
     ),
     collapse = " "
   )
-  #system( command_line, ignore.stdout = F, intern = F )
+  system( command_line, ignore.stdout = F, intern = F )
   
   message("Parsing data finished")
-  
+  '
   # transform data & load into DB
   
   print( "Loading aggregated fingerprint raw data from all sources"  )

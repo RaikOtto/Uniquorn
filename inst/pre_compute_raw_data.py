@@ -217,17 +217,31 @@ def load_data( parser ):
 			in_file = parser.cellminer_file
 
 		if os.path.exists( in_file ):
+			
+			if parser.unique_mode:
 
+				with open( parser.output_mut_dict + "_" + type_panel + ".tab", "w" ) as o_h:
 
-			with open( parser.output_mut_dict + "_" + type_panel + ".tab", "w" ) as o_h:
+					o_h.write( "\t".join( [ "Fingerprint", "CL", "Count" ] ) + "\r\n" )
 
-				o_h.write( "\t".join( [ "Fingerprint", "CL", "Count" ] ) + "\r\n" )
+					for fingerprint in sorted( cl_dict[ type_panel ].keys() ):
 
-				for fingerprint in sorted( cl_dict[ type_panel ].keys() ):
+						member_cl = cl_dict[ type_panel ][fingerprint].keys()[0]
+						member_count = str( len( cl_db[   type_panel ][ member_cl ].keys() ) )
+						o_h.write( "\t".join( [ fingerprint, member_cl, member_count ] ) + "\r\n" )
+						
+			else: 
+				
+				with open( parser.output_mut_dict + "_" + type_panel + ".tab", "w" ) as o_h:
 
-					member_cl = cl_dict[ type_panel ][fingerprint].keys()[0]
-					member_count = str( len( cl_db[   type_panel ][ member_cl ].keys() ) )
-					o_h.write( "\t".join( [ fingerprint, member_cl, member_count ] ) + "\r\n" )
+					o_h.write( "\t".join( [ "Fingerprint", "CL", "Count" ] ) + "\r\n" )
+
+					for fingerprint in sorted( cl_dict[ type_panel ].keys() ):
+
+						for member_cl in cl_dict[ type_panel ][fingerprint].keys():
+
+							member_count = str( len( cl_db[   type_panel ][ member_cl ].keys() ) )
+							o_h.write( "\t".join( [ fingerprint, member_cl, member_count ] ) + "\r\n" )
 
 			"""
 			with open( parser.output_dict + "_" + type_panel + ".tab", "w" ) as o_h:
