@@ -18,6 +18,7 @@ identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLM
   res_table <<- data.frame(
     
     "CL" = as.character(),
+    "CL_source" = as.character(),
     "Found_muts_abs" = as.character(),
     "Found_muts_rel" = as.character(),
     "Count_mutations_cl" = as.character(),
@@ -79,7 +80,8 @@ identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLM
     # don't sort me bro!
     
     res_table = data.frame( 
-      "CL"                 = c( as.character( res_table$CL) , as.character( sim_list$CL[cl_match] ) ),
+      "CL"                 = c( as.character( res_table$CL ) , as.character( str_replace( sim_list$CL[cl_match], paste0( "_", panel) , "" ) ) ),
+      "CL_source"          = c( as.character( res_table$CL_source), as.character( rep(panel, nr_cls) ) ),
       "Found_muts_abs"     = c( as.character( res_table$Found_muts_abs), as.character( candidate_hits_abs ) ),
       "Found_muts_rel"     = c( as.character( res_table$Found_muts_rel), as.character(  candidate_hits_rel ) ),
       "Count_mutations_cl" = c( as.character( res_table$Count_mutations_cl), as.character(  sim_list$Count[cl_match] ) ),
