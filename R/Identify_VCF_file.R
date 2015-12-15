@@ -37,7 +37,7 @@ identify_vcf_file = function(
     "Found_muts_weighted_rel" = as.character(),
     "Count_mutations_weighted" = as.character(),
     "Passed_threshold_weighted" = as.character()
-  ) # don't sort me bro!
+  ) 
 
   for( panel in panels ){
 
@@ -110,7 +110,7 @@ identify_vcf_file = function(
       cl_weight_rel = round( as.double( cl_weight ) / as.double( aggregation_all[ ,2 ] ) , 3 ) * 100
       
       passed_threshold_weighted = rep( F, nr_cls )
-      passed_threshold_weighted[ ( cl_weight >= 10 ) & ( candidate_hits_abs >= 2 ) ] = T
+      passed_threshold_weighted[ cl_weight_rel >= 10.0 ] = T
       
       ouput_cl_names = str_replace( as.character( list_of_cls ), pattern = paste0( "_", panel  ), replacement = "" )
       
