@@ -137,102 +137,42 @@ def load_data( parser ):
 
 					for cl_ident in ident_list:
 
-						if parser.unique_mode:
 
-							if ( not seen_d[ type_panel ].has_key( fingerprint ) ):
+						if not cl_db[   type_panel ].has_key( cl_ident ):     cl_db[   type_panel ][ cl_ident ] = {}
+						if not cl_dict[   type_panel ].has_key( fingerprint ):cl_dict[ type_panel ][ fingerprint ] = {}
+						if not stat_d[   type_panel ].has_key( fingerprint ): stat_d[  type_panel ][ fingerprint ] = 0
 
-								seen_d[ type_panel ][fingerprint] = True
-								if not cl_db[   type_panel ].has_key( cl_ident ):     cl_db[   type_panel ][ cl_ident ] = {}
-								if not cl_dict[   type_panel ].has_key( fingerprint ):cl_dict[ type_panel ][ fingerprint ] = {}
-								if not stat_d[   type_panel ].has_key( fingerprint ): stat_d[  type_panel ][ fingerprint ] = 0
+						cl_dict[ type_panel ][ fingerprint ][ cl_ident ] = True
+						cl_db[   type_panel ][ cl_ident    ][ fingerprint ] = True # save fingerprint for cl
+						stat_d[ type_panel ] [ fingerprint ] = stat_d[ type_panel ] [ fingerprint ] + 1
 
-								cl_dict[ type_panel ][ fingerprint ][ cl_ident ] = True
-								cl_db[   type_panel ][ cl_ident    ][ fingerprint ] = True # save fingerprint for cl
-								stat_d[ type_panel ] [ fingerprint ] = stat_d[ type_panel ] [ fingerprint ] + 1
+			# filter part
 
-							else:
+			print "Before filtering ", type_panel, ": " , len(stat_d[type_panel].keys())
+			
+			if parser.filter_frequent_mutations :
 
+				print( 'Filtering the most frequent mutations' )
 
-								if cl_db[ type_panel ].has_key(cl_ident):
-									if cl_db[   type_panel ][ cl_ident ].has_key(fingerprint):
+				perc = .1
+				cutoff = percentile( N = stat_d[ type_panel ].values()  , percent = perc )
 
-										del cl_db[ type_panel ][ cl_ident ][ fingerprint ]
+				print round(cutoff,2), " percentile filter: " , perc, type_panel
 
+				for fingerprint in cl_dict[ type_panel ].keys():
 
-								if cl_dict[   type_panel ].has_key(fingerprint):
+					if float(stat_d[ type_panel ][fingerprint]) > float(cutoff):
 
-									del cl_dict[ type_panel ][ fingerprint ]
+						del cl_dict[type_panel][fingerprint]
+						del stat_d[type_panel][fingerprint]
 
-								if parser.unique_mode and stat_d[ type_panel ].has_key(fingerprint) : del stat_d[ type_panel ] [ fingerprint ]
+				print "After filtering ", type_panel, ": " , len(stat_d[type_panel].keys())
 
-						else: 
+			if db_snp_mode: print "Excluded " + str(snp_count) + " many SNPs"
 
-							if not cl_db[   type_panel ].has_key( cl_ident ):     cl_db[   type_panel ][ cl_ident ] = {}
-							if not cl_dict[   type_panel ].has_key( fingerprint ):cl_dict[ type_panel ][ fingerprint ] = {}
-							if not stat_d[   type_panel ].has_key( fingerprint ): stat_d[  type_panel ][ fingerprint ] = 0
+			print( 'Writing output' )
 
-							cl_dict[ type_panel ][ fingerprint ][ cl_ident ] = True
-							cl_db[   type_panel ][ cl_ident    ][ fingerprint ] = True # save fingerprint for cl
-							stat_d[ type_panel ] [ fingerprint ] = stat_d[ type_panel ] [ fingerprint ] + 1
-
-		# filter part
-
-		print "Before filtering ", type_panel, ": " , len(stat_d[type_panel].keys())
-		
-		if parser.filter_frequent_mutations :
-
-			print( 'Filtering the most frequent mutations' )
-
-			perc = .1
-			cutoff = percentile( N = stat_d[ type_panel ].values()  , percent = perc )
-
-			print round(cutoff,2), " percentile filter: " , perc, type_panel
-
-			for fingerprint in cl_dict[ type_panel ].keys():
-
-				if float(stat_d[ type_panel ][fingerprint]) > float(cutoff):
-
-					del cl_dict[type_panel][fingerprint]
-					del stat_d[type_panel][fingerprint]
-
-			print "After filtering ", type_panel, ": " , len(stat_d[type_panel].keys())
-
-	if db_snp_mode: print "Excluded " + str(snp_count) + " many SNPs"
-
-	print( 'Writing output' )
-
-	for type_panel in [ "CCLE", "CellMiner", "COSMIC" ]:
-
-		if type_panel == 'COSMIC':
-
-			in_file = parser.cosmic_file
-
-		elif type_panel == 'CCLE':
-
-			in_file = parser.ccle_file
-
-		elif type_panel == 'CellMiner':
-
-			in_file = parser.cellminer_file
-
-		if os.path.exists( in_file ):
-
-			if parser.unique_mode:
-
-
-				with open( parser.output_mut_dict + "_" + type_panel + ".tab", "w" ) as o_h:
-
-					o_h.write( "\t".join( [ "Fingerprint", "CL" ] ) + "\r\n" )
-
-					for fingerprint in sorted( cl_dict[ type_panel ].keys() ):
-
-						for member_cl in cl_dict[ type_panel ][fingerprint].keys():
-
-							o_h.write( "\t".join( [ fingerprint, member_cl ] ) + "\r\n" )
-
-			else: 
-
-				with open( parser.output_mut_dict + "_" + type_panel + ".tab", "w" ) as o_h:
+			with open( parser.output_mut_dict + "_" + type_panel + ".tab", "w" ) as o_h:
 
 					o_h.write( "\t".join( [ "Fingerprint", "CL","Weight" ] ) + "\r\n" )
 
@@ -246,16 +186,18 @@ def load_data( parser ):
 
 							o_h.write( "\t".join( [ fingerprint, member_cl, weight ] ) + "\r\n" )
 
-			with open( parser.output_stats_file_path + "_" + type_panel + ".tab", "w" ) as o_h:
+				with open( parser.output_stats_file_path + "_" + type_panel + ".tab", "w" ) as o_h:
 
-				o_h.write( "\t".join( [ "CL", "Count" ] ) + "\r\n" )
+					o_h.write( "\t".join( [ "CL", "Count" ] ) + "\r\n" )
 
-				for CL in sorted( cl_db[ type_panel ].keys() ):
+					for CL in sorted( cl_db[ type_panel ].keys() ):
 
-					member_count = str( len( cl_db[   type_panel ][ CL ].keys() ) )
-					o_h.write( "\t".join( [ CL, member_count ] ) + "\r\n" )
+						member_count = str( len( cl_db[   type_panel ][ CL ].keys() ) )
+						o_h.write( "\t".join( [ CL, member_count ] ) + "\r\n" )
 
-#					
+		else:
+
+			print "Could not find file: " + in_file
 
 	print("Finished data parsing")
 
@@ -265,14 +207,12 @@ if __name__ == "__main__":
 	parser.add_argument('-ccle',	'--ccle_file',		type = str, help = 'Input file for ccle',				required = False)
 	parser.add_argument('-cosmic',	'--cosmic_file',	type = str, help = 'Input file for cosmic',		required = False)
 	parser.add_argument('-cellminer','--cellminer_file',type = str, help = 'Input  file for cellminer',	required = False)
-	#parser.add_argument('-db',	'--db_path',	type = str, help = 'Path to output_db',	required = True)
 	parser.add_argument('-i_dbsnp',	'--pickle_dbsnp_file',type = str, help = 'pickle_output_file of db snp',	required = False, default = "")
 	parser.add_argument('-o_db',	'--output_db',		type = str, help = 'Path to output_db',	required = True)
 	parser.add_argument('-o_dict',	'--output_dict',	type = str, help = 'Path to output dictionary for cl information',	required = True)
 	parser.add_argument('-o_mut_dict',	'--output_mut_dict',	type = str, help = 'Path to output dictionary for cl information',	required = True)
 	parser.add_argument('-o_stats_file',	'--output_stats_file_path',	type = str, help = 'Path to output stats for amount of mutations in cls',	required = True)
 	parser.add_argument('-filter_frequent',	'--filter_frequent_mutations', action='store_true',	help = 'Filter 50% most frequent mutations' , default = False)
-	parser.add_argument('-unique_mode',	'--unique_mode', action='store_true',	help = 'Only use unique mutations', default = False )
 
 	parser = parser.parse_args()
 	load_data( parser )

@@ -4,9 +4,7 @@ identify_vcf_file = function(
   vcf_file_path, 
   output_path = "", 
   panels = c("CELLMINER","CCLE","COSMIC"), 
-  type = "non_unique", 
   ref_gen = "grch37" ){
-  # types = c("unique","non_unique")
   library("stringr")
   
   print( paste0( "Creating fingerprint from VCF file ", vcf_file_path  ) )
@@ -32,34 +30,22 @@ identify_vcf_file = function(
     "Found_muts_abs" = as.character(),
     "Count_mutations_abs" = as.character(),
     "Found_muts_rel" = as.character(),
+    "Passed_threshold" = as.character(),
     "Found_muts_weighted" = as.character(),
     "Found_muts_weighted_rel" = as.character(),
     "Count_mutations_weighted" = as.character(),
-    "Passed_threshold" = as.character()
+    "Passed_threshold_weighted" = as.character()
   )
 
   for( panel in panels ){
     
-    if (type == "unique"){
-        
-      sim_list_file = paste( system.file("", package = "Uniquorn"), paste0( c( type,
-      "_parsed_DB_mut_labels_",
-      panel,".tab"),collapse= ""),sep = "/")
-
-      sim_list_stats_file = paste( system.file("", package = "Uniquorn"),paste0( c( type, 
-      "_parsed_DB_mut_labels_stats",
-      panel,".tab"),collapse= ""),sep = "/")
-
-    } else {
-      
-      sim_list_file = paste( system.file("", package = "Uniquorn"), paste0( c( type,
-      "_parsed_DB_weighted_mut_labels_",
-      panel,".tab"),collapse= ""),sep = "/")
-      
-      sim_list_stats_file = paste( system.file("", package = "Uniquorn"),paste0( c( type, 
-      "_parsed_DB_weighted_mut_labels_stats_",
-      panel,".tab"),collapse= ""),sep = "/")
-    }
+   
+    sim_list_file = paste( system.file("", package = "Uniquorn"), paste0( c( "mut_labels_",
+    panel,".tab"),collapse= ""),sep = "/")
+    
+    sim_list_stats_file = paste( system.file("", package = "Uniquorn"),paste0( c( type, 
+    "_parsed_DB_weighted_mut_labels_stats_",
+    panel,".tab"),collapse= ""),sep = "/")
 
     print( paste0( "Loading similarity data from file ",  sim_list_file )  )
     
@@ -96,8 +82,9 @@ identify_vcf_file = function(
     # threshold non weighted
     passed_threshold_vec = rep( F, nr_cls )
     passed_threshold_vec[ ( candidate_hits_abs >= 3 ) & ( candidate_hits_rel >= 2 ) ] = T
+    passed_threshold_weighted = rep( "", nr_cls )
     
-    if (type != "unique"){
+    if (type == "weighted"){
       
        # aggregate over weights & CL identifier
         
@@ -120,21 +107,24 @@ identify_vcf_file = function(
         cl_weight[ aggregation_match ] = aggregation[ , 2 ]
         cl_weight_rel = round( as.double( cl_weight ) / as.double( aggregation_all[ ,2 ] ) , 3 ) * 100
         
-        passed_threshold_vec = rep( F, nr_cls )
-        passed_threshold_vec[ ( cl_weight >= 10 ) & ( candidate_hits_abs >= 2 ) ] = T
+        passed_threshold_weighted = rep( F, nr_cls )
+        passed_threshold_weighted[ ( cl_weight >= 10 ) & ( candidate_hits_abs >= 2 ) ] = T
 
     }
     
+    ouput_cl_names = str_replace( as.character( list_of_cls ), pattern = paste0( "_", panel  ), replacement = "" )
+    
     res_table = data.frame( 
-      "CL"                      = c( as.character( res_table$CL ) , as.character( list_of_cls ) ),
-      "CL_source"               = c( as.character( res_table$CL_source), as.character( rep(panel, nr_cls) ) ),
-      "Found_muts_abs"          = c( as.character( res_table$Found_muts_abs), as.character( candidate_hits_abs ) ),
-      "Count_mutations_abs"     = c( as.character( res_table$Count_mutations_abs), as.character(  sim_list_stats$Count[cl_match_stats] ) ),
-      "Found_muts_rel"          = c( as.character( res_table$Found_muts_rel), as.character(  candidate_hits_rel ) ),
-      "Found_muts_weighted"     = c( as.character( res_table$Found_muts_weighted ),cl_weight ),
-      "Count_mutations_weighted"= c( as.character( res_table$Count_mutations_weighted), as.character(  all_weighted ) ),
-      "Found_muts_weighted_rel" = c( as.character( res_table$Found_muts_weighted_rel ),cl_weight_rel ),
-      "Passed_threshold"        = c( as.character( res_table$Passed_threshold), as.character( passed_threshold_vec ) )
+      "CL"                       = c( as.character( res_table$CL ) , ouput_cl_names ),
+      "CL_source"                = c( as.character( res_table$CL_source), as.character( rep(panel, nr_cls) ) ),
+      "Found_muts_abs"           = c( as.character( res_table$Found_muts_abs), as.character( candidate_hits_abs ) ),
+      "Count_mutations_abs"      = c( as.character( res_table$Count_mutations_abs), as.character(  sim_list_stats$Count[cl_match_stats] ) ),
+      "Found_muts_rel"           = c( as.character( res_table$Found_muts_rel), as.character(  candidate_hits_rel ) ),
+      "Passed_threshold"         = c( as.character( res_table$Passed_threshold), as.character( passed_threshold_vec ) ),
+      "Found_muts_weighted"      = c( as.character( res_table$Found_muts_weighted ),cl_weight ),
+      "Count_mutations_weighted" = c( as.character( res_table$Count_mutations_weighted), as.character(  all_weighted ) ),
+      "Found_muts_weighted_rel"  = c( as.character( res_table$Found_muts_weighted_rel ),cl_weight_rel ),
+      "Passed_threshold_weighted"= c( as.character( res_table$Passed_threshold_weighted), as.character( passed_threshold_weighted ) )
     )
 
     # don't sort me bro!
@@ -142,10 +132,14 @@ identify_vcf_file = function(
     
   }
   
-  if (type != "unique"){
+  if (type == "weighted"){
+    
     res_table = res_table[ order( as.double( res_table$Found_muts_weighted_rel ), decreasing = T),  ]
+    
   } else {
+    
     res_table = res_table[ order( as.double( res_table$Found_muts_rel ), decreasing = T),  ]
+    
   }
   
   if ( dim( res_table[ res_table$Passed_threshold ,])[1] == 1 ){
