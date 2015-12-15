@@ -217,15 +217,34 @@ def load_data( parser ):
 
 		if os.path.exists( in_file ):
 
-			with open( parser.output_mut_dict + "_" + type_panel + ".tab", "w" ) as o_h:
+			if parser.unique_mode:
 
-				o_h.write( "\t".join( [ "Fingerprint", "CL" ] ) + "\r\n" )
 
-				for fingerprint in sorted( cl_dict[ type_panel ].keys() ):
+				with open( parser.output_mut_dict + "_" + type_panel + ".tab", "w" ) as o_h:
 
-					for member_cl in cl_dict[ type_panel ][fingerprint].keys():
+					o_h.write( "\t".join( [ "Fingerprint", "CL" ] ) + "\r\n" )
 
-						o_h.write( "\t".join( [ fingerprint, member_cl ] ) + "\r\n" )
+					for fingerprint in sorted( cl_dict[ type_panel ].keys() ):
+
+						for member_cl in cl_dict[ type_panel ][fingerprint].keys():
+
+							o_h.write( "\t".join( [ fingerprint, member_cl ] ) + "\r\n" )
+
+			else: 
+
+				with open( parser.output_mut_dict + "_" + type_panel + ".tab", "w" ) as o_h:
+
+					o_h.write( "\t".join( [ "Fingerprint", "CL","Weight" ] ) + "\r\n" )
+
+					for fingerprint in sorted( cl_dict[ type_panel ].keys() ):
+
+						member_cls = cl_dict[ type_panel ][ fingerprint ].keys()
+
+						for member_cl in member_cls:
+
+							weight = round( 1.0 / len( member_cls), 3 )
+
+							o_h.write( "\t".join( [ fingerprint, member_cl ] ) + "\r\n" )
 
 			with open( parser.output_stats_file_path + "_" + type_panel + ".tab", "w" ) as o_h:
 

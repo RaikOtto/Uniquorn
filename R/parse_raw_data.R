@@ -87,8 +87,8 @@ initiate_uniquorn_database = function(
       "-o_dict",    path_to_output_dict_non_unique,
       "-o_mut_dict",fingerprint_names_file_weighted,
       "-o_stats_file", stats_file_path_weighted,
-      "-i_dbsnp",   path_to_python_dbsnp_python_parser_db,
-      "-filter_frequent"
+      "-i_dbsnp",   path_to_python_dbsnp_python_parser_db#,
+      #"-filter_frequent"
     ),
     collapse = " "
   )

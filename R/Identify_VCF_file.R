@@ -65,6 +65,7 @@ identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLM
     }
     
       sim_list_store_mat[[ panel, type ]] = sim_list
+      weights = 1 / table(sim_list$Fingerprint)
       sim_list_stats_store_mat[[ panel, type ]] = sim_list_stats
 
     }
@@ -73,14 +74,34 @@ identify_vcf_file = function( vcf_file_path, output_path = "", panels = c("CELLM
     
     mapping = which( sim_list$Fingerprint %in% vcf_fingerprint )
     
-    candidate_hits_abs = table( sim_list$CL[mapping] )
-    cl_match           = match( names(table( sim_list$CL[mapping] )), sim_list$CL )
-    cl_match_stats     = match( names(table( sim_list$CL          )), sim_list_stats$CL )
-    candidate_hits_rel = round( candidate_hits_abs / sim_list_stats$Count[cl_match_stats], 3 ) * 100
+    if (type == "unique"){
+      
+      candidate_hits_abs = table( sim_list$CL[mapping] )
+      cl_match           = match( names(table( sim_list$CL[mapping] )), sim_list$CL )
+      cl_match_stats     = match( names(table( sim_list$CL          )), sim_list_stats$CL )
+      candidate_hits_rel = round( candidate_hits_abs / sim_list_stats$Count[cl_match_stats], 3 ) * 100
+      
+      nr_cls = length( unique( sim_list$CL  )  )
+      passed_threshold_vec = rep( F, nr_cls )
     
-    nr_cls = length( unique( sim_list$CL  )  )
-    passed_threshold_vec = rep( F, nr_cls )
-    passed_threshold_vec[ ( candidate_hits_abs >= 3 ) & ( candidate_hits_rel >= 2 ) ] = T
+      passed_threshold_vec[ ( candidate_hits_abs >= 3 ) & ( candidate_hits_rel >= 2 ) ] = T
+      
+    } else {
+      
+      candidate_hits_abs = table( sim_list$CL[ mapping ] )
+        which( vcf_fingerprint %in% sim_list$Fingerprint )
+      
+      #names(weights) = 
+      
+      cl_match           = match( names(table( sim_list$CL[mapping] )), sim_list$CL )
+      cl_match_stats     = match( names(table( sim_list$CL          )), sim_list_stats$CL )
+      candidate_hits_rel = round( candidate_hits_abs / sim_list_stats$Count[cl_match_stats], 3 ) * 100
+      
+      nr_cls = length( unique( sim_list$CL  )  )
+      passed_threshold_vec = rep( F, nr_cls )
+      
+      passed_threshold_vec[ ( candidate_hits_abs >= 3 ) & ( candidate_hits_rel >= 2 ) ] = T
+    }
     
     #"Found_muts_weighted" = as.double( res_intersect[2,] ),
     #"Found_muts_rel_weighted" = as.double( res_intersect[2,] ),
