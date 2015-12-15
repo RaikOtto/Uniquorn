@@ -11,10 +11,11 @@ initiate_uniquorn_database = function(
   ){
   
   suppressPackageStartupMessages(library("stringr"))
-  print( c( "Found CoSMIC: ", file.exists(cosmic_genotype_file) )  )
-  print( c( "Found CCLE: ", file.exists(ccle_genotype_file) )  )
-  print( c( "Found CellMiner: ", file.exists(cellminer_genotype_file) )  )
-  print( c( "Found DbSNP: ", file.exists(ucsc_db_snp_file) )  )
+  message( c( "Found CoSMIC: ", file.exists(cosmic_genotype_file) )  )
+  message( c( "Found CCLE: ", file.exists(ccle_genotype_file) )  )
+  message( c( "Found CellMiner: ", file.exists(cellminer_genotype_file) )  )
+  message( c( "Found DbSNP: ", file.exists(ucsc_db_snp_file) )  )
+  message( c( "Reference genome: ", ref_gen )  )
   
   ### pre processing
 
