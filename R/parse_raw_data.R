@@ -79,16 +79,16 @@ initiate_uniquorn_database = function(
   
   command_line = str_c( 
     c(  
-      'python',     path_to_python,
-      "-ccle ",     ccle_genotype_file,
-      "-cosmic ",   cosmic_genotype_file,
-      "-cellminer", cellminer_genotype_file,
-      "-o_db",      path_to_output_db_non_unique,
-      "-o_dict",    path_to_output_dict_non_unique,
-      "-o_mut_dict",fingerprint_names_file_weighted,
+      'python',        path_to_python,
+      "-ccle ",        ccle_genotype_file,
+      "-cosmic ",      cosmic_genotype_file,
+      "-cellminer",    cellminer_genotype_file,
+      "-o_db",         path_to_output_db_non_unique,
+      "-o_dict",       path_to_output_dict_non_unique,
+      "-o_mut_dict",   fingerprint_names_file_weighted,
       "-o_stats_file", stats_file_path_weighted,
-      "-i_dbsnp",   path_to_python_dbsnp_python_parser_db#,
-      #"-filter_frequent"
+      "-i_dbsnp",      path_to_python_dbsnp_python_parser_db,
+      "-filter_frequent"
     ),
     collapse = " "
   )

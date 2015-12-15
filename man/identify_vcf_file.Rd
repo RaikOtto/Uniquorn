@@ -5,7 +5,7 @@
 \title{Parses the vcf file and predicts the identity of the sample}
 \usage{
 identify_vcf_file(vcf_file_path, output_path = "", panels = c("CELLMINER",
-  "CCLE", "COSMIC"), type = "unique")
+  "CCLE", "COSMIC"), type = "non_unique", ref_gen = "grch37")
 }
 \description{
 Parses the vcf file and predicts the identity of the sample

@@ -182,8 +182,8 @@ def load_data( parser ):
 		if parser.filter_frequent_mutations :
 
 			print( 'Filtering the most frequent mutations' )
-			
-			perc = .5
+
+			perc = .1
 			cutoff = percentile( N = stat_d[ type_panel ].values()  , percent = perc )
 
 			print round(cutoff,2), " percentile filter: " , perc, type_panel
@@ -242,9 +242,9 @@ def load_data( parser ):
 
 						for member_cl in member_cls:
 
-							weight = round( 1.0 / len( member_cls), 3 )
+							weight = str( round( 1.0 / len( member_cls), 3 ) )
 
-							o_h.write( "\t".join( [ fingerprint, member_cl ] ) + "\r\n" )
+							o_h.write( "\t".join( [ fingerprint, member_cl, weight ] ) + "\r\n" )
 
 			with open( parser.output_stats_file_path + "_" + type_panel + ".tab", "w" ) as o_h:
 
