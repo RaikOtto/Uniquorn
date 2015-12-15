@@ -4,14 +4,16 @@ identify_vcf_file = function(
   vcf_file_path, 
   output_path = "", 
   panels = c("CELLMINER","CCLE","COSMIC"), 
-  ref_gen = "grch37" ){
+  ref_gen = "hg19" ){
   library("stringr")
   
   print( paste0( "Creating fingerprint from VCF file ", vcf_file_path  ) )
   vcf_fingerprint = parse_vcf_file( vcf_file_path )
   
-  sim_list_store_mat = matrix( list(), ncol = length( type ), nrow = length( panels ) , dimnames = list( panels, type ) )
-  sim_list_stats_store_mat = matrix( list(), ncol = length( type ), nrow = length( panels ) , dimnames = list( panels, type ) )
+  sim_list_store_mat = matrix( list(), ncol = length( panels ) )
+  colnames(sim_list_store_mat) = panels
+  sim_list_stats_store_mat = matrix( list(), ncol = length( panels ) )
+  colnames(sim_list_stats_store_mat) = panels
   
   if ( output_path == ""  ){
     
@@ -23,7 +25,7 @@ identify_vcf_file = function(
     
   }
   
-  res_table <<- data.frame(
+  res_table <<- data.frame( 
     
     "CL" = as.character(),
     "CL_source" = as.character(),
@@ -35,32 +37,28 @@ identify_vcf_file = function(
     "Found_muts_weighted_rel" = as.character(),
     "Count_mutations_weighted" = as.character(),
     "Passed_threshold_weighted" = as.character()
-  )
+  ) # don't sort me bro!
 
   for( panel in panels ){
-    
-   
-    sim_list_file = paste( system.file("", package = "Uniquorn"), paste0( c( "mut_labels_",
-    panel,".tab"),collapse= ""),sep = "/")
-    
-    sim_list_stats_file = paste( system.file("", package = "Uniquorn"),paste0( c( type, 
-    "_parsed_DB_weighted_mut_labels_stats_",
-    panel,".tab"),collapse= ""),sep = "/")
+
+    ref_gen_path = paste( system.file("", package = "Uniquorn"), ref_gen, sep ="/")
+    sim_list_file       = paste0( c( ref_gen_path, "/", "Fingerprint_",       panel, ".tab" ), collapse = "" )
+    sim_list_stats_file = paste0( c( ref_gen_path, "/", "Fingerprint_stats_", panel, ".tab" ), collapse = "" )
 
     print( paste0( "Loading similarity data from file ",  sim_list_file )  )
     
-    if ( length( sim_list_store_mat[[ panel, type ]])  != 0 ){
+    if ( length( sim_list_store_mat[[ panel ]])  != 0 ){
         
-      sim_list       = sim_list_store_mat[[ panel, type ]]
-      sim_list_stats = sim_list_stats_store_mat[[ panel, type ]]
+      sim_list       = sim_list_store_mat[[ panel ]]
+      sim_list_stats = sim_list_stats_store_mat[[ panel ]]
       
     } else {
         
-        sim_list       = read.table( sim_list_file, sep = "\t", header = T)
-        sim_list_stats = read.table( sim_list_stats_file, sep = "\t", header = T)
+      sim_list       = read.table( sim_list_file, sep = "\t", header = T)
+      sim_list_stats = read.table( sim_list_stats_file, sep = "\t", header = T)
         
-        sim_list_store_mat[[ panel, type ]] = sim_list
-        sim_list_stats_store_mat[[ panel, type ]] = sim_list_stats
+      sim_list_store_mat[[ panel ]] = sim_list
+      sim_list_stats_store_mat[[ panel ]] = sim_list_stats
     }
 
     print( panel  )
@@ -84,33 +82,29 @@ identify_vcf_file = function(
     passed_threshold_vec[ ( candidate_hits_abs >= 3 ) & ( candidate_hits_rel >= 2 ) ] = T
     passed_threshold_weighted = rep( "", nr_cls )
     
-    if (type == "weighted"){
-      
-       # aggregate over weights & CL identifier
-        
-        aggregation = stats::aggregate(
-          x  = as.double( sim_list$Weight[ found_mut_mapping  ] ),
-          by = list( as.character( sim_list$CL[ found_mut_mapping ] )  ),
-          FUN = sum
-        )
-        
-        aggregation_all = stats::aggregate( 
-          x  = as.double( sim_list$Weight ),
-          by = list( as.character( sim_list$CL ) ),
-          FUN = sum
-        )
-        
-        aggregation_all = aggregation_all[ match( list_of_cls, aggregation_all[, 1]  )  ,]
-        all_weighted    = aggregation_all[ match( list_of_cls, aggregation_all[, 1]  ), 2]
-        aggregation_match = match( aggregation[,1], as.character( list_of_cls )  )
-        
-        cl_weight[ aggregation_match ] = aggregation[ , 2 ]
-        cl_weight_rel = round( as.double( cl_weight ) / as.double( aggregation_all[ ,2 ] ) , 3 ) * 100
-        
-        passed_threshold_weighted = rep( F, nr_cls )
-        passed_threshold_weighted[ ( cl_weight >= 10 ) & ( candidate_hits_abs >= 2 ) ] = T
-
-    }
+    # aggregate over weights & CL identifier
+    
+    aggregation = stats::aggregate(
+      x  = as.double( sim_list$Weight[ found_mut_mapping  ] ),
+      by = list( as.character( sim_list$CL[ found_mut_mapping ] )  ),
+      FUN = sum
+    )
+    
+    aggregation_all = stats::aggregate( 
+      x  = as.double( sim_list$Weight ),
+      by = list( as.character( sim_list$CL ) ),
+      FUN = sum
+    )
+    
+    aggregation_all = aggregation_all[ match( list_of_cls, aggregation_all[, 1]  )  ,]
+    all_weighted    = aggregation_all[ match( list_of_cls, aggregation_all[, 1]  ), 2]
+    aggregation_match = match( aggregation[,1], as.character( list_of_cls )  )
+    
+    cl_weight[ aggregation_match ] = aggregation[ , 2 ]
+    cl_weight_rel = round( as.double( cl_weight ) / as.double( aggregation_all[ ,2 ] ) , 3 ) * 100
+    
+    passed_threshold_weighted = rep( F, nr_cls )
+    passed_threshold_weighted[ ( cl_weight >= 10 ) & ( candidate_hits_abs >= 2 ) ] = T
     
     ouput_cl_names = str_replace( as.character( list_of_cls ), pattern = paste0( "_", panel  ), replacement = "" )
     
@@ -126,34 +120,11 @@ identify_vcf_file = function(
       "Found_muts_weighted_rel"  = c( as.character( res_table$Found_muts_weighted_rel ),cl_weight_rel ),
       "Passed_threshold_weighted"= c( as.character( res_table$Passed_threshold_weighted), as.character( passed_threshold_weighted ) )
     )
-
-    # don't sort me bro!
-    
-    
   }
   
-  if (type == "weighted"){
-    
-    res_table = res_table[ order( as.double( res_table$Found_muts_weighted_rel ), decreasing = T),  ]
-    
-  } else {
-    
-    res_table = res_table[ order( as.double( res_table$Found_muts_rel ), decreasing = T),  ]
-    
-  }
+  res_table = res_table[ order( as.double( res_table$Found_muts_weighted_rel ), decreasing = T),  ]
   
-  if ( dim( res_table[ res_table$Passed_threshold ,])[1] == 1 ){
-    
-    print( paste0( "Candidate(s): ", paste0( ( res_table$CL_name[ res_table$Passed_treshold  ] ), collapse = "," ) )  )
-    
-  } else if ( dim( res_table[ res_table$Passed_threshold ,])[1] > 1 ){
-    
-    print( paste0( "Candidates: ", paste0( ( res_table$CL_name[ res_table$Passed_treshold  ] )[1:2], collapse = "," ) )  )
-    
-  } else {
-    
-    print( paste0("No CL mutational fingerprint with sufficient similarity found." ) )
-  }  
+  print( paste0( "Candidate(s): ", paste0( ( unique( as.character( res_table$CL )[ res_table$Passed_threshold_weighted == T  ]) ), collapse = "," ) )  )
   
   print( paste0("Storing information in table: ",output_file ) )
   write.table( res_table, output_file, sep ="\t", row.names = F, quote = F  )

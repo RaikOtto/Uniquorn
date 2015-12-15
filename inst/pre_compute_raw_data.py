@@ -172,7 +172,7 @@ def load_data( parser ):
 
 			print( 'Writing output' )
 
-			with open( parser.output_mut_dict + "_" + type_panel + ".tab", "w" ) as o_h:
+			with open( parser.o_ref_gen_path + "/Fingerprint_" +  type_panel + ".tab", "w" ) as o_h:
 
 					o_h.write( "\t".join( [ "Fingerprint", "CL","Weight" ] ) + "\r\n" )
 
@@ -186,14 +186,14 @@ def load_data( parser ):
 
 							o_h.write( "\t".join( [ fingerprint, member_cl, weight ] ) + "\r\n" )
 
-				with open( parser.output_stats_file_path + "_" + type_panel + ".tab", "w" ) as o_h:
+			with open( parser.o_ref_gen_path + "/Fingerprint_stats_" + type_panel + ".tab", "w" ) as o_h:
 
-					o_h.write( "\t".join( [ "CL", "Count" ] ) + "\r\n" )
+				o_h.write( "\t".join( [ "CL", "Count" ] ) + "\r\n" )
 
-					for CL in sorted( cl_db[ type_panel ].keys() ):
+				for CL in sorted( cl_db[ type_panel ].keys() ):
 
-						member_count = str( len( cl_db[   type_panel ][ CL ].keys() ) )
-						o_h.write( "\t".join( [ CL, member_count ] ) + "\r\n" )
+					member_count = str( len( cl_db[   type_panel ][ CL ].keys() ) )
+					o_h.write( "\t".join( [ CL, member_count ] ) + "\r\n" )
 
 		else:
 
@@ -204,14 +204,11 @@ def load_data( parser ):
 if __name__ == "__main__":
 
 	parser = argparse.ArgumentParser()
-	parser.add_argument('-ccle',	'--ccle_file',		type = str, help = 'Input file for ccle',				required = False)
-	parser.add_argument('-cosmic',	'--cosmic_file',	type = str, help = 'Input file for cosmic',		required = False)
-	parser.add_argument('-cellminer','--cellminer_file',type = str, help = 'Input  file for cellminer',	required = False)
-	parser.add_argument('-i_dbsnp',	'--pickle_dbsnp_file',type = str, help = 'pickle_output_file of db snp',	required = False, default = "")
-	parser.add_argument('-o_db',	'--output_db',		type = str, help = 'Path to output_db',	required = True)
-	parser.add_argument('-o_dict',	'--output_dict',	type = str, help = 'Path to output dictionary for cl information',	required = True)
-	parser.add_argument('-o_mut_dict',	'--output_mut_dict',	type = str, help = 'Path to output dictionary for cl information',	required = True)
-	parser.add_argument('-o_stats_file',	'--output_stats_file_path',	type = str, help = 'Path to output stats for amount of mutations in cls',	required = True)
+	parser.add_argument('-ccle',	'--ccle_file',				type = str, help = 'Input file for ccle',			required = False)
+	parser.add_argument('-cosmic',	'--cosmic_file',			type = str, help = 'Input file for cosmic',			required = False)
+	parser.add_argument('-cellminer','--cellminer_file',		type = str, help = 'Input  file for cellminer',		required = False)
+	parser.add_argument('-i_dbsnp',	'--pickle_dbsnp_file',		type = str, help = 'pickle_output_file of db snp',	required = False, default = "")
+	parser.add_argument('-o_ref_gen_path',	'--o_ref_gen_path',	type = str, help = 'Path to output_db',				required = True)
 	parser.add_argument('-filter_frequent',	'--filter_frequent_mutations', action='store_true',	help = 'Filter 50% most frequent mutations' , default = False)
 
 	parser = parser.parse_args()
