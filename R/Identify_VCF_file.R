@@ -72,7 +72,7 @@ identify_vcf_file = function(
       list_of_cls       = sort( unique( sim_list$CL ) )
       nr_cls            = length( list_of_cls  ) # amount cls
       found_mut_mapping = which( sim_list$Fingerprint %in% vcf_fingerprint ) # mapping
-      cl_match_stats    = match( sim_list_stats$CL, list_of_cls  ) # mapping
+      cl_match_stats    = match( list_of_cls, sim_list_stats$CL   ) # mapping
       
       candidate_hits_abs = table( sim_list$CL[ found_mut_mapping ] )
       candidate_hits_abs = as.integer( candidate_hits_abs[  match( names( candidate_hits_abs) , list_of_cls  )  ] )
