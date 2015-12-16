@@ -8,7 +8,7 @@
   initiate_uniquorn_database(cosmic_genotype_file = "CosmicCLP_MutantExport.tsv",
   cellminer_genotype_file = "DNA__Exome_Seq_none.txt",
   ccle_genotype_file = "CCLE_hybrid_capture1650_hg19_allVariants_2012.05.07.maf",
-  ucsc_db_snp_file = "snp142Common.txt", ref_gen = "hg19", weighted = T)
+  ucsc_db_snp_file = "snp142Common.txt", ref_gen = "hg19")
 }
 \description{
 Parses data into r list variable
