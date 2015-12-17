@@ -7,6 +7,8 @@ identify_vcf_file = function(
   ref_gen = "hg19" ){
   library("stringr")
   
+  message( paste0("Assuming reference genome ", ref_gen) )
+  
   print( paste0( "Creating fingerprint from VCF file ", vcf_file_path  ) )
   vcf_fingerprint = parse_vcf_file( vcf_file_path )
   
