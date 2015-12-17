@@ -6,7 +6,7 @@ parse_vcf_file = function( vcf_file_path  ){
   
   if ( file.exists( vcf_file_path ) ){
   
-    print( paste0("Reading VCF file: ", vcf_file_path)  )
+    print( paste0("Reading VCF file: ", vcf_file_path ) )
     
     vcf_handle = read.table( vcf_file_path, sep ="\t", header = F, comment.char = "#" )
     

@@ -13,7 +13,7 @@ identify_vcf_file = function(
   vcf_fingerprint = parse_vcf_file( vcf_file_path )
   
   sim_list_store_mat = matrix( list(), ncol = length( panels ) )
-  colnames(sim_list_store_mat) = panels
+  colnames( sim_list_store_mat ) = panels
   sim_list_stats_store_mat = matrix( list(), ncol = length( panels ) )
   colnames(sim_list_stats_store_mat) = panels
   
