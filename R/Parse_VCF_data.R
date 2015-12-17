@@ -8,39 +8,36 @@ parse_vcf_file = function( vcf_file_path  ){
   
     message( paste0("Found VCF file: ", vcf_file_path)  )
     
-    suppressPackageStartupMessages( require("VariantAnnotation") )
-    vcf_handle = readVcf( vcf_file_path, genome = "hg19" )
-    ranges     = rowRanges(vcf_handle)@ranges
-    start      = as.integer( unclass(ranges)@start )
-    len_mut    = as.integer( unclass(ranges)@width )
-    end        = start + len_mut - 1
+    #suppressPackageStartupMessages( require("VariantAnnotation") )
+    vcf_handle = read.table( vcf_file_path, sep ="\t", header = F, comment.char = "#" )
     
-    raw_chromosomes = unclass(ranges)@NAMES
-    parse_first_entry = function( chromosome_string ){ return( as.character( unlist( str_split( chromosome_string, ":" )  ) )[1] ) }
-    chromosomes = as.character( lapply( raw_chromosomes, FUN = parse_first_entry ) )
-    chromosomes = str_replace( chromosomes, "chr", "")
-    
-    vcf_fingerprint_mat = data.frame(
+    vcf_matrix = cbind(
       
-      "chromosomes" = chromosomes,
-      "start" = start,
-      "end" = end
+      str_replace( str_to_upper( vcf_handle[ , 1 ] ), "CHR", "" ),
+      as.integer( vcf_handle[ , 2 ] ),
+      str_to_upper( vcf_handle[ , 4 ] ) 
     )
     
-    vcf_fingerprint = apply( 
+    split_add = function( vcf_matrix_row ){
       
-      vcf_fingerprint_mat,
-      MARGIN = 1,
-      FUN = paste,
-      collapse = "_",
-      sep = ""
-    )
+      variations = as.character( unlist( str_split( vcf_matrix_row[3], "/" ) ) )
+      
+      chromosome = rep( vcf_matrix_row[1], length(variations)  )
+      start      = as.integer( rep( vcf_matrix_row[2], length(variations)  ) )
+      length_vec = unlist( lapply( str_split( variations, "" ), length  ) ) - 1
+      end        = start + length_vec
+      
+      fingerprint = as.character()
+      for ( i in 1:length( variations  ) ){ 
+        fingerprint = c( fingerprint, paste0( c(chromosome[i], start[i],end[i]), collapse = "_" ) )
+      }
+      
+      return( fingerprint )
+    }
     
-    vcf_fingerprint = toupper( vcf_fingerprint )
-    vcf_fingerprint = as.character( unlist( lapply( vcf_fingerprint, FUN = str_replace_all, " ", "") ) )
-    vcf_fingerprint = as.character( unlist( lapply( vcf_fingerprint, FUN = str_replace_all, "CHR", "") ) )
+    fingerprint  = apply( vcf_matrix, FUN = split_add, MARGIN = 1  )
     
-    return( vcf_fingerprint )
+    return( fingerprint )
     
   } else {
     
