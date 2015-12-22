@@ -48,12 +48,11 @@ initiate_canonical_databases = function(
   
   command_line = str_c( 
     c(  
-      'python',           path_to_python,
-      "-ccle ",           ccle_genotype_file,
-      "-cosmic ",         cosmic_genotype_file,
-      "-cellminer",       cellminer_genotype_file
-      #"-i_dbsnp",         path_to_python_dbsnp_python_parser_db,
-      #"-filter_frequent"
+      'python',     path_to_python,
+      "-ccle ",     ccle_genotype_file,
+      "-cosmic ",   cosmic_genotype_file,
+      "-cellminer", cellminer_genotype_file,
+      "-o_db_path", db_folder
     ),
     collapse = " "
   )
