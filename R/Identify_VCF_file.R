@@ -3,19 +3,20 @@
 identify_vcf_file = function( 
   vcf_file_path,
   output_path = "",
-  panels = c("CELLMINER","CCLE","COSMIC"),
   ref_gen = "hg19" ){
   library( "stringr" )
   
   message( paste0("Assuming reference genome ", ref_gen) )
   
+  ### pre processing
+  
+  path_to_python  = paste( system.file("", package="Uniquorn"),"pre_compute_raw_data.py", sep ="/")
+  
+  uni_db_path =  paste( db_folder, paste0( c( ref_gen , "uniquorn_db.sqlite3"), collapse = "_"), sep ="/" )
+  
+  # reading file
   print( paste0( "Creating fingerprint from VCF file ", vcf_file_path  ) )
   vcf_fingerprint = parse_vcf_file( vcf_file_path )
-  
-  sim_list_store_mat = matrix( list(), ncol = length( panels ) )
-  colnames( sim_list_store_mat ) = panels
-  sim_list_stats_store_mat = matrix( list(), ncol = length( panels ) )
-  colnames(sim_list_stats_store_mat) = panels
   
   if ( output_path == ""  ){
     
@@ -39,37 +40,17 @@ identify_vcf_file = function(
     "Found_muts_weighted_rel" = as.character(),
     "Count_mutations_weighted" = as.character(),
     "Passed_threshold_weighted" = as.character()
-  ) 
-
-  for( panel in panels ){
-
-    ref_gen_path = paste( system.file("", package = "Uniquorn"), ref_gen, sep ="/")
-    sim_list_file       = paste0( c( ref_gen_path, "/", "Fingerprint_",       panel, ".tab" ), collapse = "" )
-    sim_list_stats_file = paste0( c( ref_gen_path, "/", "Fingerprint_stats_", panel, ".tab" ), collapse = "" )
+  )
     
-    if ( ! file.exists(sim_list_file) ){
+    if ( ! file.exists( uni_db_path ) ){
       
-      message( paste0( "Did not find file: ", sim_list_file ) )
-      message( paste0( "Skipping panel: ", panel ) )
+      message( paste0( "Did not find database for reference genome : ", ref_gen ) )
+      
     } else {
 
-      print( paste0( "Loading similarity data from file ",  sim_list_file )  )
+      print( paste0( "Loading similarity database for reference genome ",  ref_gen )  )
       
-      if ( length( sim_list_store_mat[[ panel ]])  != 0 ){
-          
-        sim_list       = sim_list_store_mat[[ panel ]]
-        sim_list_stats = sim_list_stats_store_mat[[ panel ]]
-        
-      } else {
-          
-        sim_list       = read.table( sim_list_file, sep = "\t", header = T)
-        sim_list_stats = read.table( sim_list_stats_file, sep = "\t", header = T)
-          
-        sim_list_store_mat[[ panel ]] = sim_list
-        sim_list_stats_store_mat[[ panel ]] = sim_list_stats
-      }
-  
-      print( panel  )
+      
       
       list_of_cls       = sort( unique( sim_list$CL ) )
       nr_cls            = length( list_of_cls  ) # amount cls
@@ -129,7 +110,6 @@ identify_vcf_file = function(
         "Passed_threshold_weighted"= c( as.character( res_table$Passed_threshold_weighted), as.character( passed_threshold_weighted ) )
       )
       }
-  }
   
   res_table = res_table[ order( as.double( res_table$Found_muts_weighted_rel ), decreasing = T),  ]
   

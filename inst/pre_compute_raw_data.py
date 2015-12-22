@@ -47,20 +47,6 @@ def load_data( parser ):
 
 	# pre loading dbsnp
 
-	db_snp_mode = os.path.isfile( parser.pickle_dbsnp_file )
-
-	if db_snp_mode:
-
-		print "Reading DbSNP dump " + parser.pickle_dbsnp_file
-		unpickler = pickle.Unpickler( file( parser.pickle_dbsnp_file , "r"))
-		db_snp_d = unpickler.load()
-		snp_count = 0
-		print "Finished unpickling"
-		
-	else:
-		
-		print "Did not find UCSC python DbSNP file, e.g. "
-
 	for type_panel in [ "CellMiner", "CCLE", "COSMIC" ]:
 
 		if type_panel == 'COSMIC':
@@ -167,8 +153,6 @@ def load_data( parser ):
 						del stat_d[type_panel][fingerprint]
 
 				print "After filtering ", type_panel, ": " , len(stat_d[type_panel].keys())
-
-			if db_snp_mode: print "Excluded " + str(snp_count) + " many SNPs"
 
 			print( 'Writing output' )
 

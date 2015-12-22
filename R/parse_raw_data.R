@@ -5,6 +5,7 @@ initiate_canonical_databases = function(
     cosmic_genotype_file = "CosmicCLP_MutantExport.tsv",
     cellminer_genotype_file = 'DNA__Exome_Seq_none.txt',
     ccle_genotype_file = "CCLE_hybrid_capture1650_hg19_allVariants_2012.05.07.maf",
+    overwrite_old_db = F,
     ref_gen = "hg19"
   ){
   
@@ -16,7 +17,7 @@ initiate_canonical_databases = function(
   
   if (file.exists(cosmic_genotype_file)){
     
-    print( c( "Found CoSMIC: ", cosmic_genotype_file )  )
+    print( c( "Found CoSMIC: ", file.exists(ccle_genotype_file) )  )
     parse_files = c(parse_files, cosmic_genotype_file)
   }
   
@@ -39,12 +40,22 @@ initiate_canonical_databases = function(
   path_to_python  = paste( system.file("", package="Uniquorn"),"pre_compute_raw_data.py", sep ="/")
   db_folder       = system.file("", package="Uniquorn")
   
-  uni_db_path =  paste( db_folder, "uniquorn_db.sqlite3", sep ="/")
-  if ( file.exists(uni_db_path))
-    file.remove(uni_db_path)
-  uni_db  = src_sqlite( uni_db_path, create = T)
+  uni_db_path       =  paste( db_folder, paste0( c( ref_gen , "uniquorn_db.sqlite3"), collapse = "_"), sep ="/" )
+  uni_db_stats_path =  paste( db_folder, paste0( c( ref_gen , "uniquorn_db_stats.sqlite3"), collapse = "_"), sep ="/" )
+  
+  if ( overwrite_old_db){
+    if ( file.exists(uni_db_path))
+      file.remove(uni_db_path)
+    if ( file.exists(uni_db_stats_path))
+      file.remove(uni_db_stats_path)
+  }
+  
+  uni_db       = src_sqlite( uni_db_path, create = T)
+  uni_db_stats = src_sqlite( uni_db_stats_path, create = T)
   
   # python parser
+  
+  print("Started parsing")
   
   command_line = str_c( 
     c(  
@@ -95,19 +106,27 @@ initiate_canonical_databases = function(
     } else {
       sim_list_stats = rbind(sim_list_stats, read.table( sim_list_stats_file, sep = "\t", header = T))
     }
+    
+    file.remove(sim_list_file)
+    file.remove(sim_list_stats_file)
   }
   
+  uni_db       = src_sqlite( uni_db_path, create = T )
+  
   sim_list_df     = tbl_df(sim_list)
-  sim_list_sqlite = copy_to( uni_db, sim_list_df, temporary = FALSE, indexes = list(
+  sim_list_sqlite = copy_to( uni_db, sim_list_df, temporary = F, indexes = list(
     "Fingerprint",
     "CL",
     "Weight"
     )
   )
   
+  uni_db_stats = src_sqlite( uni_db_stats_path, create = T)
+  
   sim_list_stats_df     = tbl_df(sim_list_stats)
   sim_list_stats_sqlite = copy_to( 
-    uni_db, sim_list_stats_df, 
+    uni_db_stats, 
+    sim_list_stats_df, 
     temporary = FALSE,
     indexes = list(
       "CL",
@@ -115,4 +134,5 @@ initiate_canonical_databases = function(
     )
   )
   
+  print ("Finished initializing the canonical Cancer Cell line trainingssets")
 }
