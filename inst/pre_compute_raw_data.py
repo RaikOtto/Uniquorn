@@ -172,7 +172,7 @@ def load_data( parser ):
 
 			print( 'Writing output' )
 
-			with open( parser.o_ref_gen_path + "/Fingerprint_" +  type_panel + ".tab", "w" ) as o_h:
+			with open( parser.o_db_path + "/Fingerprint_" +  type_panel + ".tab", "w" ) as o_h:
 
 					o_h.write( "\t".join( [ "Fingerprint", "CL","Weight" ] ) + "\r\n" )
 
@@ -186,7 +186,7 @@ def load_data( parser ):
 
 							o_h.write( "\t".join( [ fingerprint, member_cl, weight ] ) + "\r\n" )
 
-			with open( parser.o_ref_gen_path + "/Fingerprint_stats_" + type_panel + ".tab", "w" ) as o_h:
+			with open( parser.o_db_path + "/Fingerprint_stats_" + type_panel + ".tab", "w" ) as o_h:
 
 				o_h.write( "\t".join( [ "CL", "Count" ] ) + "\r\n" )
 
@@ -208,7 +208,7 @@ if __name__ == "__main__":
 	parser.add_argument('-cosmic',	'--cosmic_file',			type = str, help = 'Input file for cosmic',			required = False)
 	parser.add_argument('-cellminer','--cellminer_file',		type = str, help = 'Input  file for cellminer',		required = False)
 	parser.add_argument('-i_dbsnp',	'--pickle_dbsnp_file',		type = str, help = 'pickle_output_file of db snp',	required = False, default = "")
-	parser.add_argument('-o_ref_gen_path',	'--o_ref_gen_path',	type = str, help = 'Path to output_db',				required = True)
+	parser.add_argument('-o_db_path',	'--o_db_path',	type = str, help = 'Path to output_db',				required = True)
 	parser.add_argument('-filter_frequent',	'--filter_frequent_mutations', action='store_true',	help = 'Filter 50% most frequent mutations' , default = False)
 
 	parser = parser.parse_args()

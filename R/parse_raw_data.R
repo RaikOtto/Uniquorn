@@ -1,50 +1,49 @@
 ### parse files
 #' Parses data into r list variable
 #' @export
-initiate_uniquorn_database = function( 
-    #cosmic_genotype_file = "CosmicCLP_CompleteExport.tsv",
+initiate_canonical_databases = function(
     cosmic_genotype_file = "CosmicCLP_MutantExport.tsv",
     cellminer_genotype_file = 'DNA__Exome_Seq_none.txt',
     ccle_genotype_file = "CCLE_hybrid_capture1650_hg19_allVariants_2012.05.07.maf",
-    ucsc_db_snp_file = 'snp142Common.txt',
     ref_gen = "hg19"
   ){
   
+  suppressPackageStartupMessages(library("plyr"))
+  suppressPackageStartupMessages(library("dplyr"))
   suppressPackageStartupMessages(library("stringr"))
-  message( c( "Found CoSMIC: ", file.exists(cosmic_genotype_file) )  )
-  message( c( "Found CCLE: ", file.exists(ccle_genotype_file) )  )
-  message( c( "Found CellMiner: ", file.exists(cellminer_genotype_file) )  )
-  message( c( "Found DbSNP: ", file.exists(ucsc_db_snp_file) )  )
-  message( c( "Reference genome: ", ref_gen )  )
+  
+  parse_files = c()
+  
+  if (file.exists(cosmic_genotype_file)){
+    
+    print( c( "Found CoSMIC: ", cosmic_genotype_file )  )
+    parse_files = c(parse_files, cosmic_genotype_file)
+  }
+  
+  if (file.exists(ccle_genotype_file)){
+    
+    print( c( "Found CCLE: ", file.exists(ccle_genotype_file) )  )
+    parse_files = c(parse_files, ccle_genotype_file)
+  }
+  
+  if (file.exists(cellminer_genotype_file)){
+    
+    print( c( "Found CellMiner: ", file.exists(cellminer_genotype_file) )  )
+    parse_files = c(parse_files, cellminer_genotype_file)
+  }
+  
+  print( c( "Reference genome: ", ref_gen )  )
   
   ### pre processing
-
-  #db snp integration
-
-  ref_gen_path = paste0( c( system.file("", package="Uniquorn"), "/", ref_gen ,"/" ), collapse = "")
-  dir.create( ref_gen_path, showWarnings = F)
-
-  path_to_python_dbsnp_python_parser    = paste( system.file("", package="Uniquorn"),"parse_db_snp.py", sep ="/")
-  path_to_python_dbsnp_python_parser_db = paste( ref_gen_path,"parse_db_snp_python.pickle", sep ="/")
-  path_to_python                        = paste( system.file("", package="Uniquorn"),"pre_compute_raw_data.py", sep ="/")
   
-  if (  file.exists( ucsc_db_snp_file  ) ){
-    
-    print( paste0( c( "Found DbSNP file",  ucsc_db_snp_file, ", preprocessing."), collapse = " " ) )
-    command_line = str_c(
-      c(  
-        'python', path_to_python_dbsnp_python_parser, 
-        "-i", ucsc_db_snp_file,
-        "-o", path_to_python_dbsnp_python_parser_db
-      ), 
-      collapse = " "
-    )
-      
-    if ( ! file.exists( path_to_python_dbsnp_python_parser_db ) )
-      system( command_line, ignore.stdout = F, intern = F )
-    print( "Finished DbSNP pre-processing" )
-  }
-
+  path_to_python  = paste( system.file("", package="Uniquorn"),"pre_compute_raw_data.py", sep ="/")
+  db_folder       = system.file("", package="Uniquorn")
+  
+  uni_db_path =  paste( db_folder, "uniquorn_db.sqlite3", sep ="/")
+  if ( file.exists(uni_db_path))
+    file.remove(uni_db_path)
+  uni_db  = src_sqlite( uni_db_path, create = T)
+  
   # python parser
   
   command_line = str_c( 
@@ -52,16 +51,69 @@ initiate_uniquorn_database = function(
       'python',           path_to_python,
       "-ccle ",           ccle_genotype_file,
       "-cosmic ",         cosmic_genotype_file,
-      "-cellminer",       cellminer_genotype_file,
-      "-o_ref_gen_path ", ref_gen_path,
-      "-i_dbsnp",         path_to_python_dbsnp_python_parser_db,
-      "-filter_frequent"
+      "-cellminer",       cellminer_genotype_file
+      #"-i_dbsnp",         path_to_python_dbsnp_python_parser_db,
+      #"-filter_frequent"
     ),
     collapse = " "
   )
   
   system( command_line, ignore.stdout = F, intern = F )
   
-  message("Parsing data finished")
-
+  message("Parsing data finished, loading sqlite database")
+  
+  if ( exists("sim_list"))
+    rm( sim_list )
+  if ( exists("sim_list_stats"))
+    rm( sim_list_stats )
+  
+  for( parse_file in parse_files ){
+   
+    if (parse_file == cosmic_genotype_file){
+      
+      panel = "cosmic"
+    
+    } else if (parse_file == ccle_genotype_file){
+      
+      panel = "ccle"
+      
+    } else if (parse_file == cellminer_genotype_file){
+      
+      panel = "cellminer"
+    }
+    
+    sim_list_file       = paste0( c( db_folder, "/", "Fingerprint_",       panel, ".tab" ), collapse = "" )
+    sim_list_stats_file = paste0( c( db_folder, "/", "Fingerprint_stats_", panel, ".tab" ), collapse = "" )
+    
+    if (! exists("sim_list")){
+      sim_list = read.table( sim_list_file, sep = "\t", header = T)
+    } else {
+      sim_list = rbind(sim_list, read.table( sim_list_file, sep = "\t", header = T))
+    }
+    
+    if (! exists("sim_list_stats")){
+      sim_list_stats = read.table( sim_list_stats_file, sep = "\t", header = T)
+    } else {
+      sim_list_stats = rbind(sim_list_stats, read.table( sim_list_stats_file, sep = "\t", header = T))
+    }
+  }
+  
+  sim_list_df     = tbl_df(sim_list)
+  sim_list_sqlite = copy_to( uni_db, sim_list_df, temporary = FALSE, indexes = list(
+    "Fingerprint",
+    "CL",
+    "Weight"
+    )
+  )
+  
+  sim_list_stats_df     = tbl_df(sim_list_stats)
+  sim_list_stats_sqlite = copy_to( 
+    uni_db, sim_list_stats_df, 
+    temporary = FALSE,
+    indexes = list(
+      "CL",
+      "Count"
+    )
+  )
+  
 }

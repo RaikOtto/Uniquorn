@@ -1,11 +1,11 @@
 #' Parses the vcf file and predicts the identity of the sample
 #' @export
 identify_vcf_file = function( 
-  vcf_file_path, 
-  output_path = "", 
-  panels = c("CELLMINER","CCLE","COSMIC"), 
+  vcf_file_path,
+  output_path = "",
+  panels = c("CELLMINER","CCLE","COSMIC"),
   ref_gen = "hg19" ){
-  library("stringr")
+  library( "stringr" )
   
   message( paste0("Assuming reference genome ", ref_gen) )
   

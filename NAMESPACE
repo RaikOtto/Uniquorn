@@ -3,6 +3,6 @@
 export(add_custom_vcf_to_uniquorn_db)
 export(create_sim_list)
 export(identify_vcf_file)
-export(initiate_uniquorn_database)
+export(initiate_canonical_databases)
 export(parse_vcf_file)
 export(remove_cl_from_uniquorn_db)

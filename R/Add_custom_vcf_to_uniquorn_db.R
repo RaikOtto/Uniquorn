@@ -36,7 +36,7 @@ add_custom_vcf_to_uniquorn_db = function( vcf_file_path, ref_gen = "hg19", name_
       sim_list            = read.table( sim_list_file, sep = "\t", header = T)
       sim_list_stats      = read.table( sim_list_stats_file, sep = "\t", header = T)
       
-      if ( ! name_cl %in% sim_list$CL   ){ 
+      if ( ! name_cl %in% sim_list$CL   ){
       
         sim_list_stats_file = paste0( c( ref_gen_path, "/", "Fingerprint_stats_", panel, ".tab" ), collapse = "" )
         
@@ -77,9 +77,8 @@ add_custom_vcf_to_uniquorn_db = function( vcf_file_path, ref_gen = "hg19", name_
         
         sim_list = rbind( sim_list, add_data )
         
-        write.table( sim_list, sim_list_file, sep ="\t", quote= F, row.names =F  )
-        write.table( sim_list_stats, sim_list_stats_file, sep ="\t", quote= F, row.names =F  )
-
+        write.table( sim_list, file = sim_list_file, sep ="\t", quote= F, row.names = F  )
+        write.table( sim_list_stats, file =  sim_list_stats_file, sep ="\t", quote= F, row.names =F  )
       
       } else {
         
