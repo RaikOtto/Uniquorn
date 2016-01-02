@@ -1,7 +1,7 @@
 #' Adds a custom vcf file to the three existing cancer cell line panels
 #' It is strongly recommended to filter the SNPs with a minor allel frequency of more than 0.01.
 #' @export
-add_custom_vcf_to_uniquorn_db = function( vcf_file_path, ref_gen = "hg19", name_cl = "" ){
+add_custom_vcf_to_uniquorn_db = function( vcf_file_path, ref_gen = "HG19", name_cl = "", safe_mode = T ){
     
   library("stringr")
   panels = c("CELLMINER","CCLE","COSMIC")

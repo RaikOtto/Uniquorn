@@ -112,15 +112,6 @@ def load_data( parser ):
 
 					fingerprint	= "_".join([chromosome,start_pos,end_pos]) # definition fp
 
-					# query for membership - non_unique version with db SNP
-
-					if db_snp_mode: # check if db snp dictionary is available
-
-						if db_snp_d.has_key(fingerprint): 
-
-							snp_count = snp_count + 1
-							continue
-
 					for cl_ident in ident_list:
 
 
