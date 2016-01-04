@@ -60,7 +60,7 @@ initiate_canonical_databases = function(
   )
   print("Finished parsing of raw data, transforming data")
   
-  system( command_line, ignore.stdout = F, intern = F )
+  #system( command_line, ignore.stdout = F, intern = F )
   
   if ( exists("sim_list"))
     rm( sim_list )
@@ -68,6 +68,7 @@ initiate_canonical_databases = function(
     rm( sim_list_stats )
   
   for( parse_file in parse_files ){
+  #for( parse_file in c("CCLE_hybrid_capture1650_hg19_allVariants_2012.05.07.maf") ){
    
     if (parse_file == cosmic_genotype_file){
       
@@ -82,8 +83,9 @@ initiate_canonical_databases = function(
       panel = "cellminer"
     }
     
-    sim_list_file       = paste0( c( db_folder, "/", "Fingerprint_",       panel, ".tab" ), collapse = "" )
-    sim_list_stats_file = paste0( c( db_folder, "/", "Fingerprint_stats_", panel, ".tab" ), collapse = "" )
+    print( paste( "Parsing: ", panel ), sep =" "  )
+    
+    sim_list_file = paste0( c( db_folder, "/", "Fingerprint_",       panel, ".tab" ), collapse = "" )
     
     if (! exists("sim_list")){
       sim_list = read.table( sim_list_file, sep = "\t", header = T)
@@ -91,22 +93,30 @@ initiate_canonical_databases = function(
       sim_list = rbind(sim_list, read.table( sim_list_file, sep = "\t", header = T))
     }
     
-    if (! exists("sim_list_stats")){
-      sim_list_stats = read.table( sim_list_stats_file, sep = "\t", header = T)
-    } else {
-      sim_list_stats = rbind(sim_list_stats, read.table( sim_list_stats_file, sep = "\t", header = T))
-    }
-    
-    file.remove(sim_list_file)
-    file.remove(sim_list_stats_file)
+    #file.remove(sim_list_file)
+    #file.remove(sim_list_stats_file)
   }
+  
+  print("Finished parsing, aggregating over Cancer Cell Lines")
+  member_var = rep( 1, dim(sim_list)[1] )
+  sim_list_stats = aggregate( member_var , by = list( sim_list$CL ), FUN = sum )
+  colnames(sim_list_stats) = c( "CL", "Count" )
+  
+  print("Aggregating over mutations to obtain mutational weight")
+
+  weights = aggregate( member_var , by = list( sim_list$Fingerprint ), FUN = sum )
+  weights$x = 1.0 / as.double( weights$x )
+  
+  mapping = match( as.character( sim_list$Fingerprint ), as.character( weights$Group.1) )
+  sim_list = cbind( sim_list, weights$x[mapping] )
+  colnames( sim_list )[3] = "Weight"
+  
+  print("Finished aggregating, writing to database")
   
   Ref_Gen = rep(ref_gen, dim(sim_list)[1]  )
   sim_list = cbind( sim_list, Ref_Gen )
   Ref_Gen = rep( ref_gen, dim(sim_list_stats)[1]  )
   sim_list_stats = cbind( sim_list_stats, Ref_Gen )
-  
-  print("Finished transforming data, writing to database")
   
   uni_db            = src_sqlite( uni_db_path, create = T )
   sim_list_df       = tbl_df( sim_list )
@@ -128,5 +138,5 @@ initiate_canonical_databases = function(
     )
   )
   
-  print ("Finished initializing the canonical Cancer Cell line trainingssets")
+  print ("Initialization of Uniquorn DB finished")
 }

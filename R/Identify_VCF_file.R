@@ -5,6 +5,8 @@ identify_vcf_file = function(
   output_file = "",
   ref_gen = "HG19" ){
   library( "stringr" )
+  library( "dplyr" )
+  library( "plyr" )
   
   message( paste0("Assuming reference genome ", ref_gen) )
   
@@ -15,11 +17,11 @@ identify_vcf_file = function(
   uni_db_path     =  paste( package_path, "uniquorn_db.sqlite3", sep ="/" )
   
   # reading file
-  print( paste0( "Creating fingerprint from VCF file ", vcf_file_path  ) )
-  vcf_fingerprint = parse_vcf_file( vcf_file_path )
+  print( paste0( "Creating fingerprint from VCF file ", vcf_file  ) )
+  vcf_fingerprint = parse_vcf_file( vcf_file )
   
   if ( output_file == ""  )
-    output_file = paste( vcf_file_path, "uniquorn_ident.tab", sep ="_")
+    output_file = paste( vcf_file, "uniquorn_ident.tab", sep ="_")
     
   if ( ! file.exists( uni_db_path ) ){
     
@@ -84,7 +86,7 @@ identify_vcf_file = function(
       all_weighted    = aggregation_all[ match( list_of_cls, aggregation_all[, 1]  ), 2]
       aggregation_match = match( aggregation[,1], as.character( list_of_cls )  )
       
-      cl_weight[ aggregation_match ] = aggregation[ , 2 ]
+      cl_weight[ aggregation_match ] = round(aggregation[ , 2 ],0)
       cl_weight_rel = round( as.double( cl_weight ) / as.double( aggregation_all[ ,2 ] ) , 3 ) * 100
       
       # match value
@@ -111,7 +113,7 @@ identify_vcf_file = function(
         "Found_muts_rel"           = as.character(  candidate_hits_rel ),
         "Match_value"              = as.character( match_value ),
         "Found_muts_weighted"      = as.character( cl_weight ),
-        "Count_mutations_weighted" = as.character(  all_weighted ),
+        "Count_mutations_weighted" = as.character( round( all_weighted, 0 ) ),
         "Found_muts_weighted_rel"  = as.character( cl_weight_rel ),
         "Passed_threshold_weighted"= as.character( passed_threshold_weighted )
       )
