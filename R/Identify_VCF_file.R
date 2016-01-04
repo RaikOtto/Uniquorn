@@ -1,8 +1,8 @@
 #' Parses the vcf file and predicts the identity of the sample
 #' @export
 identify_vcf_file = function( 
-  vcf_file_path,
-  output_path = "",
+  vcf_file,
+  output_file = "",
   ref_gen = "HG19" ){
   library( "stringr" )
   
@@ -18,21 +18,14 @@ identify_vcf_file = function(
   print( paste0( "Creating fingerprint from VCF file ", vcf_file_path  ) )
   vcf_fingerprint = parse_vcf_file( vcf_file_path )
   
-  if ( output_path == ""  ){
+  if ( output_file == ""  )
+    output_file = paste( vcf_file_path, "uniquorn_ident.tab", sep ="_")
     
-    output_file = paste( vcf_file_path, "ident.tab", sep ="_")
+  if ( ! file.exists( uni_db_path ) ){
     
+    message( paste0( "Did not find database for reference genome : ", ref_gen ) )
+      
   } else {
-    
-    output_file = paste( paste0( output_path, tail( unlist(str_split(vcf_file_path, "/" ) ), 1 )  ), ".tab", sep ="_ident")
-    
-  }
-    
-    if ( ! file.exists( uni_db_path ) ){
-      
-      message( paste0( "Did not find database for reference genome : ", ref_gen ) )
-      
-    } else {
 
       print( paste0( "Loading similarity database for reference genome ",  ref_gen )  )
       
