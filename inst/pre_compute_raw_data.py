@@ -93,8 +93,6 @@ def load_data( parser ):
 
 			# filter part
 
-			print "Mutations ", type_panel, ": " , len(stat_d[type_panel].keys())
-
 			print( 'Writing output' )
 
 			with open( parser.o_db_path + "/Fingerprint_" +  type_panel + ".tab", "w" ) as o_h:
