@@ -58,7 +58,7 @@ initiate_canonical_databases = function(
     ),
     collapse = " "
   )
-  print("Finished parsing of raw data, transforming data")
+  print("Finished pre-calculation of raw data, parsing pre-calculated data")
   
   system( command_line, ignore.stdout = F, intern = F )
   
@@ -68,7 +68,6 @@ initiate_canonical_databases = function(
     rm( sim_list_stats )
   
   for( parse_file in parse_files ){
-  #for( parse_file in c("CCLE_hybrid_capture1650_hg19_allVariants_2012.05.07.maf") ){
    
     if (parse_file == cosmic_genotype_file){
       
@@ -97,12 +96,12 @@ initiate_canonical_databases = function(
     #file.remove(sim_list_stats_file)
   }
   
-  print("Finished parsing, aggregating over Cancer Cell Lines")
+  print("Finished parsing, aggregating over parsed Cancer Cell Line data")
   member_var = rep( 1, dim(sim_list)[1] )
   sim_list_stats = aggregate( member_var , by = list( sim_list$CL ), FUN = sum )
   colnames(sim_list_stats) = c( "CL", "Count" )
   
-  print("Aggregating over mutations to obtain mutational weight")
+  print("Aggregating over mutational frequency to obtain mutational weight")
 
   weights = aggregate( member_var , by = list( sim_list$Fingerprint ), FUN = sum )
   weights$x = 1.0 / as.double( weights$x )

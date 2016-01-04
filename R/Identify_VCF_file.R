@@ -4,9 +4,9 @@ identify_vcf_file = function(
   vcf_file,
   output_file = "",
   ref_gen = "HG19" ){
-  library( "stringr" )
-  library( "dplyr" )
-  library( "plyr" )
+  suppressPackageStartupMessages( library( "stringr" ) )
+  suppressPackageStartupMessages( library( "dplyr" ) )
+  suppressPackageStartupMessages( library( "plyr" ) )
   
   message( paste0("Assuming reference genome ", ref_gen) )
   
@@ -17,7 +17,6 @@ identify_vcf_file = function(
   uni_db_path     =  paste( package_path, "uniquorn_db.sqlite3", sep ="/" )
   
   # reading file
-  print( paste0( "Creating fingerprint from VCF file ", vcf_file  ) )
   vcf_fingerprint = parse_vcf_file( vcf_file )
   
   if ( output_file == ""  )
@@ -29,12 +28,17 @@ identify_vcf_file = function(
     message("CCLE & CoSMIC CLP cancer cell line fingerprint NOT found, defaulting to 65 CellMiner cancer cell lines! We strongly advise to add CCLE & CoSMIC, see readme.")
   }
     
-  message( paste0( "Did not find database for reference genome : ", ref_gen ) )
+  #message( paste0( "Did not find database for reference genome : ", ref_gen ) )
 
   print( paste0( "Loading similarity database for reference genome ",  ref_gen )  )
   
   sim_list = as.data.frame( tbl( src_sqlite( uni_db_path ), "sim_list_df" ), n = -1 )
+  
+  sim_list = sim_list[ sim_list$Ref_Gen == ref_gen  ,]
+  print(paste0( c("Found ", as.character( length( unique(sim_list$CL) ) ), " many CLs for reference genome ", ref_gen ), collapse = "" ) )
+  
   sim_list_stats = as.data.frame( tbl( src_sqlite( uni_db_path ), "sim_list_stats_df" ), n = -1 )
+  sim_list_stats = sim_list_stats[ sim_list_stats$Ref_Gen == ref_gen  ,]
   
   list_of_cls       = unique( sim_list$CL )
   nr_cls            = length( list_of_cls  ) # amount cls
@@ -47,7 +51,7 @@ identify_vcf_file = function(
   candidate_hits_abs_all = rep(0, nr_cls)
   names(candidate_hits_abs_all) = list_of_cls
   
-  candidate_hits_abs= aggregate( 
+  candidate_hits_abs = aggregate( 
     rep(1, length(found_mut_mapping)), 
     by = list(sim_list$CL[ found_mut_mapping ]), 
     FUN = sum
