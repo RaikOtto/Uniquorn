@@ -58,7 +58,6 @@ initiate_canonical_databases = function(
     ),
     collapse = " "
   )
-  print("Finished pre-calculation of raw data, parsing pre-calculated data")
   
   system( command_line, ignore.stdout = F, intern = F )
   

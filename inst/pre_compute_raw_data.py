@@ -111,7 +111,7 @@ def load_data( parser ):
 
 			print "Could not find file: " + in_file
 
-	print("Finished data parsing")
+	print("Finished pre-calculation of raw data, parsing pre-calculated data")
 
 if __name__ == "__main__":
 

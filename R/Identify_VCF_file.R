@@ -8,8 +8,6 @@ identify_vcf_file = function(
   suppressPackageStartupMessages( library( "dplyr" ) )
   suppressPackageStartupMessages( library( "plyr" ) )
   
-  message( paste0("Assuming reference genome ", ref_gen) )
-  
   ### pre processing
   
   package_path    = system.file("", package="Uniquorn")
@@ -27,10 +25,10 @@ identify_vcf_file = function(
     uni_db_path = paste( package_path, "uniquorn_db_default.sqlite3", sep ="/" )
     message("CCLE & CoSMIC CLP cancer cell line fingerprint NOT found, defaulting to 65 CellMiner cancer cell lines! We strongly advise to add CCLE & CoSMIC, see readme.")
   }
+  
+  message( paste0("Assuming reference genome ", ref_gen) )
     
   #message( paste0( "Did not find database for reference genome : ", ref_gen ) )
-
-  print( paste0( "Loading similarity database for reference genome ",  ref_gen )  )
   
   sim_list = as.data.frame( tbl( src_sqlite( uni_db_path ), "sim_list_df" ), n = -1 )
   
@@ -103,7 +101,7 @@ identify_vcf_file = function(
   # treshold
   
   passed_threshold_weighted = rep( F, nr_cls )
-  passed_threshold_weighted[ (cl_weight_rel >= 5.0) & ( match_value >= .5 ) ] = T
+  passed_threshold_weighted[ (cl_weight_rel >= 5.0) & ( match_value >= .3 ) ] = T
   
   output_cl_names = str_replace( list_of_cls, pattern = "_CCLE|_COSMIC|_CELLMINER", replacement = "" )
   panel_vec = rep("", length( output_cl_names ))
