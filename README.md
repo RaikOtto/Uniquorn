@@ -4,7 +4,7 @@ Package to identify cancer cell lines based on their weighted mutational fingerp
 
 # How to make it work: 
 
-# 0 Start R, e.g. as R-Studio session
+Start R
 
 # 1 Preparation 
 
