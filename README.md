@@ -1,6 +1,6 @@
 # Uniquorn R package
 
-Package to identify cancer cell lines based on their unique somatic mutational fingerprint.
+Package to identify cancer cell lines based on their weighted mutational fingerprint.
 
 # How to make it work: 
 
