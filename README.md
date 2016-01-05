@@ -6,7 +6,9 @@ Package to identify cancer cell lines based on their unique somatic mutational f
 
 # 0 Start R, e.g. as R-Studio session
 
-# 1 Preparation # optional if you have the packages installed and loaded
+# 1 Preparation 
+
+ optional if you have the packages installed and loaded
 
 `install.packages("devtools")`
 
@@ -20,7 +22,9 @@ Package to identify cancer cell lines based on their unique somatic mutational f
 
 `library("Uniquorn")`
 
-# 3 Load example data, here the NCI-60 exome sequencing HT29 Cancer Cell line
+# 3 Test run
+
+ Here the NCI-60 exome sequenced HT29 Cancer Cell line
 
 `HT29_CL_VCF = paste( system.file("extdata", package="Uniquorn"), "HT29.vcf.gz", sep ="/")`
 
