@@ -14,8 +14,6 @@ Package to identify cancer cell lines based on their unique somatic mutational f
 
 `source("https://bioconductor.org/biocLite.R")`
 
-`biocLite("VariantAnnotation")`
-
 2 Install the Uniquorn
 
 `install_github("RaikOtto/Uniquorn")`
@@ -31,13 +29,26 @@ Package to identify cancer cell lines based on their unique somatic mutational f
 4 Run test analysis
 
 `identify_vcf_file( HT29_CL_VCF  )`
+Please add the CCLE and CoSMIC CLP Cancer Cell Line (CL) data manually due to legal regulations! Else only the vanilla 62 CellMiner CLs will be available for identification. You can however manually add custom CLs.
 
-Under active development!
+5 Add CCLE and CoSMIC CLP CL data
+
+Download into e.g. '~/Downloads' the files 
+
+'CosmicCLP_MutantExport.tsv'
+
+from http://cancer.sanger.ac.uk/cell_lines/download
+
+'CCLE_hybrid_capture1650_hg19_allVariants_2012.05.07.maf'
+
+http://www.broadinstitute.org/ccle/data/browseData?conversationPropagation=begin
+
+# go to R
+
+`setwd('~/Downloads')`
+
+`initiate_canonical_databases()`
 
 Contact: raik.otto@hu-berlin.de
 
-Additional information:
 
-You can find suitable DbSNP data for creating your own signatures here http://hgdownload.cse.ucsc.edu/goldenPath/hg19/database/
-Filename: snp142Common.txt
-Place the file in the raw data parser folder
