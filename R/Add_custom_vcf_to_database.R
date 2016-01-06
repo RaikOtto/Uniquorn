@@ -67,13 +67,29 @@ add_custom_vcf_to_database = function( vcf_file_path, ref_gen = "HG19", name_cl 
       sim_list_stats = aggregate( member_var , by = list( sim_list$CL ), FUN = sum )
       colnames(sim_list_stats) = c( "CL", "Count" )
       
-      print("Writing into DB")
+      print("Writing to DB")
       
       if (file.exists(uni_db_path))
         file.remove( uni_db_path )
       uni_db   = src_sqlite( uni_db_path, create = T )
       
+      copy_to( uni_db, sim_list_df, temporary = F, 
+        indexes = list(
+          "Fingerprint",
+          "CL",
+          "Weight",
+          "Ref_Gen"
+        )
+      )
       
+      copy_to( uni_db, sim_list_stats_df, temporary = F,
+         indexes = list(
+           "CL",
+           "Count",
+           "Ref_Gen"
+         )
+      )
+      print("Finished writing to database")
     }
   } else {
     

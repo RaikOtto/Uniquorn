@@ -108,11 +108,12 @@ initiate_canonical_databases = function(
   sim_list_df       = tbl_df( sim_list )
   sim_list_stats_df = tbl_df( sim_list_stats )
   
-  copy_to( uni_db, sim_list_df, temporary = F, indexes = list(
-    "Fingerprint",
-    "CL",
-    "Weight",
-    "Ref_Gen"
+  copy_to( uni_db, sim_list_df, temporary = F, 
+    indexes = list(
+      "Fingerprint",
+      "CL",
+      "Weight",
+      "Ref_Gen"
     )
   )
   
