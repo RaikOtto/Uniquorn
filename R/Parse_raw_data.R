@@ -48,7 +48,7 @@ initiate_canonical_databases = function(
     c(  
       'python',     path_to_python,
       "-ccle ",     ccle_genotype_file,
-      "-cosmic ",   cosmic_genotype_file
+      "-cosmic ",   cosmic_genotype_file,
       "-o_db_path", db_folder
     ),
     collapse = " "
