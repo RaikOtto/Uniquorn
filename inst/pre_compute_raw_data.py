@@ -34,7 +34,7 @@ def load_data( parser ):
 
 		# iterate over mutations
 
-		if os.path.exists( in_file ):
+		if ( ( in_file != "" ) and os.path.exists( in_file ) ) :
 
 			print( 'Parsing '+ in_file )
 
@@ -116,9 +116,9 @@ def load_data( parser ):
 if __name__ == "__main__":
 
 	parser = argparse.ArgumentParser()
-	parser.add_argument('-ccle',	'--ccle_file',				type = str, help = 'Input file for ccle',			required = False)
-	parser.add_argument('-cosmic',	'--cosmic_file',			type = str, help = 'Input file for cosmic',			required = False)
-	parser.add_argument('-cellminer','--cellminer_file',		type = str, help = 'Input  file for cellminer',		required = False)
+	parser.add_argument('-ccle',	'--ccle_file',				type = str, help = 'Input file for ccle',			required = False, default ="")
+	parser.add_argument('-cosmic',	'--cosmic_file',			type = str, help = 'Input file for cosmic',			required = False, default ="")
+	parser.add_argument('-cellminer','--cellminer_file',		type = str, help = 'Input  file for cellminer',		required = False, default ="")
 	parser.add_argument('-o_db_path',	'--o_db_path',	type = str, help = 'Path to output_db',				required = True)
 
 	parser = parser.parse_args()
