@@ -6,7 +6,6 @@
 \usage{
 
   initiate_canonical_databases(cosmic_genotype_file = "CosmicCLP_MutantExport.tsv",
-  cellminer_genotype_file = "DNA__Exome_Seq_none.txt",
   ccle_genotype_file = "CCLE_hybrid_capture1650_hg19_allVariants_2012.05.07.maf",
   ref_gen = "HG19")
 }

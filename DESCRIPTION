@@ -3,10 +3,12 @@ Title: Identification of cancer cell lines based on their unique somatic
     mutational fingerprint
 Version: 0.1
 Authors@R: person("Raik", "Otto", email = "raik.otto@hu-berlin.de", role = c("aut", "cre"))
-Description: R framework for identification of cancer cell lines based on their
-    unique mutational fingerprint
+Description: This packages allows to identify cancer cell lines based on their
+    weighted mutational fingerprint. VCF files containing a single cancer cell line sample are the expected input. 
+    It is optimized for  from Next-generation whole exome or whole genome sequenced cancer cell lines. 
 Depends:
     stringr, plyr, dplyr, R (>= 3.1.2)
+Suggests: Python (>= 2.6)
 License: Artistic-2.0
 LazyData: TRUE
 Type: Package

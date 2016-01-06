@@ -3,7 +3,6 @@
 #' @export
 initiate_canonical_databases = function(
     cosmic_genotype_file = "CosmicCLP_MutantExport.tsv",
-    cellminer_genotype_file = 'DNA__Exome_Seq_none.txt',
     ccle_genotype_file = "CCLE_hybrid_capture1650_hg19_allVariants_2012.05.07.maf",
     ref_gen = "HG19"
   ){
@@ -16,22 +15,16 @@ initiate_canonical_databases = function(
   
   if (file.exists(cosmic_genotype_file)){
     
-    print( c( "Found CoSMIC: ", file.exists(ccle_genotype_file) )  )
+    print( c( "Found CoSMIC: ", file.exists(cosmic_genotype_file) )  )
     parse_files = c(parse_files, cosmic_genotype_file)
   }
   
   if (file.exists(ccle_genotype_file)){
     
-    print( c( "Found CCLE: ", file.exists(ccle_genotype_file) )  )
+    print( c( "Found CCLE: ", file.exists( ccle_genotype_file ) )  )
     parse_files = c(parse_files, ccle_genotype_file)
   }
-  
-  if (file.exists(cellminer_genotype_file)){
-    
-    print( c( "Found CellMiner: ", file.exists(cellminer_genotype_file) )  )
-    parse_files = c(parse_files, cellminer_genotype_file)
-  }
-  
+
   print( c( "Reference genome: ", ref_gen )  )
   
   ### pre processing
@@ -40,9 +33,10 @@ initiate_canonical_databases = function(
   db_folder       = system.file("", package="Uniquorn")
   
   uni_db_path       =  paste( db_folder, "uniquorn_db.sqlite3", sep ="/" )
+  uni_db_default_path =  paste( db_folder, "uniquorn_db_default.sqlite3", sep ="/" )
 
   if ( file.exists(uni_db_path) )
-    file.remove(uni_db_path)
+    file.copy( uni_db_default_path, uni_db_path)
 
   # python parser
   
@@ -76,9 +70,6 @@ initiate_canonical_databases = function(
       
       panel = "ccle"
       
-    } else if (parse_file == cellminer_genotype_file){
-      
-      panel = "cellminer"
     }
     
     print( paste( "Parsing: ", panel ), sep =" "  )

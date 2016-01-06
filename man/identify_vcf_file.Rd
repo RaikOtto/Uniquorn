@@ -4,7 +4,8 @@
 \alias{identify_vcf_file}
 \title{Parses the vcf file and predicts the identity of the sample}
 \usage{
-identify_vcf_file(vcf_file_path, output_path = "", ref_gen = "hg19")
+identify_vcf_file(vcf_file, output_file = "", ref_gen = "HG19",
+  unique_mode = F)
 }
 \description{
 Parses the vcf file and predicts the identity of the sample

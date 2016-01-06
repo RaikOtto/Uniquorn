@@ -3,7 +3,7 @@
 #' @export
 add_custom_vcf_to_uniquorn_db = function( vcf_file_path, ref_gen = "HG19", name_cl = "", safe_mode = T ){
     
-  library("stringr")
+  suppressPackageStartupMessages( library("stringr") )
   panels = c("CELLMINER","CCLE","COSMIC")
   ref_gen_path = paste( system.file("", package = "Uniquorn"), ref_gen, sep ="/" )
   
