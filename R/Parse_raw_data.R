@@ -37,16 +37,16 @@ initiate_canonical_databases = function(
   sim_list = as.data.frame( tbl( src_sqlite( uni_db_default_path ), "sim_list_df" ), n = -1 )
   sim_list = sim_list[, which( colnames(sim_list) != "Ref_Gen"  ) ]
   sim_list = sim_list[, which( colnames(sim_list) != "Weight"  ) ]
-  
+
   # overwrite existing db
   if (file.exists(uni_db_path))
     file.remove( uni_db_path )
   uni_db   = src_sqlite( uni_db_path, create = T )
-  
+
   # python parser
-  
-  print("Started pre-calculating")
-  
+
+  print("Started pre-calculations")
+
   command_line = str_c( 
     c(  
       'python',     path_to_python,
