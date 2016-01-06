@@ -36,7 +36,7 @@ def load_data( parser ):
 
 		if ( ( in_file != "" ) and os.path.exists( in_file ) ) :
 
-			print( 'Parsing '+ in_file )
+			print( 'Pre-calculating '+ in_file )
 
 			with open( in_file ) as i_h:
 

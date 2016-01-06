@@ -34,15 +34,18 @@ initiate_canonical_databases = function(
   
   uni_db_path       =  paste( db_folder, "uniquorn_db.sqlite3", sep ="/" )
   uni_db_default_path =  paste( db_folder, "uniquorn_db_default.sqlite3", sep ="/" )
-
+  sim_list = as.data.frame( tbl( src_sqlite( uni_db_default_path ), "sim_list_df" ), n = -1 )
+  sim_list = sim_list[, which( colnames(sim_list) != "Ref_Gen"  ) ]
+  sim_list = sim_list[, which( colnames(sim_list) != "Weight"  ) ]
+  
   # overwrite existing db
-  file.copy( uni_db_default_path, uni_db_path)
-  uni_db   = src_sqlite( uni_db_path, create = F )
-  sim_list = as.data.frame( tbl( src_sqlite( uni_db_path ), "sim_list_df" ), n = -1 )
+  if (file.exists(uni_db_path))
+    file.remove( uni_db_path )
+  uni_db   = src_sqlite( uni_db_path, create = T )
   
   # python parser
   
-  print("Started parsing")
+  print("Started pre-calculating")
   
   command_line = str_c( 
     c(  
@@ -74,7 +77,7 @@ initiate_canonical_databases = function(
     print( paste( "Parsing: ", panel ), sep =" "  )
     
     sim_list_file = paste0( c( db_folder, "/", "Fingerprint_",       panel, ".tab" ), collapse = "" )
-    sim_list = rbind(sim_list, read.table( sim_list_file, sep = "\t", header = T))
+    sim_list      = rbind( sim_list, read.table( sim_list_file, sep = "\t", header = T))
     
     #file.remove(sim_list_file)
     #file.remove(sim_list_stats_file)
