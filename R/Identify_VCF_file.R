@@ -140,7 +140,7 @@ identify_vcf_file = function(
   
   res_table = res_table[ order( as.double( as.character( res_table$Found_muts_weighted_rel) ), decreasing = T),  ]
   
-  print( paste0( "Candidate(s): ", paste0( ( unique( as.character( res_table$CL )[ res_table$Passed_threshold_weighted == T  ]) ), collapse = "," ) )  )
+  print( paste0( "Candidate(s): ", paste0( ( unique( as.character( res_table$CL )[ res_table$Passed_threshold == T  ]) ), collapse = "," ) )  )
   
   print( paste0("Storing information in table: ",output_file ) )
   write.table( res_table, output_file, sep ="\t", row.names = F, quote = F  )
