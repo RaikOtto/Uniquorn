@@ -35,9 +35,11 @@ initiate_canonical_databases = function(
   uni_db_path       =  paste( db_folder, "uniquorn_db.sqlite3", sep ="/" )
   uni_db_default_path =  paste( db_folder, "uniquorn_db_default.sqlite3", sep ="/" )
 
-  if ( file.exists(uni_db_path) )
-    file.copy( uni_db_default_path, uni_db_path)
-
+  # overwrite existing db
+  file.copy( uni_db_default_path, uni_db_path)
+  uni_db   = src_sqlite( uni_db_path, create = F )
+  sim_list = as.data.frame( tbl( src_sqlite( uni_db_path ), "sim_list_df" ), n = -1 )
+  
   # python parser
   
   print("Started parsing")
@@ -55,8 +57,6 @@ initiate_canonical_databases = function(
   
   system( command_line, ignore.stdout = F, intern = F )
   
-  if ( exists("sim_list"))
-    rm( sim_list )
   if ( exists("sim_list_stats"))
     rm( sim_list_stats )
   
@@ -75,12 +75,7 @@ initiate_canonical_databases = function(
     print( paste( "Parsing: ", panel ), sep =" "  )
     
     sim_list_file = paste0( c( db_folder, "/", "Fingerprint_",       panel, ".tab" ), collapse = "" )
-    
-    if (! exists("sim_list")){
-      sim_list = read.table( sim_list_file, sep = "\t", header = T)
-    } else {
-      sim_list = rbind(sim_list, read.table( sim_list_file, sep = "\t", header = T))
-    }
+    sim_list = rbind(sim_list, read.table( sim_list_file, sep = "\t", header = T))
     
     #file.remove(sim_list_file)
     #file.remove(sim_list_stats_file)
