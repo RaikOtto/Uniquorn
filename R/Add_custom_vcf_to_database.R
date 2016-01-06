@@ -72,6 +72,8 @@ add_custom_vcf_to_database = function( vcf_file_path, ref_gen = "HG19", name_cl 
       if (file.exists(uni_db_path))
         file.remove( uni_db_path )
       uni_db   = src_sqlite( uni_db_path, create = T )
+      sim_list_df       = tbl_df( sim_list )
+      sim_list_stats_df = tbl_df( sim_list_stats )
       
       copy_to( uni_db, sim_list_df, temporary = F, 
         indexes = list(
