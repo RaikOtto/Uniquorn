@@ -3,7 +3,8 @@
 identify_vcf_file = function( 
   vcf_file,
   output_file = "",
-  ref_gen = "HG19" ){
+  ref_gen = "HG19",
+  unique_mode = F){
   suppressPackageStartupMessages( library( "stringr" ) )
   suppressPackageStartupMessages( library( "dplyr" ) )
   suppressPackageStartupMessages( library( "plyr" ) )
@@ -37,6 +38,15 @@ identify_vcf_file = function(
   
   sim_list_stats = as.data.frame( tbl( src_sqlite( uni_db_path ), "sim_list_stats_df" ), n = -1 )
   sim_list_stats = sim_list_stats[ sim_list_stats$Ref_Gen == ref_gen  ,]
+  
+  if ( unique_mode  ){
+    
+    print("Unique mode, only using mutations that are unique to cancer cell lines")
+    
+    sim_list = sim_list[ sim_list$Weight == 1 ,  ]
+    sim_list_stats = aggregate( as.double( sim_list$Weight ), by = list( sim_list$CL), FUN = sum  )
+    colnames( sim_list_stats ) = c("CL","Count")
+  }
   
   list_of_cls       = unique( sim_list$CL )
   nr_cls            = length( list_of_cls  ) # amount cls
@@ -103,6 +113,12 @@ identify_vcf_file = function(
   passed_threshold_weighted = rep( F, nr_cls )
   passed_threshold_weighted[ (cl_weight_rel >= 5.0) & ( match_value >= .3 ) ] = T
   
+  if( unique_mode ){
+    
+    passed_threshold_weighted = rep( F, nr_cls )
+    passed_threshold_weighted[ ( candidate_hits_abs_all >= 3.0) & ( candidate_hits_rel >= .05 ) ] = T
+  }
+
   output_cl_names = str_replace( list_of_cls, pattern = "_CCLE|_COSMIC|_CELLMINER", replacement = "" )
   panel_vec = rep("", length( output_cl_names ))
   panel_vec[ str_detect( list_of_cls, "_CCLE" ) ] = "CCLE"
@@ -119,7 +135,7 @@ identify_vcf_file = function(
     "Found_muts_weighted"      = as.character( cl_weight ),
     "Count_mutations_weighted" = as.character( round( all_weighted, 0 ) ),
     "Found_muts_weighted_rel"  = as.character( cl_weight_rel ),
-    "Passed_threshold_weighted"= as.character( passed_threshold_weighted )
+    "Passed_threshold"         = as.character( passed_threshold_weighted )
   )
   
   res_table = res_table[ order( as.double( as.character( res_table$Found_muts_weighted_rel) ), decreasing = T),  ]
