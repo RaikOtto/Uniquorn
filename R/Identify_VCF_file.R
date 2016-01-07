@@ -4,6 +4,7 @@ identify_vcf_file = function(
   vcf_file,
   output_file = "",
   ref_gen = "HG19",
+  similarity_threshold = 15.0,
   unique_mode = F){
   
   suppressPackageStartupMessages( library( "stringr" ) )
