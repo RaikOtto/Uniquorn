@@ -10,31 +10,35 @@ parse_vcf_file = function( vcf_file_path  ){
     
     vcf_handle = read.table( vcf_file_path, sep ="\t", header = F, comment.char = "#", fill = T )
     
-    vcf_matrix = cbind(
-      
-      str_replace( str_to_upper( vcf_handle[ , 1 ] ), "CHR", "" ),
-      as.integer( vcf_handle[ , 2 ] ),
-      str_to_upper( vcf_handle[ , 4 ] ) 
-    )
-    
     split_add = function( vcf_matrix_row ){
       
-      variations = as.character( unlist( str_split( vcf_matrix_row[3], "/" ) ) )
+      reference  = as.character( unlist( vcf_matrix_row[4] ) )
+      length_ref = length( unlist(str_split( reference  ,"") ))
+      variations = as.character( unlist( str_split( unlist(vcf_matrix_row[5]), "," ) ) )
+      length_variations = length(unlist(str_split( unlist(vcf_matrix_row[5]), "," )))
       
       chromosome = rep( vcf_matrix_row[1], length(variations)  )
       start      = as.integer( rep( vcf_matrix_row[2], length(variations)  ) )
-      length_vec = unlist( lapply( str_split( variations, "" ), length  ) ) - 1
-      end        = start + length_vec
       
       fingerprint = as.character()
-      for ( i in 1:length( variations  ) ){ 
-        fingerprint = c( fingerprint, paste0( c(chromosome[i], start[i],end[i]), collapse = "_" ) )
+      for ( i in seq( length_variations ) ){ 
+        
+        start_var  = as.character( start[i] )
+        variation  = variations[i]
+        length_var = length( unlist(str_split( variation,"") ))
+        
+        length_alt = max( length_var, length_ref )
+        end_var    = as.character( as.integer(start_var) + length_alt - 1 )
+        
+        chrom      = str_trim( as.character( unlist( chromosome[i] ) ) )
+        
+        fingerprint = c( fingerprint, paste0( c( chrom, start_var, end_var), collapse = "_" ) )
       }
       
       return( fingerprint )
     }
     
-    fingerprint  = apply( vcf_matrix, FUN = split_add, MARGIN = 1  )
+    fingerprint  = apply( vcf_handle, FUN = split_add, MARGIN = 1  )
     
     return( fingerprint )
     

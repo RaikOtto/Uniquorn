@@ -4,6 +4,9 @@
 add_custom_vcf_to_database = function( vcf_file_path, ref_gen = "HG19", name_cl = "", safe_mode = F ){
     
   # pre processing
+  suppressPackageStartupMessages(library("plyr"))
+  suppressPackageStartupMessages(library("dplyr"))
+  suppressPackageStartupMessages(library("stringr"))
   
   db_folder    = system.file("", package="Uniquorn")
   database_path=  paste( db_folder, "uniquorn_db.sqlite3", sep ="/" )

@@ -3,9 +3,9 @@
 #' @export
 show_contained_cls = function( ref_gen = "HG19" ){
 
-  suppressPackageStartupMessages(library("plyr"))
-  suppressPackageStartupMessages(library("dplyr"))
-  suppressPackageStartupMessages(library("stringr"))
+  #suppressPackageStartupMessages(library("plyr"))
+  #suppressPackageStartupMessages(library("dplyr"))
+  #suppressPackageStartupMessages(library("stringr"))
     
   db_folder      = system.file("", package="Uniquorn")
   database_path  =  paste( db_folder, "uniquorn_db.sqlite3", sep ="/" )

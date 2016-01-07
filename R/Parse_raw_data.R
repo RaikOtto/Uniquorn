@@ -56,7 +56,7 @@ initiate_canonical_databases = function(
     collapse = " "
   )
   
-  #system( command_line, ignore.stdout = F, intern = F )
+  system( command_line, ignore.stdout = F, intern = F )
   
   if ( exists("sim_list_stats"))
     rm( sim_list_stats )

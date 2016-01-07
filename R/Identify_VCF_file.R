@@ -5,6 +5,7 @@ identify_vcf_file = function(
   output_file = "",
   ref_gen = "HG19",
   unique_mode = F){
+  
   suppressPackageStartupMessages( library( "stringr" ) )
   suppressPackageStartupMessages( library( "dplyr" ) )
   suppressPackageStartupMessages( library( "plyr" ) )
@@ -29,7 +30,7 @@ identify_vcf_file = function(
     message("CCLE & CoSMIC CLP cancer cell line fingerprint NOT found, defaulting to 65 CellMiner cancer cell lines! We strongly advise to add CCLE & CoSMIC, see readme.")
   }
     
-  message( "Finished reading the VCF file, loading database with trainingsets" )
+  print( "Finished reading the VCF file, loading database" )
   
   sim_list = as.data.frame( tbl( src_sqlite( database_path ), "sim_list_df" ), n = -1 )
   
@@ -38,6 +39,8 @@ identify_vcf_file = function(
   
   sim_list_stats = as.data.frame( tbl( src_sqlite( database_path ), "sim_list_stats_df" ), n = -1 )
   sim_list_stats = sim_list_stats[ sim_list_stats$Ref_Gen == ref_gen  ,]
+  
+  print("Finished reading database, identifying CL")
   
   if ( unique_mode  ){
     
