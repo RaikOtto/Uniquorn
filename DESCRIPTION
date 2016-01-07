@@ -1,14 +1,12 @@
 Package: Uniquorn
-Title: Identification of cancer cell lines based on their unique somatic
-    mutational fingerprint
+Title: Identification of cancer cell lines based on their weighted mutational fingerprint
 Version: 0.1
 Authors@R: person("Raik", "Otto", email = "raik.otto@hu-berlin.de", role = c("aut", "cre"))
 Description: This packages allows to identify cancer cell lines based on their
     weighted mutational fingerprint. VCF files containing a single cancer cell line sample are the expected input. 
     It is optimized for  from Next-generation whole exome or whole genome sequenced cancer cell lines. 
 Depends:
-    stringr, plyr, dplyr, R (>= 3.1.2)
-Suggests: Python (>= 2.6)
+    R (>= 3.1.2), stringr, plyr, dplyr
 License: Artistic-2.0
 LazyData: TRUE
 Type: Package
@@ -16,3 +14,4 @@ Maintainer: 'Raik Otto' <raik.otto@hu-berlin.de>
 Date: 2015-10-11
 Author: Raik Otto
 RoxygenNote: 5.0.1
+SystemRequirements: Python (>= 2.6)

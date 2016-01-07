@@ -30,18 +30,17 @@ initiate_canonical_databases = function(
   ### pre processing
   
   path_to_python  = paste( system.file("", package="Uniquorn"),"pre_compute_raw_data.py", sep ="/")
-  db_folder       = system.file("", package="Uniquorn")
+  package_path    = system.file("", package="Uniquorn")
   
-  uni_db_path       =  paste( db_folder, "uniquorn_db.sqlite3", sep ="/" )
-  uni_db_default_path =  paste( db_folder, "uniquorn_db_default.sqlite3", sep ="/" )
-  sim_list = as.data.frame( tbl( src_sqlite( uni_db_default_path ), "sim_list_df" ), n = -1 )
+  database_path   =  paste( db_folder, "uniquorn_db.sqlite3", sep ="/" )
+  database_default_path =  paste( db_folder, "uniquorn_db_default.sqlite3", sep ="/" )
+  sim_list = as.data.frame( tbl( src_sqlite( database_default_path ), "sim_list_df" ), n = -1 )
   sim_list = sim_list[, which( colnames(sim_list) != "Ref_Gen"  ) ]
   sim_list = sim_list[, which( colnames(sim_list) != "Weight"  ) ]
 
   # overwrite existing db
-  if (file.exists(uni_db_path))
-    file.remove( uni_db_path )
-  uni_db   = src_sqlite( uni_db_path, create = T )
+  if (file.exists(database_path))
+    file.remove( database_path )
 
   # python parser
 
@@ -57,7 +56,7 @@ initiate_canonical_databases = function(
     collapse = " "
   )
   
-  system( command_line, ignore.stdout = F, intern = F )
+  #system( command_line, ignore.stdout = F, intern = F )
   
   if ( exists("sim_list_stats"))
     rm( sim_list_stats )
@@ -103,8 +102,9 @@ initiate_canonical_databases = function(
   sim_list = cbind( sim_list, Ref_Gen )
   Ref_Gen = rep( ref_gen, dim(sim_list_stats)[1]  )
   sim_list_stats = cbind( sim_list_stats, Ref_Gen )
+  colnames( sim_list_stats ) = c( "CL","Count","Ref_Gen" )
   
-  uni_db            = src_sqlite( uni_db_path, create = T )
+  uni_db            = src_sqlite( database_path, create = T )
   sim_list_df       = tbl_df( sim_list )
   sim_list_stats_df = tbl_df( sim_list_stats )
   

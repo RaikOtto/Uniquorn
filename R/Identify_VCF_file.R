@@ -15,7 +15,7 @@ identify_vcf_file = function(
   
   package_path    = system.file("", package="Uniquorn")
   path_to_python  = paste( package_path,"pre_compute_raw_data.py", sep ="/")
-  uni_db_path     =  paste( package_path, "uniquorn_db.sqlite3", sep ="/" )
+  database_path     =  paste( package_path, "uniquorn_db.sqlite3", sep ="/" )
   
   # reading file
   vcf_fingerprint = parse_vcf_file( vcf_file )
@@ -23,20 +23,20 @@ identify_vcf_file = function(
   if ( output_file == ""  )
     output_file = paste( vcf_file, "uniquorn_ident.tab", sep ="_")
     
-  if( ! file.exists( uni_db_path ) ){
+  if( ! file.exists( database_path ) ){
     
-    uni_db_path = paste( package_path, "uniquorn_db_default.sqlite3", sep ="/" )
+    database_path = paste( package_path, "uniquorn_db_default.sqlite3", sep ="/" )
     message("CCLE & CoSMIC CLP cancer cell line fingerprint NOT found, defaulting to 65 CellMiner cancer cell lines! We strongly advise to add CCLE & CoSMIC, see readme.")
   }
     
   message( "Finished reading the VCF file, loading database with trainingsets" )
   
-  sim_list = as.data.frame( tbl( src_sqlite( uni_db_path ), "sim_list_df" ), n = -1 )
+  sim_list = as.data.frame( tbl( src_sqlite( database_path ), "sim_list_df" ), n = -1 )
   
   sim_list = sim_list[ sim_list$Ref_Gen == ref_gen  ,]
   print(paste0( c("Found ", as.character( length( unique(sim_list$CL) ) ), " many CLs for reference genome ", ref_gen ), collapse = "" ) )
   
-  sim_list_stats = as.data.frame( tbl( src_sqlite( uni_db_path ), "sim_list_stats_df" ), n = -1 )
+  sim_list_stats = as.data.frame( tbl( src_sqlite( database_path ), "sim_list_stats_df" ), n = -1 )
   sim_list_stats = sim_list_stats[ sim_list_stats$Ref_Gen == ref_gen  ,]
   
   if ( unique_mode  ){

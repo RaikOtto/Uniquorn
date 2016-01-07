@@ -4,7 +4,6 @@
 add_custom_vcf_to_database = function( vcf_file_path, ref_gen = "HG19", name_cl = "", safe_mode = F ){
     
   # pre processing
-  suppressPackageStartupMessages( library("stringr") )
   
   db_folder    = system.file("", package="Uniquorn")
   database_path=  paste( db_folder, "uniquorn_db.sqlite3", sep ="/" )
@@ -69,9 +68,9 @@ add_custom_vcf_to_database = function( vcf_file_path, ref_gen = "HG19", name_cl 
       
       print("Writing to DB")
       
-      if (file.exists(uni_db_path))
-        file.remove( uni_db_path )
-      uni_db   = src_sqlite( uni_db_path, create = T )
+      if (file.exists(database_path))
+        file.remove( database_path )
+      uni_db   = src_sqlite( database_path, create = T )
       sim_list_df       = tbl_df( sim_list )
       sim_list_stats_df = tbl_df( sim_list_stats )
       
