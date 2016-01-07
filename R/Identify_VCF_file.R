@@ -108,7 +108,7 @@ identify_vcf_file = function(
   # treshold
   
   passed_threshold_weighted = rep( F, nr_cls )
-  passed_threshold_weighted[ (res_res_cl_weighted >= 10.0) ] = TRUE
+  passed_threshold_weighted[ (res_res_cl_weighted >= 15.0) ] = TRUE
   
   if( unique_mode ){
     
