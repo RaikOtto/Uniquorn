@@ -58,7 +58,7 @@ identify_vcf_file = function(
   
   found_mut_mapping = which( sim_list$Fingerprint %in% as.character(unlist(vcf_fingerprint)) ) # mapping
   
-  if (found_mut_mapping == 0)
+  if ( length( found_mut_mapping ) == 0)
     found_mut_mapping = c(0)
 
   ### unweighted scores
