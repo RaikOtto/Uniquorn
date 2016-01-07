@@ -4,7 +4,7 @@
 initiate_canonical_databases = function(
     cosmic_genotype_file = "CosmicCLP_MutantExport.tsv",
     ccle_genotype_file = "CCLE_hybrid_capture1650_hg19_allVariants_2012.05.07.maf",
-    ref_gen = "HG19"
+    ref_gen = "GRCH37"
   ){
   
   suppressPackageStartupMessages(library("plyr"))

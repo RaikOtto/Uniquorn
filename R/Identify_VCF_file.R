@@ -3,9 +3,9 @@
 identify_vcf_file = function( 
   vcf_file,
   output_file = "",
-  ref_gen = "HG19",
+  ref_gen = "GRCH37",
   similarity_threshold = 15.0,
-  mutational_weight_inclusion_threshold = 0.0
+  mutational_weight_inclusion_threshold = 0.1
   ){
   
   suppressPackageStartupMessages( library( "stringr" ) )
@@ -46,7 +46,7 @@ identify_vcf_file = function(
   print("Finished reading database, identifying CL")
   
   # filter for weights
-  if ( mutational_weight_threshold != 0.0  ){
+  if ( mutational_weight_inclusion_threshold != 0.1  ){
     
     print( paste0( c("Adjusted mutational inclusion weight, only using mutations that are have a weight higher than ", as.character(mutational_weight_inclusion_threshold)), collapse="") )
     
@@ -59,6 +59,7 @@ identify_vcf_file = function(
     sim_list_stats = cbind( sim_list_stats, all_weights$x[mapping] )
     
     colnames( sim_list_stats ) = c("CL","Count", "All_weights")
+    sim_list_stats$All_weights = round(sim_list_stats$All_weights,1)
     print( paste0( c("Found ", as.character( dim(sim_list)[1] ), " many mutations with mutational weight of at least ", mutational_weight_inclusion_threshold), collapse="")  )
   }
   
@@ -121,12 +122,6 @@ identify_vcf_file = function(
   
   passed_threshold_weighted = rep( F, nr_cls )
   passed_threshold_weighted[ (res_res_cl_weighted >= 15.0) ] = TRUE
-  
-  if( unique_mode ){
-    
-    passed_threshold_weighted = rep( F, nr_cls )
-    passed_threshold_weighted[ ( candidate_hits_abs_all >= 3.0) & ( candidate_hits_rel >= .05 ) ] = T
-  }
 
   output_cl_names = str_replace( list_of_cls, pattern = "_CCLE|_COSMIC|_CELLMINER", replacement = "" )
   panel_vec = rep("", length( output_cl_names ))
