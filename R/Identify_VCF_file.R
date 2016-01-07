@@ -69,7 +69,7 @@ identify_vcf_file = function(
   candidate_hits_abs_all[ which( list_of_cls %in% candidate_hits_abs$Group.1) ] = as.integer( candidate_hits_abs$x[ match( list_of_cls, candidate_hits_abs$Group.1, nomatch = 0 ) ] )
   
   cl_match_stats    = match( list_of_cls, sim_list_stats$CL, nomatch = 0 ) # mapping
-  candidate_hits_rel = round( candidate_hits_abs_all / sim_list_stats$Count[ cl_match_stats ], 5 ) * 100
+  candidate_hits_rel = round( candidate_hits_abs_all / sim_list_stats$Count[ cl_match_stats ] * 100, 1 ) 
   
   ### weighted scores
   
@@ -92,28 +92,22 @@ identify_vcf_file = function(
     FUN = sum
   )
   
-  aggregation_all = stats::aggregate( 
-    x  = as.double( sim_list$Weight ),
-    by = list( as.character( sim_list$CL ) ),
-    FUN = sum
-  )
+  weight_all = sim_list_stats$All_weights[ match( aggregation$Group.1, sim_list_stats$CL )  ]
+  cl_weight_rel = round( as.double( aggregation$x ) / as.double( weight_all ) , 3 ) * 100
+  mapping_to_cls = match( list_of_cls, aggregation$Group.1 , nomatch = 0  )
   
-  aggregation_all = aggregation_all[ match( list_of_cls, aggregation_all[, 1]  )  ,]
-  all_weighted    = aggregation_all[ match( list_of_cls, aggregation_all[, 1]  ), 2]
-  aggregation_match = match( aggregation[,1], as.character( list_of_cls )  )
+  res_cl_weighted = rep(0, nr_cls)
+  names(res_cl_weighted) = list_of_cls
+  res_cl_weighted[ names(res_cl_weighted) %in% aggregation$Group.1  ] = aggregation$x[ mapping_to_cls ]
+  stats_all_weight = sim_list_stats$All_weights[ match( list_of_cls, sim_list_stats$CL  ) ]
   
-  cl_weight[ aggregation_match ] = round(aggregation[ , 2 ],0)
-  cl_weight_rel = round( as.double( cl_weight ) / as.double( aggregation_all[ ,2 ] ) , 3 ) * 100
-  
-  # match value
-  
-  match_value = round( as.double( cl_weight ) / as.double( candidate_hits_abs_all ), 2 ) 
-  match_value[ is.na( match_value) ] = 0
+  res_res_cl_weighted = round( as.double(res_cl_weighted  ) / stats_all_weight * 100, 1 )
+  res_cl_weighted = round(res_cl_weighted, 1)
   
   # treshold
   
   passed_threshold_weighted = rep( F, nr_cls )
-  passed_threshold_weighted[ (cl_weight_rel >= 5.0) & ( match_value >= .3 ) ] = T
+  passed_threshold_weighted[ (res_res_cl_weighted >= 5.0) ] = TRUE
   
   if( unique_mode ){
     
@@ -133,10 +127,9 @@ identify_vcf_file = function(
     "Found_muts_abs"           = as.character( candidate_hits_abs_all ),
     "Count_mutations_abs"      = as.character(  sim_list_stats$Count[ cl_match_stats ] ),
     "Found_muts_rel"           = as.character(  candidate_hits_rel ),
-    "Match_value"              = as.character( match_value ),
-    "Found_muts_weighted"      = as.character( cl_weight ),
-    "Count_mutations_weighted" = as.character( round( all_weighted, 0 ) ),
-    "Found_muts_weighted_rel"  = as.character( cl_weight_rel ),
+    "Found_muts_weighted"      = as.character( res_cl_weighted ),
+    "Count_mutations_weighted" = as.character( round( stats_all_weight, 0 ) ),
+    "Found_muts_weighted_rel"  = as.character( res_res_cl_weighted ),
     "Passed_threshold"         = as.character( passed_threshold_weighted )
   )
   

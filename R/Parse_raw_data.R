@@ -132,6 +132,7 @@ initiate_canonical_databases = function(
     indexes = list(
       "CL",
       "Count",
+      "All_weights",
       "Ref_Gen"
     )
   )
