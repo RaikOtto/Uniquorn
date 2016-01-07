@@ -27,7 +27,8 @@ identify_vcf_file = function(
   if( ! file.exists( database_path ) ){
     
     database_path = paste( package_path, "uniquorn_db_default.sqlite3", sep ="/" )
-    message("CCLE & CoSMIC CLP cancer cell line fingerprint NOT found, defaulting to 65 CellMiner cancer cell lines! We strongly advise to add CCLE & CoSMIC, see readme.")
+    message("CCLE & CoSMIC CLP cancer cell line fingerprint NOT found, defaulting to 60 CellMiner cancer cell lines! 
+            We strongly advise to add CCLE & CoSMIC, see readme.")
   }
     
   print( "Finished reading the VCF file, loading database" )
