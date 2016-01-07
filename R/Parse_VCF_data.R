@@ -30,7 +30,7 @@ parse_vcf_file = function( vcf_file_path  ){
         length_alt = max( length_var, length_ref )
         end_var    = as.character( as.integer(start_var) + length_alt - 1 )
         
-        chrom      = str_trim( as.character( unlist( chromosome[i] ) ) )
+        chrom      = str_replace( str_to_upper( str_trim( as.character( unlist( chromosome[i] ) ) ) ), "CHR", "" )
         
         fingerprint = c( fingerprint, paste0( c( chrom, start_var, end_var), collapse = "_" ) )
       }

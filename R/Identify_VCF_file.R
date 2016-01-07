@@ -29,7 +29,7 @@ identify_vcf_file = function(
     
     database_path = paste( package_path, "uniquorn_db_default.sqlite3", sep ="/" )
     message("CCLE & CoSMIC CLP cancer cell line fingerprint NOT found, defaulting to 60 CellMiner cancer cell lines! 
-            We strongly advise to add CCLE & CoSMIC, see readme.")
+            It is strongly advised to add ~1900 CCLE & CoSMIC CLs, see readme.")
   }
     
   print( "Finished reading the VCF file, loading database" )
@@ -56,7 +56,10 @@ identify_vcf_file = function(
   list_of_cls       = unique( sim_list$CL )
   nr_cls            = length( list_of_cls  ) # amount cls
   
-  found_mut_mapping = which( sim_list$Fingerprint %in% vcf_fingerprint ) # mapping
+  found_mut_mapping = which( sim_list$Fingerprint %in% as.character(unlist(vcf_fingerprint)) ) # mapping
+  
+  if (found_mut_mapping == 0)
+    found_mut_mapping = c(0)
 
   ### unweighted scores
   
