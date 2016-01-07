@@ -35,7 +35,7 @@ identify_vcf_file = function(
     
   print( "Finished reading the VCF file, loading database" )
   
-  if (exists(sim_list_raw)){
+  if (exists("sim_list_raw")){
     sim_list = sim_list_raw
   } else {
     sim_list = as.data.frame( tbl( src_sqlite( database_path ), "sim_list_df" ), n = -1 )
