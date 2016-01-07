@@ -5,7 +5,8 @@ identify_vcf_file = function(
   output_file = "",
   ref_gen = "HG19",
   similarity_threshold = 15.0,
-  unique_mode = F){
+  mutational_weight_inclusion_threshold = 0.0
+  ){
   
   suppressPackageStartupMessages( library( "stringr" ) )
   suppressPackageStartupMessages( library( "dplyr" ) )
@@ -44,13 +45,21 @@ identify_vcf_file = function(
   
   print("Finished reading database, identifying CL")
   
-  if ( unique_mode  ){
+  # filter for weights
+  if ( mutational_weight_threshold != 0.0  ){
     
-    print("Unique mode, only using mutations that are unique to cancer cell lines")
+    print( paste0( c("Adjusted mutational inclusion weight, only using mutations that are have a weight higher than ", as.character(mutational_weight_inclusion_threshold)), collapse="") )
     
-    sim_list = sim_list[ sim_list$Weight == 1 ,  ]
-    sim_list_stats = aggregate( as.double( sim_list$Weight ), by = list( sim_list$CL), FUN = sum  )
-    colnames( sim_list_stats ) = c("CL","Count")
+    sim_list = sim_list[ as.double(sim_list$Weight) >= as.double( mutational_weight_inclusion_threshold) ,  ]
+    sum_vec = rep(1, dim(sim_list)[1])
+    sim_list_stats = aggregate( as.double( sum_vec ), by = list( sim_list$CL), FUN = sum  )
+    
+    all_weights = aggregate( sim_list$Weight, by = list(sim_list$CL), FUN = sum)
+    mapping = match( sim_list_stats$Group.1, all_weights$Group.1 )
+    sim_list_stats = cbind( sim_list_stats, all_weights$x[mapping] )
+    
+    colnames( sim_list_stats ) = c("CL","Count", "All_weights")
+    print( paste0( c("Found ", as.character( dim(sim_list)[1] ), " many mutations with mutational weight of at least ", mutational_weight_inclusion_threshold), collapse="")  )
   }
   
   list_of_cls       = unique( sim_list$CL )
@@ -98,12 +107,11 @@ identify_vcf_file = function(
   )
   
   weight_all = sim_list_stats$All_weights[ match( aggregation$Group.1, sim_list_stats$CL )  ]
-  cl_weight_rel = round( as.double( aggregation$x ) / as.double( weight_all ) , 3 ) * 100
   mapping_to_cls = match( list_of_cls, aggregation$Group.1 , nomatch = 0  )
   
-  res_cl_weighted = rep(0, nr_cls)
-  names(res_cl_weighted) = list_of_cls
-  res_cl_weighted[ names(res_cl_weighted) %in% aggregation$Group.1  ] = aggregation$x[ mapping_to_cls ]
+  res_cl_weighted = rep( 0, nr_cls )
+  names( res_cl_weighted ) = list_of_cls
+  res_cl_weighted[ names( res_cl_weighted ) %in% aggregation$Group.1  ] = aggregation$x[ mapping_to_cls ]
   stats_all_weight = sim_list_stats$All_weights[ match( list_of_cls, sim_list_stats$CL  ) ]
   
   res_res_cl_weighted = round( as.double(res_cl_weighted  ) / stats_all_weight * 100, 1 )
@@ -126,7 +134,7 @@ identify_vcf_file = function(
   panel_vec[ str_detect( list_of_cls, "_COSMIC" ) ] = "COSMIC"
   panel_vec[ str_detect( list_of_cls, "_CELLMINER" ) ] = "CELLMINER"
   
-  res_table = data.frame( 
+  res_table = data.frame(
     "CL"                       = output_cl_names,
     "CL_source"                = panel_vec,
     "Found_muts_abs"           = as.character( candidate_hits_abs_all ),
