@@ -35,7 +35,12 @@ identify_vcf_file = function(
     
   print( "Finished reading the VCF file, loading database" )
   
-  sim_list = as.data.frame( tbl( src_sqlite( database_path ), "sim_list_df" ), n = -1 )
+  if (exists(sim_list_raw)){
+    sim_list = sim_list_raw
+  } else {
+    sim_list = as.data.frame( tbl( src_sqlite( database_path ), "sim_list_df" ), n = -1 )
+    sim_list_raw <-- sim_list
+  }
   
   sim_list = sim_list[ sim_list$Ref_Gen == ref_gen  ,]
   print(paste0( c("Found ", as.character( length( unique(sim_list$CL) ) ), " many CLs for reference genome ", ref_gen ), collapse = "" ) )
