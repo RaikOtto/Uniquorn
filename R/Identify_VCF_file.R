@@ -39,7 +39,7 @@ identify_vcf_file = function(
     sim_list = sim_list_raw
   } else {
     sim_list = as.data.frame( tbl( src_sqlite( database_path ), "sim_list_df" ), n = -1 )
-    sim_list_raw <-- sim_list
+    sim_list_raw <<- sim_list
   }
   
   sim_list = sim_list[ sim_list$Ref_Gen == ref_gen  ,]
