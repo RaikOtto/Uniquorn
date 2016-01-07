@@ -102,12 +102,12 @@ identify_vcf_file = function(
   stats_all_weight = sim_list_stats$All_weights[ match( list_of_cls, sim_list_stats$CL  ) ]
   
   res_res_cl_weighted = round( as.double(res_cl_weighted  ) / stats_all_weight * 100, 1 )
-  res_cl_weighted = round(res_cl_weighted, 1)
+  res_cl_weighted = round(res_cl_weighted, 0)
   
   # treshold
   
   passed_threshold_weighted = rep( F, nr_cls )
-  passed_threshold_weighted[ (res_res_cl_weighted >= 5.0) ] = TRUE
+  passed_threshold_weighted[ (res_res_cl_weighted >= 10.0) ] = TRUE
   
   if( unique_mode ){
     
