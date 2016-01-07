@@ -6,7 +6,7 @@ Description: This packages allows to identify cancer cell lines based on their
     weighted mutational fingerprint. VCF files containing a single cancer cell line sample are the expected input. 
     It is optimized for  from Next-generation whole exome or whole genome sequenced cancer cell lines. 
 Depends:
-    R (>= 3.1.2), stringr, plyr, dplyr
+    R (>= 3.1.2), stringr, plyr
 License: Artistic-2.0
 LazyData: TRUE
 Type: Package
@@ -14,4 +14,4 @@ Maintainer: 'Raik Otto' <raik.otto@hu-berlin.de>
 Date: 2015-10-11
 Author: Raik Otto
 RoxygenNote: 5.0.1
-SystemRequirements: Python (>= 2.6)
+SystemRequirements: Python (>= 2.6), dplyr
