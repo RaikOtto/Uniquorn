@@ -32,8 +32,8 @@ initiate_canonical_databases = function(
   path_to_python  = paste( system.file("", package="Uniquorn"),"pre_compute_raw_data.py", sep ="/")
   package_path    = system.file("", package="Uniquorn")
   
-  database_path   =  paste( db_folder, "uniquorn_db.sqlite3", sep ="/" )
-  database_default_path =  paste( db_folder, "uniquorn_db_default.sqlite3", sep ="/" )
+  database_path   =  paste( package_path, "uniquorn_db.sqlite3", sep ="/" )
+  database_default_path =  paste( package_path, "uniquorn_db_default.sqlite3", sep ="/" )
   sim_list = as.data.frame( tbl( src_sqlite( database_default_path ), "sim_list_df" ), n = -1 )
   sim_list = sim_list[, which( colnames(sim_list) != "Ref_Gen"  ) ]
   sim_list = sim_list[, which( colnames(sim_list) != "Weight"  ) ]
@@ -51,7 +51,7 @@ initiate_canonical_databases = function(
       'python',     path_to_python,
       "-ccle ",     ccle_genotype_file,
       "-cosmic ",   cosmic_genotype_file,
-      "-o_db_path", db_folder
+      "-o_db_path", database_path
     ),
     collapse = " "
   )
@@ -75,7 +75,7 @@ initiate_canonical_databases = function(
     
     print( paste( "Parsing: ", panel ), sep =" "  )
     
-    sim_list_file = paste0( c( db_folder, "/", "Fingerprint_",       panel, ".tab" ), collapse = "" )
+    sim_list_file = paste0( c( package_path, "/", "Fingerprint_",       panel, ".tab" ), collapse = "" )
     sim_list      = rbind( sim_list, read.table( sim_list_file, sep = "\t", header = T))
     
     #file.remove(sim_list_file)
@@ -96,13 +96,24 @@ initiate_canonical_databases = function(
   sim_list = cbind( sim_list, weights$x[mapping] )
   colnames( sim_list )[3] = "Weight"
   
+  # calculate weights
+  
+  aggregation_all = stats::aggregate( 
+    x  = as.double( sim_list$Weight ),
+    by = list( as.character( sim_list$CL ) ),
+    FUN = sum
+  )
+  
+  mapping_agg_stats = which( aggregation_all$Group.1 %in% sim_list_stats[,1], arr.ind = T  )
+  sim_list_stats = cbind( sim_list_stats, aggregation_all$x[mapping_agg_stats] )
+  
   print("Finished aggregating, writing to database")
   
   Ref_Gen = rep(ref_gen, dim(sim_list)[1]  )
   sim_list = cbind( sim_list, Ref_Gen )
   Ref_Gen = rep( ref_gen, dim(sim_list_stats)[1]  )
   sim_list_stats = cbind( sim_list_stats, Ref_Gen )
-  colnames( sim_list_stats ) = c( "CL","Count","Ref_Gen" )
+  colnames( sim_list_stats ) = c( "CL","Count","All_weights","Ref_Gen" )
   
   uni_db            = src_sqlite( database_path, create = T )
   sim_list_df       = tbl_df( sim_list )

@@ -54,8 +54,7 @@ identify_vcf_file = function(
   list_of_cls       = unique( sim_list$CL )
   nr_cls            = length( list_of_cls  ) # amount cls
   
-  found_mut_mapping = match( vcf_fingerprint, sim_list$Fingerprint, nomatch = 0 ) # mapping
-  found_mut_mapping = found_mut_mapping[ found_mut_mapping != 0 ]
+  found_mut_mapping = which( sim_list$Fingerprint %in% vcf_fingerprint ) # mapping
 
   ### unweighted scores
   
@@ -63,7 +62,7 @@ identify_vcf_file = function(
   names(candidate_hits_abs_all) = list_of_cls
   
   candidate_hits_abs = aggregate( 
-    rep(1, length(found_mut_mapping)), 
+    rep(1, length(found_mut_mapping)),
     by = list(sim_list$CL[ found_mut_mapping ]), 
     FUN = sum
   )
