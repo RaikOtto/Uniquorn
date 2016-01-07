@@ -2,7 +2,7 @@
 #' Parses data into r list variable
 #' @export
 initiate_canonical_databases = function(
-    cosmic_genotype_file = "CosmicCLP_MutantExport.tsv",
+    cosmic_genotype_file = "CosmicCLP_CompleteExport.tsv",
     ccle_genotype_file = "CCLE_hybrid_capture1650_hg19_allVariants_2012.05.07.maf",
     ref_gen = "GRCH37"
   ){
