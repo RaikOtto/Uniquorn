@@ -6,7 +6,8 @@ identify_vcf_file = function(
   ref_gen = "GRCH37",
   similarity_threshold = 15.0,
   mutational_weight_inclusion_threshold = 0.0,
-  only_first_candidate = T
+  only_first_candidate = FALSE,
+  distinct_mode = TRUE
   ){
   
   suppressPackageStartupMessages( library( "stringr" ) )
@@ -19,7 +20,11 @@ identify_vcf_file = function(
   
   package_path    = system.file("", package="Uniquorn")
   path_to_python  = paste( package_path,"pre_compute_raw_data.py", sep ="/")
-  database_path     =  paste( package_path, "uniquorn_db.sqlite3", sep ="/" )
+  
+  if (distinct_mode)
+    database_path     =  paste( package_path, "uniquorn_distinct_panels_db.sqlite3", sep ="/" )
+  if (!distinct_mode)
+    database_path     =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite3", sep ="/" )
   
   # reading file
   vcf_fingerprint = parse_vcf_file( vcf_file )

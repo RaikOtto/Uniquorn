@@ -4,7 +4,8 @@
 initiate_canonical_databases = function(
     cosmic_genotype_file = "CosmicCLP_MutantExport.tsv",
     ccle_genotype_file = "CCLE_hybrid_capture1650_hg19_allVariants_2012.05.07.maf",
-    ref_gen = "GRCH37"
+    ref_gen = "GRCH37",
+    distinct_mode = TRUE
   ){
   
   suppressPackageStartupMessages(library("plyr"))
@@ -32,7 +33,7 @@ initiate_canonical_databases = function(
   path_to_python  = paste( system.file("", package="Uniquorn"),"pre_compute_raw_data.py", sep ="/")
   package_path    = system.file("", package="Uniquorn")
   
-  database_path   =  paste( package_path, "uniquorn_db.sqlite3", sep ="/" )
+  database_path   =  paste( package_path, "uniquorn_distinct_panels_db.sqlite3", sep ="/" )
   database_default_path =  paste( package_path, "uniquorn_db_default.sqlite3", sep ="/" )
   sim_list_default = as.data.frame( tbl( src_sqlite( database_default_path ), "sim_list_df" ), n = -1 )
   sim_list_default = sim_list_default[, which( colnames(sim_list_default) != "Ref_Gen"  ) ]
@@ -89,6 +90,11 @@ initiate_canonical_databases = function(
   print("Finished parsing, aggregating over parsed Cancer Cell Line data")
   print( paste( "Distinguishing between panels:",paste0( c(panels), collapse = ", "), sep = " ") )
   
+  if (!distinct_mode){
+    panels = paste0( c(panels), collapse ="|"  )
+    database_path =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite3", sep ="/" )
+  }
+  
   for (panel in panels) {
   
     print(panel)
@@ -130,21 +136,17 @@ initiate_canonical_databases = function(
     if(! exists("sim_list_global"))
       sim_list_global <<- sim_list_default[0,]
     
-    sim_list_global = rbind(sim_list_panel)
+    sim_list_global = rbind(sim_list_global,sim_list_panel)
     
     if(! exists("sim_list_stats_global")){
       sim_list_stats_global <<- sim_list_stats_panel[0,]
-    } else {
+
       sim_list_stats_global = rbind( sim_list_stats_global, sim_list_stats_panel  )
-    }
   }
   
-  sim_list = sim_list_global
-  sim_list_stats = sim_list_stats_global
-  
   uni_db            = src_sqlite( database_path, create = T )
-  sim_list_df       = tbl_df( sim_list )
-  sim_list_stats_df = tbl_df( sim_list_stats )
+  sim_list_df       = tbl_df( sim_list_global )
+  sim_list_stats_df = tbl_df( sim_list_stats_global )
   
   copy_to( uni_db, sim_list_df, temporary = F, 
     indexes = list(
