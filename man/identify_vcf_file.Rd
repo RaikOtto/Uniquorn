@@ -4,8 +4,9 @@
 \alias{identify_vcf_file}
 \title{Parses the vcf file and predicts the identity of the sample}
 \usage{
-identify_vcf_file(vcf_file, output_file = "", ref_gen = "HG19",
-  unique_mode = F)
+identify_vcf_file(vcf_file, output_file = "", ref_gen = "GRCH37",
+  similarity_threshold = 15, mutational_weight_inclusion_threshold = 0,
+  only_first_candidate = FALSE, distinct_mode = TRUE)
 }
 \description{
 Parses the vcf file and predicts the identity of the sample

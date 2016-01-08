@@ -142,6 +142,7 @@ initiate_canonical_databases = function(
       sim_list_stats_global <<- sim_list_stats_panel[0,]
 
       sim_list_stats_global = rbind( sim_list_stats_global, sim_list_stats_panel  )
+    }
   }
   
   uni_db            = src_sqlite( database_path, create = T )
