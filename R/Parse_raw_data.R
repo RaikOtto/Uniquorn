@@ -34,9 +34,9 @@ initiate_canonical_databases = function(
   
   database_path   =  paste( package_path, "uniquorn_db.sqlite3", sep ="/" )
   database_default_path =  paste( package_path, "uniquorn_db_default.sqlite3", sep ="/" )
-  sim_list = as.data.frame( tbl( src_sqlite( database_default_path ), "sim_list_df" ), n = -1 )
-  sim_list = sim_list[, which( colnames(sim_list) != "Ref_Gen"  ) ]
-  sim_list = sim_list[, which( colnames(sim_list) != "Weight"  ) ]
+  sim_list_default = as.data.frame( tbl( src_sqlite( database_default_path ), "sim_list_df" ), n = -1 )
+  sim_list_default = sim_list_default[, which( colnames(sim_list_default) != "Ref_Gen"  ) ]
+  sim_list_default = sim_list_default[, which( colnames(sim_list_default) != "Weight"  ) ]
 
   # overwrite existing db
   if (file.exists(database_path))
@@ -76,44 +76,71 @@ initiate_canonical_databases = function(
     print( paste( "Parsing: ", panel ), sep =" "  )
     
     sim_list_file = paste0( c( package_path, "/", "Fingerprint_",       panel, ".tab" ), collapse = "" )
-    sim_list      = rbind( sim_list, read.table( sim_list_file, sep = "\t", header = T))
+    sim_list_default      = rbind( sim_list_default, read.table( sim_list_file, sep = "\t", header = T))
     
     #file.remove(sim_list_file)
     #file.remove(sim_list_stats_file)
   }
   
+  list_of_cls = unique( sim_list_default$CL )
+  panels = sapply( list_of_cls, FUN = str_split, "_"  )
+  panels = as.character(unique( as.character( sapply( panels, FUN = tail, 1) ) ))
+  
   print("Finished parsing, aggregating over parsed Cancer Cell Line data")
-  member_var = rep( 1, dim(sim_list)[1] )
-  sim_list_stats = aggregate( member_var , by = list( sim_list$CL ), FUN = sum )
-  colnames(sim_list_stats) = c( "CL", "Count" )
+  print( paste( "Distinguishing between panels:",paste0( c(panels), collapse = ", "), sep = " ") )
   
-  print("Aggregating over mutational frequency to obtain mutational weight")
-
-  weights = aggregate( member_var , by = list( sim_list$Fingerprint ), FUN = sum )
-  weights$x = 1.0 / as.double( weights$x )
+  for (panel in panels) {
   
-  mapping = match( as.character( sim_list$Fingerprint ), as.character( weights$Group.1) )
-  sim_list = cbind( sim_list, weights$x[mapping] )
-  colnames( sim_list )[3] = "Weight"
+    print(panel)
+    
+    sim_list_panel = sim_list_default[ grepl( panel, sim_list_default$CL) , ]
+    member_var_panel = rep( 1, dim(sim_list_panel)[1] )
+    
+    sim_list_stats_panel = aggregate( member_var_panel , by = list( sim_list_panel$CL ), FUN = sum )
+    colnames(sim_list_stats_panel) = c( "CL", "Count" )
+    
+    print("Aggregating over mutational frequency to obtain mutational weight")
+        
+    weights_panel = aggregate( member_var_panel , by = list( sim_list_panel$Fingerprint ), FUN = sum )
+    weights_panel$x = 1.0 / as.double( weights_panel$x )
+    
+    mapping_panel = match( as.character( sim_list_panel$Fingerprint ), as.character( weights_panel$Group.1) )
+    sim_list_panel = cbind( sim_list_panel, weights_panel$x[mapping_panel] )
+    colnames( sim_list_panel )[3] = "Weight"
+    
+    # calculate weights
+    
+    aggregation_all_panel = stats::aggregate( 
+      x  = as.double( sim_list_panel$Weight ),
+      by = list( as.character( sim_list_panel$CL ) ),
+      FUN = sum
+    )
+    
+    mapping_agg_stats_panel = which( aggregation_all_panel$Group.1 %in% sim_list_stats_panel[,1], arr.ind = T  )
+    sim_list_stats_panel = cbind( sim_list_stats_panel, aggregation_all_panel$x[mapping_agg_stats_panel] )
+    
+    #print("Finished aggregating, writing to database")
+    
+    Ref_Gen = rep(ref_gen, dim(sim_list_panel)[1]  )
+    sim_list_panel = cbind( sim_list_panel, Ref_Gen )
+    Ref_Gen = rep( ref_gen, dim(sim_list_stats_panel)[1]  )
+    sim_list_stats_panel = cbind( sim_list_stats_panel, Ref_Gen )
+    colnames( sim_list_stats_panel ) = c( "CL","Count","All_weights","Ref_Gen" )
+    
+    if(! exists("sim_list_global"))
+      sim_list_global <<- sim_list_default[0,]
+    
+    sim_list_global = rbind(sim_list_panel)
+    
+    if(! exists("sim_list_stats_global")){
+      sim_list_stats_global <<- sim_list_stats_panel[0,]
+    } else {
+      sim_list_stats_global = rbind( sim_list_stats_global, sim_list_stats_panel  )
+    }
+  }
   
-  # calculate weights
-  
-  aggregation_all = stats::aggregate( 
-    x  = as.double( sim_list$Weight ),
-    by = list( as.character( sim_list$CL ) ),
-    FUN = sum
-  )
-  
-  mapping_agg_stats = which( aggregation_all$Group.1 %in% sim_list_stats[,1], arr.ind = T  )
-  sim_list_stats = cbind( sim_list_stats, aggregation_all$x[mapping_agg_stats] )
-  
-  print("Finished aggregating, writing to database")
-  
-  Ref_Gen = rep(ref_gen, dim(sim_list)[1]  )
-  sim_list = cbind( sim_list, Ref_Gen )
-  Ref_Gen = rep( ref_gen, dim(sim_list_stats)[1]  )
-  sim_list_stats = cbind( sim_list_stats, Ref_Gen )
-  colnames( sim_list_stats ) = c( "CL","Count","All_weights","Ref_Gen" )
+  sim_list = sim_list_global
+  sim_list_stats = sim_list_stats_global
   
   uni_db            = src_sqlite( database_path, create = T )
   sim_list_df       = tbl_df( sim_list )
