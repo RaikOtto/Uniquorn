@@ -34,6 +34,10 @@ initiate_canonical_databases = function(
   package_path    = system.file("", package="Uniquorn")
   
   database_path   =  paste( package_path, "uniquorn_distinct_panels_db.sqlite3", sep ="/" )
+  
+  if (!distinct_mode)
+    database_path   =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite3", sep ="/" )
+  
   database_default_path =  paste( package_path, "uniquorn_db_default.sqlite3", sep ="/" )
   sim_list_default = as.data.frame( tbl( src_sqlite( database_default_path ), "sim_list_df" ), n = -1 )
   sim_list_default = sim_list_default[, which( colnames(sim_list_default) != "Ref_Gen"  ) ]
