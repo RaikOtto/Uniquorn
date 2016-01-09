@@ -127,7 +127,7 @@ initiate_canonical_databases = function(
     )
     
     mapping_agg_stats_panel = which( aggregation_all_panel$Group.1 %in% sim_list_stats_panel[,1], arr.ind = T  )
-    sim_list_stats_panel = cbind( sim_list_stats_panel, aggregation_all_panel$x[mapping_agg_stats_panel] )
+  sim_list_stats_panel = cbind( sim_list_stats_panel, aggregation_all_panel$x[mapping_agg_stats_panel] )
     
     #print("Finished aggregating, writing to database")
     
@@ -142,11 +142,10 @@ initiate_canonical_databases = function(
     
     sim_list_global = rbind(sim_list_global,sim_list_panel)
     
-    if(! exists("sim_list_stats_global")){
+    if(! exists("sim_list_stats_global"))
       sim_list_stats_global <<- sim_list_stats_panel[0,]
-
-      sim_list_stats_global = rbind( sim_list_stats_global, sim_list_stats_panel  )
-    }
+    
+    sim_list_stats_global = rbind( sim_list_stats_global, sim_list_stats_panel  )
   }
   
   uni_db            = src_sqlite( database_path, create = T )
