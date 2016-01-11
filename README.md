@@ -20,13 +20,15 @@ Start R
 
 `install_github("RaikOtto/Uniquorn")`
 
+Note that some systems require the prior command `options(unzip = 'internal')` to install from github 
+
 `library("Uniquorn")`
 
 # 3 Test run
 
  Here the NCI-60 exome sequenced HT29 Cancer Cell line
 
-`HT29_CL_VCF = paste( system.file("extdata", package="Uniquorn"), "HT29.vcf.gz", sep ="/")`
+`data(HT29)`
 
 --> FYI: VCF testfiles for NCI-60 panel e.g. from http://watson.nci.nih.gov/projects/nci60/wes/VCF
 
