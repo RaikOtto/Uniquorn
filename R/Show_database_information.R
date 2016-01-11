@@ -1,14 +1,18 @@
 
 #' Show all cancer cell line identifier present in the database for a selected reference Genome
 #' @export
-show_contained_cls = function( ref_gen = "HG19" ){
+show_contained_cls = function( ref_gen = "GRCH37", distinct_mode = T ){
 
-  #suppressPackageStartupMessages(library("plyr"))
-  #suppressPackageStartupMessages(library("dplyr"))
-  #suppressPackageStartupMessages(library("stringr"))
+  suppressPackageStartupMessages(library("plyr"))
+  suppressPackageStartupMessages(library("dplyr"))
+  suppressPackageStartupMessages(library("stringr"))
     
-  db_folder      = system.file("", package="Uniquorn")
-  database_path  =  paste( db_folder, "uniquorn_db.sqlite3", sep ="/" )
+  package_path      = system.file("", package="Uniquorn")
+  database_path   =  paste( package_path, "uniquorn_distinct_panels_db.sqlite3", sep ="/" )
+  
+  if (!distinct_mode)
+    database_path   =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite3", sep ="/" )
+  
   sim_list_stats = as.data.frame( tbl( src_sqlite( database_path ), "sim_list_stats_df" ), n = -1 )
 
   sim_list_stats = sim_list_stats[ sim_list_stats$Ref_Gen == ref_gen,  ]
@@ -21,14 +25,18 @@ show_contained_cls = function( ref_gen = "HG19" ){
 
 #' Show all mutations present in the database for a selected reference Genome
 #' @export
-show_contained_mutations = function( ref_gen = "HG19" ){
+show_contained_mutations = function( ref_gen = "GRCH37", distinct_mode = T ){
   
   suppressPackageStartupMessages(library("plyr"))
   suppressPackageStartupMessages(library("dplyr"))
   suppressPackageStartupMessages(library("stringr"))
   
-  db_folder      = system.file("", package="Uniquorn")
-  database_path  =  paste( db_folder, "uniquorn_db.sqlite3", sep ="/" )
+  package_path      = system.file("", package="Uniquorn")
+  database_path   =  paste( package_path, "uniquorn_distinct_panels_db.sqlite3", sep ="/" )
+  
+  if (!distinct_mode)
+    database_path   =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite3", sep ="/" )
+  
   sim_list = as.data.frame( tbl( src_sqlite( database_path ), "sim_list_df" ), n = -1 )
   
   sim_list       = sim_list[ sim_list$Ref_Gen == ref_gen,  ]
@@ -41,14 +49,17 @@ show_contained_mutations = function( ref_gen = "HG19" ){
 
 #' Show all mutations present in the database for a selected cancer cell line and reference Genome
 #' @export
-show_contained_mutations_for_cl = function( cl_name, ref_gen = "HG19"){
+show_contained_mutations_for_cl = function( cl_name, ref_gen = "HG19", distinct_mode = T){
   
   suppressPackageStartupMessages(library("plyr"))
   suppressPackageStartupMessages(library("dplyr"))
   suppressPackageStartupMessages(library("stringr"))
   
-  db_folder      = system.file("", package="Uniquorn")
-  database_path  =  paste( db_folder, "uniquorn_db.sqlite3", sep ="/" )
+  package_path      = system.file("", package="Uniquorn")
+  database_path   =  paste( package_path, "uniquorn_distinct_panels_db.sqlite3", sep ="/" )
+  
+  if (!distinct_mode)
+    database_path   =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite3", sep ="/" )
   sim_list = as.data.frame( tbl( src_sqlite( database_path ), "sim_list_df" ), n = -1 )
   
   sim_list = sim_list[ sim_list$Ref_Gen == ref_gen,  ]
@@ -72,7 +83,7 @@ show_contained_mutations_for_cl = function( cl_name, ref_gen = "HG19"){
 
 #' Show all cancer cell lines in the database which contained the specified mutation and reference Genome. Closed interval coordinates. Format mutation: CHR_START_STOP, e.g. 1_123_123
 #' @export
-show_which_cls_contain_mutation = function( mutation_name, ref_gen = "HG19"){
+show_which_cls_contain_mutation = function( mutation_name, ref_gen = "GRCH37"){
   
   suppressPackageStartupMessages(library("plyr"))
   suppressPackageStartupMessages(library("dplyr"))
