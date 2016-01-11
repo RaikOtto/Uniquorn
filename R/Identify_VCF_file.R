@@ -4,10 +4,11 @@ identify_vcf_file = function(
   vcf_file,
   output_file = "",
   ref_gen = "GRCH37",
-  similarity_threshold = 15.0,
-  mutational_weight_inclusion_threshold = 0.0,
+  similarity_threshold = 5.0,
+  mutational_weight_inclusion_threshold = 1.0,
   only_first_candidate = FALSE,
-  distinct_mode = TRUE
+  distinct_mode = TRUE,
+  batch_mode = F
   ){
   
   suppressPackageStartupMessages( library( "stringr" ) )
@@ -29,8 +30,14 @@ identify_vcf_file = function(
   # reading file
   vcf_fingerprint = parse_vcf_file( vcf_file )
   
-  if ( output_file == ""  )
+  if ( output_file == ""  ){
+    
     output_file = paste( vcf_file, "uniquorn_ident.tab", sep ="_")
+  
+  }else if ( dir.exists( output_file ) ){
+    vcf_file_name = tail(as.character(unlist(str_split(vcf_file, "/"))),1)
+    output_file = paste(output_file,paste( vcf_file_name, "uniquorn_ident.tab", sep ="_"), sep = "/") 
+  }
     
   if( ! file.exists( database_path ) ){
     
@@ -41,7 +48,7 @@ identify_vcf_file = function(
     
   print( "Finished reading the VCF file, loading database" )
   
-  if (exists("sim_list_raw")){
+  if (exists("sim_list_raw") & batch_mode){
     sim_list = sim_list_raw
   } else {
     sim_list = as.data.frame( tbl( src_sqlite( database_path ), "sim_list_df" ), n = -1 )
