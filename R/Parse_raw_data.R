@@ -3,14 +3,13 @@
 #' @export
 initiate_canonical_databases = function(
     cosmic_genotype_file = "CosmicCLP_MutantExport.tsv",
-    ccle_genotype_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.tsv",
+    ccle_genotype_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.maf",
     ref_gen = "GRCH37",
     distinct_mode = TRUE
   ){
   
-  suppressPackageStartupMessages(library("plyr"))
-  suppressPackageStartupMessages(library("dplyr"))
-  suppressPackageStartupMessages(library("stringr"))
+  require( "dplyr", quietly = T)
+  require( "stringr", quietly = T)
   
   print( c( "Reference genome: ", ref_gen )  )
   
@@ -50,51 +49,29 @@ initiate_canonical_databases = function(
   if (file.exists(database_path))
     file.remove( database_path )
 
-  # python parser
-
-  print("Started pre-calculations")
+   print("Started pre-calculations")
   
   if ( exists("sim_list_stats"))
     rm( sim_list_stats )
   
-  for( parse_file in parse_files ){
-   
-    if (parse_file == cosmic_genotype_file){
-      
-      panel = "cosmic"
-    
-    } else if (parse_file == ccle_genotype_file){
-      
-      panel = "ccle"
-      
-    }
-    
-    print( paste( "Parsing: ", panel ), sep =" "  )
-    
-    sim_list = sim_list_default
-    sim_list_default      = rbind( sim_list_default, read.table( sim_list_file, sep = "\t", header = T))
-    
-    #file.remove(sim_list_file)
-    #file.remove(sim_list_stats_file)
-  }
+  print("Finished parsing, aggregating over parsed Cancer Cell Line data")
   
   list_of_cls = unique( sim_list$CL )
   panels = sapply( list_of_cls, FUN = str_split, "_"  )
   panels = as.character(unique( as.character( sapply( panels, FUN = tail, 1) ) ))
-  
-  print("Finished parsing, aggregating over parsed Cancer Cell Line data")
-  print( paste( "Distinguishing between panels:",paste0( c(panels), collapse = ", "), sep = " ") )
   
   if (!distinct_mode){
     panels = paste0( c(panels), collapse ="|"  )
     database_path =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite3", sep ="/" )
   }
   
+  print( paste( "Distinguishing between panels:",paste0( c(panels), collapse = ", "), sep = " ") )
+  
   for (panel in panels) {
   
     print(panel)
     
-    sim_list_panel = sim_list_default[ grepl( panel, sim_list_default$CL) , ]
+    sim_list_panel   = sim_list[ grepl( panel, sim_list$CL) , ]
     member_var_panel = rep( 1, dim(sim_list_panel)[1] )
     
     sim_list_stats_panel = aggregate( member_var_panel , by = list( sim_list_panel$CL ), FUN = sum )
@@ -118,7 +95,7 @@ initiate_canonical_databases = function(
     )
     
     mapping_agg_stats_panel = which( aggregation_all_panel$Group.1 %in% sim_list_stats_panel[,1], arr.ind = T  )
-  sim_list_stats_panel = cbind( sim_list_stats_panel, aggregation_all_panel$x[mapping_agg_stats_panel] )
+    sim_list_stats_panel = cbind( sim_list_stats_panel, aggregation_all_panel$x[mapping_agg_stats_panel] )
     
     #print("Finished aggregating, writing to database")
     
