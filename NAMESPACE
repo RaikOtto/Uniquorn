@@ -3,6 +3,8 @@
 export(add_custom_vcf_to_database)
 export(identify_vcf_file)
 export(initiate_canonical_databases)
+export(parse_ccle_genotype_data)
+export(parse_cosmic_genotype_data)
 export(parse_vcf_file)
 export(remove_cl_from_uniquorn_db)
 export(show_contained_cls)

@@ -6,7 +6,7 @@
 \usage{
 
   initiate_canonical_databases(cosmic_genotype_file = "CosmicCLP_MutantExport.tsv",
-  ccle_genotype_file = "CCLE_hybrid_capture1650_hg19_allVariants_2012.05.07.maf",
+  ccle_genotype_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.tsv",
   ref_gen = "GRCH37", distinct_mode = TRUE)
 }
 \description{

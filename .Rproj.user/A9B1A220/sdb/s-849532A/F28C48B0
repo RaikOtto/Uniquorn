@@ -1,0 +1,18 @@
+{
+    "contents" : "#' Parses cosmic genotype data\n#' @export\nparse_cosmic_genotype_data = function( cosmic_file, sim_list ){\n   \n    split_coords = function(vec){\n        \n        require(\"stringr\", quietly = T)\n        split_vec = str_split( vec, \":\" )\n        chrom = split_vec[1]\n    }\n     \n    require(\"stringr\", quietly = T)\n    \n    exclude_cols_cosmic = c(rep(\"NULL\",4),\"character\",rep(\"NULL\",13),\"character\",rep(\"NULL\",13))\n    \n    #cosmic_genotype_file = \"/Users/raik_000/Dropbox/PhD/Uniquorn_project//Raw_data/CosmicCLP_MutantExport.tsv\"\n    cosmic_genotype_tab = read.csv2( cosmic_file, sep =\"\\t\", colClasses = exclude_cols_cosmic)\n    \n    coords = as.character( sapply( cosmic_genotype_tab[,2], FUN = str_replace_all, \":|-\", \"_\" ) )\n    cls    = str_replace_all( str_to_upper(cosmic_genotype_tab[,1]), \"/|(|])| \", \"\" )\n    cls    = sapply( cls, FUN = function( cl_name ){ return( paste(cl_name, \"COSMIC\", sep = \"_\") ) } )\n    \n    new_sim_list = data.frame( coords, cls )\n    colnames(new_sim_list) = colnames(sim_list)\n    sim_list = rbind( sim_list, new_sim_list )\n    \n    return(sim_list)\n}\n\n#' Parses ccle genotype data\n#' @export\nparse_ccle_genotype_data = function( ccle_file, sim_list ){\n    \n    require(\"stringr\", quietly = T)\n    \n    exclude_cols_ccle = c(rep(\"NULL\",4),rep(\"character\", 3),rep(\"NULL\",8),\"character\",rep(\"NULL\",35))\n    \n    ccle_genotype_tab = read.csv2( ccle_file, sep =\"\\t\", colClasses = exclude_cols_ccle)\n    \n    coords = as.character( paste0( c( ccle_genotype_tab[,c(1,2,3)] ), collapse = \"_\" ) )\n    cls    = sapply( ccle_genotype_tab[,4], FUN = str_split, \"_\" )\n    cls    = as.character( sapply( cls, FUN = function(vec){ return(vec[1]) }) )\n    cls    = sapply( cls, FUN = function( cl_name ){ return( paste(cl_name, \"CCLE\", sep = \"_\") ) } )\n    \n    new_sim_list = data.frame( coords, cls )\n    colnames(new_sim_list) = colnames(sim_list)\n    sim_list = rbind( sim_list, new_sim_list )\n    \n    return(sim_list)\n}\n\n",
+    "created" : 1452599552599.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1223130532",
+    "id" : "F28C48B0",
+    "lastKnownWriteTime" : 1452610143,
+    "path" : "C:/Users/raik_000/Dropbox/PhD/Uniquorn_project/Uniquorn/R/Parser_scripts.R",
+    "project_path" : "R/Parser_scripts.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "type" : "r_source"
+}

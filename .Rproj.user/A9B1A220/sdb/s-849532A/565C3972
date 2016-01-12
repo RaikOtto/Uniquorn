@@ -1,0 +1,17 @@
+{
+    "contents" : "#' Loads VCF-based data into the db\n#' @export\nparse_vcf_file = function( vcf_file_path  ){\n  \n  suppressPackageStartupMessages(library(\"stringr\"))\n  \n  if ( file.exists( vcf_file_path ) ){\n  \n    print( paste0(\"Reading VCF file: \", vcf_file_path ) )\n    \n    vcf_handle = read.table( vcf_file_path, sep =\"\\t\", header = F, comment.char = \"#\", fill = T )\n    \n    split_add = function( vcf_matrix_row ){\n      \n      reference  = as.character( unlist( vcf_matrix_row[4] ) )\n      length_ref = length( unlist(str_split( reference  ,\"\") ))\n      variations = as.character( unlist( str_split( unlist(vcf_matrix_row[5]), \",\" ) ) )\n      length_variations = length(unlist(str_split( unlist(vcf_matrix_row[5]), \",\" )))\n      \n      chromosome = rep( vcf_matrix_row[1], length(variations)  )\n      start      = as.integer( rep( vcf_matrix_row[2], length(variations)  ) )\n      \n      fingerprint = as.character()\n      for ( i in seq( length_variations ) ){ \n        \n        start_var  = as.character( start[i] )\n        variation  = variations[i]\n        length_var = length( unlist(str_split( variation,\"\") ))\n        \n        length_alt = max( length_var, length_ref )\n        end_var    = as.character( as.integer(start_var) + length_alt - 1 )\n        \n        chrom      = str_replace( str_to_upper( str_trim( as.character( unlist( chromosome[i] ) ) ) ), \"CHR\", \"\" )\n        \n        fingerprint = c( fingerprint, paste0( c( chrom, start_var, end_var), collapse = \"_\" ) )\n      }\n      \n      return( fingerprint )\n    }\n    \n    fingerprint  = apply( vcf_handle, FUN = split_add, MARGIN = 1  )\n    \n    return( fingerprint )\n    \n  } else {\n    \n    stop( paste0( \"Did not find VCF file: \", vcf_file_path  ) )\n  }\n}",
+    "created" : 1452595465640.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "307855575",
+    "id" : "565C3972",
+    "lastKnownWriteTime" : 1452592787,
+    "path" : "C:/Users/raik_000/Dropbox/PhD/Uniquorn_project/Uniquorn/R/Parse_VCF_data.R",
+    "project_path" : "R/Parse_VCF_data.R",
+    "properties" : {
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "type" : "r_source"
+}
