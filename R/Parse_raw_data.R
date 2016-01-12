@@ -27,8 +27,6 @@ initiate_canonical_databases = function(
   sim_list = sim_list[, which( colnames(sim_list) != "Ref_Gen"  ) ]
   sim_list = sim_list[, which( colnames(sim_list) != "Weight"  ) ]
 
-  source(paste( package_path, "Parser_scripts.R", sep = "/"))
-  
   parse_files = c()
   
   if (file.exists(cosmic_genotype_file)){
@@ -56,8 +54,6 @@ initiate_canonical_databases = function(
 
   print("Started pre-calculations")
   
-  system( command_line, ignore.stdout = F, intern = F )
-  
   if ( exists("sim_list_stats"))
     rm( sim_list_stats )
   
@@ -82,7 +78,7 @@ initiate_canonical_databases = function(
     #file.remove(sim_list_stats_file)
   }
   
-  list_of_cls = unique( sim_list_default$CL )
+  list_of_cls = unique( sim_list$CL )
   panels = sapply( list_of_cls, FUN = str_split, "_"  )
   panels = as.character(unique( as.character( sapply( panels, FUN = tail, 1) ) ))
   

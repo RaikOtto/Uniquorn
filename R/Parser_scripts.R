@@ -1,12 +1,14 @@
-split_coords = function(vec){
-    
-    require("stringr", quietly = T)
-    split_vec = str_split( vec, ":" )
-    chrom = split_vec[1]
-}
-
+#' Parses cosmic genotype data
+#' @export
 parse_cosmic_genotype_data = function( cosmic_file, sim_list ){
-    
+   
+    split_coords = function(vec){
+        
+        require("stringr", quietly = T)
+        split_vec = str_split( vec, ":" )
+        chrom = split_vec[1]
+    }
+     
     require("stringr", quietly = T)
     
     exclude_cols_cosmic = c(rep("NULL",4),"character",rep("NULL",13),"character",rep("NULL",13))
@@ -16,6 +18,7 @@ parse_cosmic_genotype_data = function( cosmic_file, sim_list ){
     
     coords = as.character( sapply( cosmic_genotype_tab[,2], FUN = str_replace_all, ":|-", "_" ) )
     cls    = str_replace_all( str_to_upper(cosmic_genotype_tab[,1]), "/|(|])| ", "" )
+    cls    = sapply( cls, FUN = function( cl_name ){ return( paste(cl_name, "COSMIC", sep = "_") ) } )
     
     new_sim_list = data.frame( coords, cls )
     colnames(new_sim_list) = colnames(sim_list)
@@ -24,6 +27,8 @@ parse_cosmic_genotype_data = function( cosmic_file, sim_list ){
     return(sim_list)
 }
 
+#' Parses ccle genotype data
+#' @export
 parse_ccle_genotype_data = function( ccle_file, sim_list ){
     
     require("stringr", quietly = T)
@@ -35,6 +40,7 @@ parse_ccle_genotype_data = function( ccle_file, sim_list ){
     coords = as.character( paste0( c( ccle_genotype_tab[,c(1,2,3)] ), collapse = "_" ) )
     cls    = sapply( ccle_genotype_tab[,4], FUN = str_split, "_" )
     cls    = as.character( sapply( cls, FUN = function(vec){ return(vec[1]) }) )
+    cls    = sapply( cls, FUN = function( cl_name ){ return( paste(cl_name, "CCLE", sep = "_") ) } )
     
     new_sim_list = data.frame( coords, cls )
     colnames(new_sim_list) = colnames(sim_list)
