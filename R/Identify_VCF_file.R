@@ -139,7 +139,7 @@ identify_vcf_file = function(
   # treshold
   
   passed_threshold_weighted = rep( F, nr_cls )
-  passed_threshold_weighted[ (res_res_cl_weighted >= similarity_threshold) ] = TRUE
+  passed_threshold_weighted[ ( candidate_hits_abs_all >= 3 ) & (res_res_cl_weighted >= similarity_threshold) ] = TRUE
 
   output_cl_names = str_replace( list_of_cls, pattern = "_CCLE|_COSMIC|_CELLMINER", replacement = "" )
   panel_vec = rep("", length( output_cl_names ))
