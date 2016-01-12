@@ -13,7 +13,6 @@ Imports:
   dplyr,
   knitr
 Depends: R (>= 3.1.2)
-Suggests: Python (>= 2.6)
 License: Artistic-2.0
 LazyData: TRUE
 Type: Package
