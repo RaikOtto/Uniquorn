@@ -37,10 +37,19 @@ parse_ccle_genotype_data = function( ccle_file, sim_list ){
     
     ccle_genotype_tab = read.csv2( ccle_file, sep ="\t", colClasses = exclude_cols_ccle)
     
-    coords = as.character( paste0( c( ccle_genotype_tab[,c(1,2,3)] ), collapse = "_" ) )
+    coords = as.character( apply(
+        ccle_genotype_tab,
+        FUN = function( vec ){ return( paste0( c(
+            as.character( vec[1] ),
+            as.character( vec[2] ),
+            as.character( vec[3] )
+            ), collapse = "_" ) ) },
+        MARGIN = 1
+    ) )
+    
     cls    = sapply( ccle_genotype_tab[,4], FUN = str_split, "_" )
     cls    = as.character( sapply( cls, FUN = function(vec){ return(vec[1]) }) )
-    cls    = sapply( cls, FUN = function( cl_name ){ return( paste(cl_name, "CCLE", sep = "_") ) } )
+    cls    = as.character( sapply( cls, FUN = function( cl_name ){ return( paste(cl_name, "CCLE", sep = "_") ) } ) )
     
     new_sim_list = data.frame( coords, cls )
     colnames(new_sim_list) = colnames(sim_list)

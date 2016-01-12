@@ -21,6 +21,10 @@ initiate_canonical_databases = function(
   
   package_path    = system.file("", package="Uniquorn")
   database_path   =  paste( package_path, "uniquorn_distinct_panels_db.sqlite3", sep ="/" )
+  database_path_dbi =  paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
+  
+  drv <- RSQLite::SQLite()
+  con <- DBI::dbConnect(drv, dbname = database_path_dbi)
   
   if (!distinct_mode)
     database_path   =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite3", sep ="/" )
@@ -32,18 +36,18 @@ initiate_canonical_databases = function(
 
   parse_files = c()
   
-  if (file.exists(cosmic_genotype_file)){
+  if (file.exists(cosmic_file)){
       
-      print( c( "Found CoSMIC: ", file.exists(cosmic_genotype_file) )  )
-      sim_list = parse_cosmic_genotype_data( cosmic_genotype_file, sim_list )
-      parse_files = c(parse_files, cosmic_genotype_file)
+      print( c( "Found CoSMIC: ", file.exists(cosmic_file) )  )
+      sim_list = parse_cosmic_genotype_data( cosmic_file, sim_list )
+      parse_files = c(parse_files, cosmic_file)
   }
   
-  if (file.exists(ccle_genotype_file)){
+  if (file.exists(ccle_file)){
       
-      print( c( "Found CCLE: ", file.exists( ccle_genotype_file ) )  )
-      sim_list = parse_ccle_genotype_data( ccle_genotype_file, sim_list )
-      parse_files = c(parse_files, ccle_genotype_file)
+      print( c( "Found CCLE: ", file.exists( ccle_file ) )  )
+      sim_list = parse_ccle_genotype_data( ccle_file, sim_list )
+      parse_files = c(parse_files, ccle_file)
   }
   
   if (length(parse_files) == 0)
@@ -118,11 +122,18 @@ initiate_canonical_databases = function(
       sim_list_stats_global <<- sim_list_stats_panel[0,]
     
     sim_list_stats_global = rbind( sim_list_stats_global, sim_list_stats_panel  )
+    
+    table_name = paste0( panel,"_db")
+    DBI::dbWriteTable(con, table_name, as.data.frame(sim_list_panel), overwrite=TRUE)
+    #test = DBI::dbReadTable(con, "sim_list_tab" )
   }
   
   print("Finished aggregating, saving to database")
   
   uni_db            = src_sqlite( path = database_path, create = T )
+  
+  
+  
   sim_list_df       = tbl_df( sim_list_global )
   sim_list_stats_df = tbl_df( sim_list_stats_global )
   
