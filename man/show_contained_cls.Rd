@@ -4,7 +4,7 @@
 \alias{show_contained_cls}
 \title{Show all cancer cell line identifier present in the database for a selected reference Genome}
 \usage{
-show_contained_cls(ref_gen = "HG19")
+show_contained_cls(ref_gen = "GRCH37", distinct_mode = T)
 }
 \description{
 Show all cancer cell line identifier present in the database for a selected reference Genome

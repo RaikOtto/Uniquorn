@@ -8,7 +8,7 @@ Start R
 
 # 1 Preparation 
 
- optional if you have the packages installed and loaded
+optional if you have the packages installed and loaded
 
 `install.packages("devtools")`
 
@@ -26,7 +26,7 @@ Note that some systems require the prior command `options(unzip = 'internal')` t
 
 # 3 Test run
 
- Here the NCI-60 exome sequenced HT29 Cancer Cell line
+Here the NCI-60 exome sequenced HT29 Cancer Cell line
 
 `data(HT29)`
 

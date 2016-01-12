@@ -1,7 +1,7 @@
 #' Adds a custom vcf file to the three existing cancer cell line panels
 #' It is strongly recommended to filter the SNPs with a minor allel frequency of more than 0.01.
 #' @export
-add_custom_vcf_to_database = function( vcf_file_path, ref_gen = "HG19", name_cl = "", safe_mode = F ){
+add_custom_vcf_to_database = function( vcf_file_path, ref_gen = "GRCH37", name_cl = "", safe_mode = F ){
     
   # pre processing
   suppressPackageStartupMessages(library("plyr"))

@@ -4,7 +4,7 @@
 \alias{show_contained_mutations}
 \title{Show all mutations present in the database for a selected reference Genome}
 \usage{
-show_contained_mutations(ref_gen = "HG19")
+show_contained_mutations(ref_gen = "GRCH37", distinct_mode = T)
 }
 \description{
 Show all mutations present in the database for a selected reference Genome
