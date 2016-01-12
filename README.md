@@ -43,11 +43,11 @@ Please add the CCLE and CoSMIC CLP Cancer Cell Line (CL) data manually due to le
 
 Download into e.g. '~/Downloads' the files 
 
-'CosmicCLP_MutantExport.tsv'
+'CosmicCLP_MutantExport.tsv.gz', unpack with e.g. gunzip on linux or 7zip on windows
 
 from http://cancer.sanger.ac.uk/cell_lines/download
 
-'CCLE_hybrid_capture1650_hg19_allVariants_2012.05.07.maf'
+'CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.tsv'
 
 http://www.broadinstitute.org/ccle/data/browseData
 

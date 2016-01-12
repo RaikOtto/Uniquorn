@@ -3,7 +3,7 @@
 #' @export
 initiate_canonical_databases = function(
     cosmic_genotype_file = "CosmicCLP_MutantExport.tsv",
-    ccle_genotype_file = "CCLE_hybrid_capture1650_hg19_allVariants_2012.05.07.maf",
+    ccle_genotype_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.tsv",
     ref_gen = "GRCH37",
     distinct_mode = TRUE
   ){
@@ -12,40 +12,42 @@ initiate_canonical_databases = function(
   suppressPackageStartupMessages(library("dplyr"))
   suppressPackageStartupMessages(library("stringr"))
   
-  parse_files = c()
-  
-  if (file.exists(cosmic_genotype_file)){
-    
-    print( c( "Found CoSMIC: ", file.exists(cosmic_genotype_file) )  )
-    parse_files = c(parse_files, cosmic_genotype_file)
-  }
-  
-  if (file.exists(ccle_genotype_file)){
-    
-    print( c( "Found CCLE: ", file.exists( ccle_genotype_file ) )  )
-    parse_files = c(parse_files, ccle_genotype_file)
-  }
-
-  if (length(parse_files) == 0)
-      stop("Did not find CCLE & CoSMIC CLP file! Aborting.")
-  
   print( c( "Reference genome: ", ref_gen )  )
   
   ### pre processing
   
-  path_to_python  = paste( system.file("", package="Uniquorn"),"pre_compute_raw_data.py", sep ="/")
   package_path    = system.file("", package="Uniquorn")
-  
   database_path   =  paste( package_path, "uniquorn_distinct_panels_db.sqlite3", sep ="/" )
   
   if (!distinct_mode)
     database_path   =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite3", sep ="/" )
   
   database_default_path =  paste( package_path, "uniquorn_db_default.sqlite3", sep ="/" )
-  sim_list_default = as.data.frame( tbl( src_sqlite( database_default_path ), "sim_list_df" ), n = -1 )
-  sim_list_default = sim_list_default[, which( colnames(sim_list_default) != "Ref_Gen"  ) ]
-  sim_list_default = sim_list_default[, which( colnames(sim_list_default) != "Weight"  ) ]
+  sim_list = as.data.frame( tbl( src_sqlite( database_default_path ), "sim_list_df" ), n = -1 )
+  sim_list = sim_list[, which( colnames(sim_list) != "Ref_Gen"  ) ]
+  sim_list = sim_list[, which( colnames(sim_list) != "Weight"  ) ]
 
+  source(paste( package_path, "Parser_scripts.R", sep = "/"))
+  
+  parse_files = c()
+  
+  if (file.exists(cosmic_genotype_file)){
+      
+      print( c( "Found CoSMIC: ", file.exists(cosmic_genotype_file) )  )
+      sim_list = parse_cosmic_genotype_data( cosmic_genotype_file, sim_list )
+      parse_files = c(parse_files, cosmic_genotype_file)
+  }
+  
+  if (file.exists(ccle_genotype_file)){
+      
+      print( c( "Found CCLE: ", file.exists( ccle_genotype_file ) )  )
+      sim_list = parse_ccle_genotype_data( ccle_genotype_file, sim_list )
+      parse_files = c(parse_files, ccle_genotype_file)
+  }
+  
+  if (length(parse_files) == 0)
+      stop("Did not find CCLE & CoSMIC CLP file! Aborting.")
+  
   # overwrite existing db
   if (file.exists(database_path))
     file.remove( database_path )
@@ -53,16 +55,6 @@ initiate_canonical_databases = function(
   # python parser
 
   print("Started pre-calculations")
-
-  command_line = str_c( 
-    c(  
-      'python',     path_to_python,
-      "-ccle ",     ccle_genotype_file,
-      "-cosmic ",   cosmic_genotype_file,
-      "-o_db_path", package_path
-    ),
-    collapse = " "
-  )
   
   system( command_line, ignore.stdout = F, intern = F )
   
@@ -83,7 +75,7 @@ initiate_canonical_databases = function(
     
     print( paste( "Parsing: ", panel ), sep =" "  )
     
-    sim_list_file = paste0( c( package_path, "/", "Fingerprint_",       panel, ".tab" ), collapse = "" )
+    sim_list = sim_list_default
     sim_list_default      = rbind( sim_list_default, read.table( sim_list_file, sep = "\t", header = T))
     
     #file.remove(sim_list_file)
