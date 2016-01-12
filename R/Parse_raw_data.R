@@ -6,8 +6,8 @@
 #' @param distinct_mode Should the mutational weights be calculated for all panels together or each for itelf? Recommendation: Seperately
 #' @export
 initiate_canonical_databases = function(
-    cosmic_genotype_file = "CosmicCLP_MutantExport.tsv",
-    ccle_genotype_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.maf",
+    cosmic_file = "CosmicCLP_MutantExport.tsv",
+    ccle_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.maf",
     ref_gen = "GRCH37",
     distinct_mode = TRUE
   ){

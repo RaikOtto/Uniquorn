@@ -6,8 +6,17 @@
 \usage{
 
   initiate_canonical_databases(cosmic_genotype_file = "CosmicCLP_MutantExport.tsv",
-  ccle_genotype_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.tsv",
+  ccle_genotype_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.maf",
   ref_gen = "GRCH37", distinct_mode = TRUE)
+}
+\arguments{
+\item{cosmic_genotype_file}{The path to the cosmic DNA genotype data file. Ensure that the right reference genome is used}
+
+\item{ccle_genotype_file}{The path to the ccle DNA genotype data file. Ensure that the right reference genome is used}
+
+\item{ref_gen}{Reference genome version}
+
+\item{distinct_mode}{Should the mutational weights be calculated for all panels together or each for itelf? Recommendation: Seperately}
 }
 \description{
 Parses data into r list variable
