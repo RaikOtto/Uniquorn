@@ -1,5 +1,9 @@
 ### parse files
 #' Parses data into r list variable
+#' @param cosmic_genotype_file The path to the cosmic DNA genotype data file. Ensure that the right reference genome is used
+#' @param ccle_genotype_file The path to the ccle DNA genotype data file. Ensure that the right reference genome is used
+#' @param ref_gen Reference genome version
+#' @param distinct_mode Should the mutational weights be calculated for all panels together or each for itelf? Recommendation: Seperately
 #' @export
 initiate_canonical_databases = function(
     cosmic_genotype_file = "CosmicCLP_MutantExport.tsv",
@@ -8,8 +12,8 @@ initiate_canonical_databases = function(
     distinct_mode = TRUE
   ){
   
-  require( "dplyr", quietly = T)
-  require( "stringr", quietly = T)
+  require( "dplyr", quietly = TRUE, warn.conflicts = FALSE)
+  require( "stringr", quietly = TRUE, warn.conflicts = FALSE)
   
   print( c( "Reference genome: ", ref_gen )  )
   
@@ -118,7 +122,7 @@ initiate_canonical_databases = function(
   
   print("Finished aggregating, saving to database")
   
-  uni_db            = src_sqlite( database_path, create = T )
+  uni_db            = src_sqlite( path = database_path, create = T )
   sim_list_df       = tbl_df( sim_list_global )
   sim_list_stats_df = tbl_df( sim_list_stats_global )
   
