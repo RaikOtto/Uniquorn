@@ -4,7 +4,8 @@
 \alias{show_contained_mutations_for_cl}
 \title{Show all mutations present in the database for a selected cancer cell line and reference Genome}
 \usage{
-show_contained_mutations_for_cl(cl_name, ref_gen = "HG19")
+show_contained_mutations_for_cl(cl_name, ref_gen = "HG19",
+  distinct_mode = T)
 }
 \description{
 Show all mutations present in the database for a selected cancer cell line and reference Genome

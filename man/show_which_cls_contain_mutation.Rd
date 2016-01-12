@@ -4,7 +4,7 @@
 \alias{show_which_cls_contain_mutation}
 \title{Show all cancer cell lines in the database which contained the specified mutation and reference Genome. Closed interval coordinates. Format mutation: CHR_START_STOP, e.g. 1_123_123}
 \usage{
-show_which_cls_contain_mutation(mutation_name, ref_gen = "HG19")
+show_which_cls_contain_mutation(mutation_name, ref_gen = "GRCH37")
 }
 \description{
 Show all cancer cell lines in the database which contained the specified mutation and reference Genome. Closed interval coordinates. Format mutation: CHR_START_STOP, e.g. 1_123_123
