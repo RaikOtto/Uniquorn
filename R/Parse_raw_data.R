@@ -106,7 +106,7 @@ initiate_canonical_databases = function(
     colnames( sim_list_stats_panel ) = c( "CL","Count","All_weights","Ref_Gen" )
     
     if(! exists("sim_list_global"))
-      sim_list_global <<- sim_list_default[0,]
+      sim_list_global <<- sim_list[0,]
     
     sim_list_global = rbind(sim_list_global,sim_list_panel)
     
@@ -115,6 +115,8 @@ initiate_canonical_databases = function(
     
     sim_list_stats_global = rbind( sim_list_stats_global, sim_list_stats_panel  )
   }
+  
+  print("Finished aggregating, saving to database")
   
   uni_db            = src_sqlite( database_path, create = T )
   sim_list_df       = tbl_df( sim_list_global )
