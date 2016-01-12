@@ -26,6 +26,9 @@ initiate_canonical_databases = function(
     parse_files = c(parse_files, ccle_genotype_file)
   }
 
+  if (length(parse_files) == 0)
+      stop("Did not find CCLE & CoSMIC CLP file! Aborting.")
+  
   print( c( "Reference genome: ", ref_gen )  )
   
   ### pre processing

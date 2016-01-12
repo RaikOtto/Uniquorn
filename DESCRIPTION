@@ -1,7 +1,7 @@
 Package: Uniquorn
 Title: Identification of cancer cell lines based on their unique
         somatic mutational fingerprint
-Version: 1.0
+Version: 0.99.0
 Authors@R: person("Raik", "Otto", email = "raik.otto@hu-berlin.de", role = c("aut", "cre"))
 Description: This packages enables users to identify cancer cell lines. The identification is
     based on the locations or loci of somatic and germline differences with respect to a reference geome.
