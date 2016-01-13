@@ -8,7 +8,7 @@ identify_vcf_file = function(
   mutational_weight_inclusion_threshold = 1.0,
   only_first_candidate = FALSE,
   distinct_mode = TRUE,
-  batch_mode = FRUE
+  batch_mode = TRUE
   ){
   
   require( "stringr", quietly = TRUE, warn.conflicts = FALSE )
