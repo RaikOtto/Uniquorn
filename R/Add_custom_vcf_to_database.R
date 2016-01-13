@@ -21,9 +21,6 @@ add_custom_vcf_to_database = function(
     if (!distinct_mode)
         database_path     =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite", sep ="/" )
     
-    # reading file
-    vcf_fingerprint = parse_vcf_file( vcf_file_path )
-    
     if( ! file.exists( database_path ) ){
         
         database_path = paste( package_path, "uniquorn_db_default.sqlite", sep ="/" )
@@ -45,6 +42,35 @@ add_custom_vcf_to_database = function(
     
     sim_list = sim_list[, which( colnames(sim_list) != "Ref_Gen"  ) ]
     sim_list = sim_list[, which( colnames(sim_list) != "Weight"  ) ]
+    
+    # reading vcf
+    
+    if ( name_cl == "" ){
+        
+        vcf_identifier = as.character( tail( unlist( str_split( vcf_file_path, "/" ) ), 1) )
+        name_cl = head( unlist( str_split( vcf_identifier, ".vcf|.VCF" ) )  , 1)
+        name_cl = paste(name_cl, "CUSTOM", sep ="_"  )
+        print( paste0( "No cl name provided, adding auto-generated fingerprint: ", name_cl ) )
+        
+    } else {
+        
+        name_cl = paste(name_cl, "custom", sep ="_"  )
+        print( paste0( "Adding fingerprint with user-defined name: ", name_cl ) )
+    }
+    
+    print( paste0( "Building fingerprint from file ",  vcf_file_path )  )
+    
+    vcf_fingerprint = as.character( parse_vcf_file( vcf_file_path ) )
+    
+    if(safe_mode)
+        vcf_fingerprint = vcf_fingerprint[ which( vcf_fingerprint %in% sim_list$Fingerprint ) ]
+    
+    vcf_fingerprint = data.frame( 
+        "Fingerprint" = vcf_fingerprint,
+        "CL"  = rep( name_cl, length(as.character(vcf_fingerprint)) )
+    )
+    
+    sim_list = rbind( sim_list, vcf_fingerprint)
     
     print("Finished parsing, aggregating over parsed Cancer Cell Line data")
     
