@@ -173,5 +173,7 @@ identify_vcf_file = function(
   print( paste0( "Candidate(s): ", paste0( ( unique( as.character( res_table$CL )[ res_table$Passed_threshold == TRUE  ]) ), collapse = "," ) )  )
   
   print( paste0("Storing information in table: ",output_file ) )
+  dbDisconnect(con)
+  
   write.table( res_table, output_file, sep ="\t", row.names = FALSE, quote = FALSE  )
 }
