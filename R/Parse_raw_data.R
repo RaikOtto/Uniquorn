@@ -120,9 +120,6 @@ initiate_canonical_databases = function(
     
     sim_list_stats_global = rbind( sim_list_stats_global, sim_list_stats_panel  )
     
-    table_name = paste0( panel,"_db")
-    DBI::dbWriteTable(con, table_name, as.data.frame(sim_list_panel), overwrite=TRUE)
-    #test = DBI::dbReadTable(con, "sim_list_tab" )
   }
   
   print("Finished aggregating, saving to database")
