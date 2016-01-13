@@ -20,11 +20,7 @@ initiate_canonical_databases = function(
   ### pre processing
   
   package_path    = system.file("", package="Uniquorn")
-  database_path   =  paste( package_path, "uniquorn_distinct_panels_db.sqlite3", sep ="/" )
-  database_path_dbi =  paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
-  
-  drv <- RSQLite::SQLite()
-  con <- DBI::dbConnect(drv, dbname = database_path_dbi)
+  database_path =  paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
   
   if (!distinct_mode)
     database_path   =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite3", sep ="/" )
@@ -130,30 +126,14 @@ initiate_canonical_databases = function(
   
   print("Finished aggregating, saving to database")
   
-  uni_db            = src_sqlite( path = database_path, create = T )
+  drv = RSQLite::SQLite()
+  con = DBI::dbConnect(drv, dbname = database_path)
   
+  sim_list = sim_list_global
+  sim_list_stats = sim_list_stats_global
   
-  
-  sim_list_df       = tbl_df( sim_list_global )
-  sim_list_stats_df = tbl_df( sim_list_stats_global )
-  
-  copy_to( uni_db, sim_list_df, temporary = F, 
-    indexes = list(
-      "Fingerprint",
-      "CL",
-      "Weight",
-      "Ref_Gen"
-    )
-  )
-  
-  copy_to( uni_db, sim_list_stats_df, temporary = F,
-    indexes = list(
-      "CL",
-      "Count",
-      "All_weights",
-      "Ref_Gen"
-    )
-  )
+  DBI::dbWriteTable( con, sim_list )
+  DBI::dbWriteTable( con, sim_list_stats )
   
   print ("Initialization of Uniquorn DB finished")
 }
