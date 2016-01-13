@@ -1,5 +1,4 @@
 #' Adds a custom vcf file to the three existing cancer cell line panels
-#' It is strongly recommended to filter the SNPs with a minor allel frequency of more than 0.01.
 #' @export
 add_custom_vcf_to_database = function( 
     vcf_file_path,
@@ -13,6 +12,10 @@ add_custom_vcf_to_database = function(
     require( "stringr", quietly = TRUE, warn.conflicts = FALSE )
     require( "RSQLite", quietly = TRUE, warn.conflicts = FALSE )
     require( "DBI",     quietly = TRUE, warn.conflicts = FALSE )
+    
+    name_cl = str_to_upper(name_cl)
+    
+    print(paste0("Reference genome: ",ref_gen))
   
     package_path    = system.file("", package="Uniquorn")
     

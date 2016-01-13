@@ -2,14 +2,12 @@
 % Please edit documentation in R/Add_custom_vcf_to_database.R
 \name{add_custom_vcf_to_database}
 \alias{add_custom_vcf_to_database}
-\title{Adds a custom vcf file to the three existing cancer cell line panels
-It is strongly recommended to filter the SNPs with a minor allel frequency of more than 0.01.}
+\title{Adds a custom vcf file to the three existing cancer cell line panels}
 \usage{
 add_custom_vcf_to_database(vcf_file_path, ref_gen = "GRCH37", name_cl = "",
   safe_mode = FALSE, distinct_mode = TRUE)
 }
 \description{
 Adds a custom vcf file to the three existing cancer cell line panels
-It is strongly recommended to filter the SNPs with a minor allel frequency of more than 0.01.
 }
 

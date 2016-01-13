@@ -2,11 +2,16 @@
 % Please edit documentation in R/Show_database_information.R
 \name{show_contained_cls}
 \alias{show_contained_cls}
-\title{Show all cancer cell line identifier present in the database for a selected reference Genome}
+\title{Show all cancer cell line identifier present in the database for a selected reference genome.}
 \usage{
 show_contained_cls(ref_gen = "GRCH37", distinct_mode = T)
 }
+\arguments{
+\item{ref_gen}{Reference genome version. All training sets are associated with a reference genome version. Default: GRCH37}
+
+\item{distinct_mode}{Show training data for the commonly or separately normalized training sets. Options: TRUE/ FALSE}
+}
 \description{
-Show all cancer cell line identifier present in the database for a selected reference Genome
+Show all cancer cell line identifier present in the database for a selected reference genome.
 }
 

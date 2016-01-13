@@ -1,5 +1,6 @@
-
-#' Show all cancer cell line identifier present in the database for a selected reference Genome
+#' Show all cancer cell line identifier present in the database for a selected reference genome.
+#' @param ref_gen Reference genome version. All training sets are associated with a reference genome version. Default: GRCH37
+#' @param distinct_mode Show training data for the commonly or separately normalized training sets. Options: TRUE/ FALSE
 #' @export
 show_contained_cls = function( ref_gen = "GRCH37", distinct_mode = T ){
 
