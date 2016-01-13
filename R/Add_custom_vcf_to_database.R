@@ -43,6 +43,9 @@ add_custom_vcf_to_database = function(
     if ( dim(sim_list)[1] == 0 )
         warning( paste( "Warning: Identification might be spurious due to low amount of training sample. No cancer cell line data stored at this point for reference genome:", ref_gen, sep =" " ) )
     
+    sim_list = sim_list[, which( colnames(sim_list) != "Ref_Gen"  ) ]
+    sim_list = sim_list[, which( colnames(sim_list) != "Weight"  ) ]
+    
     print("Finished parsing, aggregating over parsed Cancer Cell Line data")
     
     list_of_cls = unique( sim_list$CL )
@@ -115,6 +118,5 @@ add_custom_vcf_to_database = function(
     DBI::dbWriteTable( con, "sim_list_stats", sim_list_stats_global, overwrite = T )
     dbDisconnect(con)
     
-    print ("Initialization of Uniquorn DB finished")
-    print("Finished")
+    print("Finished adding CL")
 }
