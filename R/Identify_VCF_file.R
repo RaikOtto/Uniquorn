@@ -22,9 +22,9 @@ identify_vcf_file = function(
   package_path    = system.file("", package="Uniquorn")
 
   if (distinct_mode)
-    database_path     =  paste( package_path, "uniquorn_distinct_panels_db.sqlite3", sep ="/" )
+    database_path     =  paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
   if (!distinct_mode)
-    database_path     =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite3", sep ="/" )
+    database_path     =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite", sep ="/" )
 
   # reading file
   vcf_fingerprint = parse_vcf_file( vcf_file )
@@ -41,7 +41,7 @@ identify_vcf_file = function(
     
   if( ! file.exists( database_path ) ){
     
-    database_path = paste( package_path, "uniquorn_db_default.sqlite3", sep ="/" )
+    database_path = paste( package_path, "uniquorn_db_default.sqlite", sep ="/" )
     warning("CCLE & CoSMIC CLP cancer cell line fingerprint NOT found, defaulting to 60 CellMiner cancer cell lines! 
             It is strongly advised to add ~1900 CCLE & CoSMIC CLs, see readme.")
   }
