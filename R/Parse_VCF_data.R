@@ -2,7 +2,7 @@
 #' @export
 parse_vcf_file = function( vcf_file_path  ){
   
-  suppressPackageStartupMessages(library("stringr"))
+  require( "stringr", quietly = TRUE, warn.conflicts = FALSE)
   
   if ( file.exists( vcf_file_path ) ){
   

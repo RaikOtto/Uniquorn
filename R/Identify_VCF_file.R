@@ -162,6 +162,7 @@ identify_vcf_file = function(
   panel_vec[ str_detect( list_of_cls, "_CCLE" ) ] = "CCLE"
   panel_vec[ str_detect( list_of_cls, "_COSMIC" ) ] = "COSMIC"
   panel_vec[ str_detect( list_of_cls, "_CELLMINER" ) ] = "CELLMINER"
+  panel_vec[ str_detect( list_of_cls, "_CUSTOM" ) ] = "CUSTOM"
   
   res_table = data.frame(
     "CL"                       = output_cl_names,

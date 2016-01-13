@@ -2,18 +2,23 @@
 #' @export
 parse_cosmic_genotype_data = function( cosmic_file, sim_list ){
    
+    require("stringr", quietly = TRUE, warn.conflicts = FALSE)
+    
     split_coords = function(vec){
         
-        require("stringr", quietly = T)
+        require("stringr", quietly = TRUE)
         split_vec = str_split( vec, ":" )
         chrom = split_vec[1]
     }
-     
-    require("stringr", quietly = T)
+
+    if (grepl("MutantExport", cosmic_file)){ # MutantExport
+        
+        exclude_cols_cosmic = c(rep("NULL",4),"character",rep("NULL",18),"character",rep("NULL",14))
+    } else {
+        warning("Warning. This is not the recommended COSMIC genotype file! The recommended file is the 'CosmicCLP_MutantExport.tsv.gz' file.")
+        exclude_cols_cosmic = c(rep("NULL",4),"character",rep("NULL",13),"character",rep("NULL",13))
+    }
     
-    exclude_cols_cosmic = c(rep("NULL",4),"character",rep("NULL",13),"character",rep("NULL",13))
-    
-    #cosmic_genotype_file = "/Users/raik_000/Dropbox/PhD/Uniquorn_project//Raw_data/CosmicCLP_MutantExport.tsv"
     cosmic_genotype_tab = read.csv2( cosmic_file, sep ="\t", colClasses = exclude_cols_cosmic)
     
     coords = as.character( sapply( cosmic_genotype_tab[,2], FUN = str_replace_all, ":|-", "_" ) )
