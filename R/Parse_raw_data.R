@@ -132,6 +132,7 @@ initiate_canonical_databases = function(
   
   DBI::dbWriteTable( con, "sim_list", sim_list_global, overwrite = T )
   DBI::dbWriteTable( con, "sim_list_stats", sim_list_stats_global, overwrite = T )
+  dbDisconnect(con)
   
   print ("Initialization of Uniquorn DB finished")
 }
