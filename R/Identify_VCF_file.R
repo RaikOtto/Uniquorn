@@ -27,6 +27,8 @@ identify_vcf_file = function(
     database_path     =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite", sep ="/" )
 
   # reading file
+  if ( ! file.exists(vcf_file))
+      stop(paste0("Error. Did not find vcf file ",vcf_file) )
   vcf_fingerprint = parse_vcf_file( vcf_file )
   
   if ( output_file == ""  ){

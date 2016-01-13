@@ -33,12 +33,19 @@ initiate_canonical_databases = function(
 
   parse_files = c()
   
-  if (file.exists(cosmic_file)){
+    if (file.exists(cosmic_file)){
       
-      print( c( "Found CoSMIC: ", file.exists(cosmic_file) )  )
-      sim_list = parse_cosmic_genotype_data( cosmic_file, sim_list )
-      parse_files = c(parse_files, cosmic_file)
-  }
+        print( c( "Found CoSMIC: ", file.exists(cosmic_file) )  )
+      
+        if ( grepl( ".gz$", str_to_lower( cosmic_file ) ) ){
+            require( R.utils, quietly = TRUE, warn.conflicts = FALSE )
+            gunzip( cosmic_file )
+        }
+        cosmic_file = str_replace( cosmic_file, ".gz$|.GZ$", "" )
+      
+        sim_list = parse_cosmic_genotype_data( cosmic_file, sim_list )
+        parse_files = c(parse_files, cosmic_file)
+    }
   
   if (file.exists(ccle_file)){
       
