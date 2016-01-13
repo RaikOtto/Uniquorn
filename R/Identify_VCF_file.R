@@ -8,7 +8,7 @@ identify_vcf_file = function(
   mutational_weight_inclusion_threshold = 1.0,
   only_first_candidate = FALSE,
   distinct_mode = TRUE,
-  batch_mode = TRUE
+  batch_mode = FALSE
   ){
   
   require( "stringr", quietly = TRUE, warn.conflicts = FALSE )
@@ -45,6 +45,9 @@ identify_vcf_file = function(
     warning("CCLE & CoSMIC CLP cancer cell line fingerprint NOT found, defaulting to 60 CellMiner cancer cell lines! 
             It is strongly advised to add ~1900 CCLE & CoSMIC CLs, see readme.")
   }
+  
+  drv = RSQLite::SQLite()
+  con = DBI::dbConnect(drv, dbname = database_path)
     
   print( "Finished reading the VCF file, loading database" )
   
@@ -54,8 +57,9 @@ identify_vcf_file = function(
     
   } else {
     
-    sim_list       = as.data.frame( DBI::dbReadTable("sim_list") )
-    sim_list_stats = as.data.frame( DBI::dbReadTable("sim_list_stats") )
+     
+    sim_list       = as.data.frame( DBI::dbReadTable( con, "sim_list") )
+    sim_list_stats = as.data.frame( DBI::dbReadTable( con, "sim_list_stats") )
     sim_list_raw <<- sim_list
   }
   
