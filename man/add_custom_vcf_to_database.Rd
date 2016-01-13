@@ -6,7 +6,7 @@
 It is strongly recommended to filter the SNPs with a minor allel frequency of more than 0.01.}
 \usage{
 add_custom_vcf_to_database(vcf_file_path, ref_gen = "GRCH37", name_cl = "",
-  safe_mode = F)
+  safe_mode = FALSE, distinct_mode = TRUE)
 }
 \description{
 Adds a custom vcf file to the three existing cancer cell line panels

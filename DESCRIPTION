@@ -11,7 +11,8 @@ Description: This packages enables users to identify cancer cell lines. The iden
 Imports:
   RSQLite,
   DBI,
-  knitr
+  knitr,
+  WriteXLS
 Depends: R (>= 3.1.2)
 License: Artistic-2.0
 LazyData: TRUE

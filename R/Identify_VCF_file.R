@@ -39,7 +39,9 @@ identify_vcf_file = function(
     
     vcf_file_name = tail(as.character(unlist(str_split(vcf_file, "/"))),1)
     output_file = paste(output_file,paste( vcf_file_name, "uniquorn_ident.tab", sep ="_"), sep = "/") 
+    
   }
+  output_file_xls = str_replace( output_file, ".tab$", ".xls" ) 
     
   if( ! file.exists( database_path ) ){
     
@@ -64,6 +66,8 @@ identify_vcf_file = function(
     sim_list_stats = as.data.frame( DBI::dbReadTable( con, "sim_list_stats") )
     sim_list_raw <<- sim_list
   }
+  
+  dbDisconnect(con)
   
   sim_list = sim_list[ sim_list$Ref_Gen == ref_gen  ,]
   sim_list_stats = sim_list_stats[ sim_list_stats$Ref_Gen == ref_gen  ,]
@@ -179,7 +183,10 @@ identify_vcf_file = function(
   print( paste0( "Candidate(s): ", paste0( ( unique( as.character( res_table$CL )[ res_table$Passed_threshold == TRUE  ]) ), collapse = "," ) )  )
   
   print( paste0("Storing information in table: ",output_file ) )
-  dbDisconnect(con)
+  
   
   write.table( res_table, output_file, sep ="\t", row.names = FALSE, quote = FALSE  )
+  
+  require( "WriteXLS",quietly = TRUE, warn.conflicts = FALSE )
+  xlsx::write.xlsx( x = res_table, path.expand( output_file_xls ), row.names = FALSE)
 }

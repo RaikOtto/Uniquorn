@@ -6,7 +6,7 @@
 \usage{
 identify_vcf_file(vcf_file, output_file = "", ref_gen = "GRCH37",
   similarity_threshold = 5, mutational_weight_inclusion_threshold = 1,
-  only_first_candidate = FALSE, distinct_mode = TRUE, batch_mode = F)
+  only_first_candidate = FALSE, distinct_mode = TRUE, batch_mode = FALSE)
 }
 \description{
 Parses the vcf file and predicts the identity of the sample
