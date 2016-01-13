@@ -130,8 +130,8 @@ initiate_canonical_databases = function(
   drv = RSQLite::SQLite()
   con = DBI::dbConnect(drv, dbname = database_path)
   
-  DBI::dbWriteTable( con, "sim_list", sim_list_global )
-  DBI::dbWriteTable( con, "sim_list_stats", sim_list_stats_global )
+  DBI::dbWriteTable( con, "sim_list", sim_list_global, overwrite = T )
+  DBI::dbWriteTable( con, "sim_list_stats", sim_list_stats_global, overwrite = T )
   
   print ("Initialization of Uniquorn DB finished")
 }
