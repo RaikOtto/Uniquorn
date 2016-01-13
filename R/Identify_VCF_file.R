@@ -8,25 +8,24 @@ identify_vcf_file = function(
   mutational_weight_inclusion_threshold = 1.0,
   only_first_candidate = FALSE,
   distinct_mode = TRUE,
-  batch_mode = F
+  batch_mode = FRUE
   ){
   
-  suppressPackageStartupMessages( library( "stringr" ) )
-  suppressPackageStartupMessages( library( "dplyr" ) )
-  suppressPackageStartupMessages( library( "plyr" ) )
+  require( "stringr", quietly = TRUE, warn.conflicts = FALSE )
+  require( "RSQLite", quietly = TRUE, warn.conflicts = FALSE )
+  require( "DBI",     quietly = TRUE, warn.conflicts = FALSE )
   
-  message( paste0("Assuming reference genome ", ref_gen) )
+  print( paste0("Assuming reference genome ", ref_gen) )
   
   ### pre processing
   
   package_path    = system.file("", package="Uniquorn")
-  path_to_python  = paste( package_path,"pre_compute_raw_data.py", sep ="/")
-  
+
   if (distinct_mode)
     database_path     =  paste( package_path, "uniquorn_distinct_panels_db.sqlite3", sep ="/" )
   if (!distinct_mode)
     database_path     =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite3", sep ="/" )
-  
+
   # reading file
   vcf_fingerprint = parse_vcf_file( vcf_file )
   
@@ -35,6 +34,7 @@ identify_vcf_file = function(
     output_file = paste( vcf_file, "uniquorn_ident.tab", sep ="_")
   
   }else if ( dir.exists( output_file ) ){
+    
     vcf_file_name = tail(as.character(unlist(str_split(vcf_file, "/"))),1)
     output_file = paste(output_file,paste( vcf_file_name, "uniquorn_ident.tab", sep ="_"), sep = "/") 
   }
@@ -42,25 +42,27 @@ identify_vcf_file = function(
   if( ! file.exists( database_path ) ){
     
     database_path = paste( package_path, "uniquorn_db_default.sqlite3", sep ="/" )
-    message("CCLE & CoSMIC CLP cancer cell line fingerprint NOT found, defaulting to 60 CellMiner cancer cell lines! 
+    warning("CCLE & CoSMIC CLP cancer cell line fingerprint NOT found, defaulting to 60 CellMiner cancer cell lines! 
             It is strongly advised to add ~1900 CCLE & CoSMIC CLs, see readme.")
   }
     
   print( "Finished reading the VCF file, loading database" )
   
   if (exists("sim_list_raw") & batch_mode){
+    
     sim_list = sim_list_raw
+    
   } else {
-    sim_list = as.data.frame( tbl( src_sqlite( database_path ), "sim_list_df" ), n = -1 )
+    
+    sim_list       = as.data.frame( DBI::dbReadTable("sim_list") )
+    sim_list_stats = as.data.frame( DBI::dbReadTable("sim_list_stats") )
     sim_list_raw <<- sim_list
   }
   
   sim_list = sim_list[ sim_list$Ref_Gen == ref_gen  ,]
-  print(paste0( c("Found ", as.character( length( unique(sim_list$CL) ) ), " many CLs for reference genome ", ref_gen ), collapse = "" ) )
-  
-  sim_list_stats = as.data.frame( tbl( src_sqlite( database_path ), "sim_list_stats_df" ), n = -1 )
   sim_list_stats = sim_list_stats[ sim_list_stats$Ref_Gen == ref_gen  ,]
   
+  print(paste0( c("Found ", as.character( length( unique(sim_list$CL) ) ), " many CLs for reference genome ", ref_gen ), collapse = "" ) )
   print("Finished reading database, identifying CL")
   
   # filter for weights
@@ -139,7 +141,11 @@ identify_vcf_file = function(
   # treshold
   
   passed_threshold_weighted = rep( F, nr_cls )
-  passed_threshold_weighted[ ( candidate_hits_abs_all >= 3 ) & (res_res_cl_weighted >= similarity_threshold) ] = TRUE
+  passed_threshold_weighted[ 
+    ( candidate_hits_abs_all >= 3 ) & 
+    ( candidate_hits_rel >= 3 ) & 
+    (res_res_cl_weighted >= similarity_threshold) 
+  ] = TRUE
 
   output_cl_names = str_replace( list_of_cls, pattern = "_CCLE|_COSMIC|_CELLMINER", replacement = "" )
   panel_vec = rep("", length( output_cl_names ))
@@ -167,5 +173,5 @@ identify_vcf_file = function(
   print( paste0( "Candidate(s): ", paste0( ( unique( as.character( res_table$CL )[ res_table$Passed_threshold == TRUE  ]) ), collapse = "," ) )  )
   
   print( paste0("Storing information in table: ",output_file ) )
-  write.table( res_table, output_file, sep ="\t", row.names = F, quote = F  )
+  write.table( res_table, output_file, sep ="\t", row.names = FALSE, quote = FALSE  )
 }
