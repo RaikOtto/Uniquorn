@@ -12,7 +12,8 @@ initiate_canonical_databases = function(
     distinct_mode = TRUE
   ){
   
-  require( "dplyr", quietly = TRUE, warn.conflicts = FALSE)
+  require( "DBI",     quietly = TRUE, warn.conflicts = FALSE)
+  require( "RSQLite", quietly = TRUE, warn.conflicts = FALSE)
   require( "stringr", quietly = TRUE, warn.conflicts = FALSE)
   
   print( c( "Reference genome: ", ref_gen )  )
