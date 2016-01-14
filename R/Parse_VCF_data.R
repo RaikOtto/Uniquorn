@@ -1,5 +1,6 @@
 #' Loads VCF-based data into the db
 #' @param vcf_file_path Path to the vcf file on the operating system
+#' @return Loci-based DNA-mutational fingerprint of the cancer cell line as found in the input VCF file 
 #' @export
 parse_vcf_file = function( vcf_file_path  ){
   
@@ -39,7 +40,8 @@ parse_vcf_file = function( vcf_file_path  ){
       return( fingerprint )
     }
     
-    fingerprint  = apply( vcf_handle, FUN = split_add, MARGIN = 1  )
+    fingerprint = apply( vcf_handle, FUN = split_add, MARGIN = 1  )
+    fingerprint = as.character( fingerprint )
     
     return( fingerprint )
     

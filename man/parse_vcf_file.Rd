@@ -6,6 +6,9 @@
 \usage{
 parse_vcf_file(vcf_file_path)
 }
+\arguments{
+\item{vcf_file_path}{Path to the vcf file on the operating system}
+}
 \description{
 Loads VCF-based data into the db
 }
