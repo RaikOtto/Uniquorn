@@ -1,4 +1,5 @@
 #' Loads VCF-based data into the db
+#' @param vcf_file_path Path to the vcf file on the operating system
 #' @export
 parse_vcf_file = function( vcf_file_path  ){
   
