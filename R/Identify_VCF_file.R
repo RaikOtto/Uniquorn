@@ -8,6 +8,8 @@
 #' @param only_first_candidate Only the CL identifier with highest score is predicted to be present in the sample
 #' @param distinct_mode Show training data for the commonly or separately normalized training sets. Options: TRUE/ FALSE
 #' @param batch_mode When many vcf files are to be analyzed in the same R session/ namespace with identical parameters, setting the parameter TRUE leads to a significant speed-up of the analysis.
+#' @usage identify_vcf_file( vcf_file = 'my_vcf_file.vcf.gz' )
+#' @return R table with a statistic of the identification result
 #' @export
 identify_vcf_file = function( 
   vcf_file,
@@ -195,10 +197,11 @@ identify_vcf_file = function(
   
   print( paste0("Storing information in table: ",output_file ) )
   
-  
   write.table( res_table, output_file, sep ="\t", row.names = FALSE, quote = FALSE  )
   
   require( "WriteXLS",quietly = TRUE, warn.conflicts = FALSE )
   if (write_xls)
     xlsx::write.xlsx( x = res_table, path.expand( output_file_xls ), row.names = FALSE)
+  
+  return( res_table )
 }

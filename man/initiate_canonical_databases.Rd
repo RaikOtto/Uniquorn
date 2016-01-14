@@ -4,9 +4,7 @@
 \alias{initiate_canonical_databases}
 \title{Parses data into r list variable}
 \usage{
-initiate_canonical_databases(cosmic_file = "CosmicCLP_MutantExport.tsv",
-  ccle_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf",
-  ref_gen = "GRCH37", distinct_mode = TRUE)
+initiate_canonical_databases(cosmic_file = "CosmicCLP_MutantExport.tsv", ccle_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf")
 }
 \arguments{
 \item{ref_gen}{Reference genome version}

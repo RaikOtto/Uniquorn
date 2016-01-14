@@ -4,10 +4,7 @@
 \alias{identify_vcf_file}
 \title{Parses the vcf file and predicts the identity of the sample}
 \usage{
-identify_vcf_file(vcf_file, output_file = "", ref_gen = "GRCH37",
-  similarity_threshold = 5, mutational_weight_inclusion_threshold = 1,
-  only_first_candidate = FALSE, distinct_mode = TRUE, batch_mode = FALSE,
-  write_xls = TRUE)
+identify_vcf_file( vcf_file = 'my_vcf_file.vcf.gz' )
 }
 \arguments{
 \item{vcf_file}{Input vcf file. Only one sample column allowed.}
@@ -27,6 +24,9 @@ identify_vcf_file(vcf_file, output_file = "", ref_gen = "GRCH37",
 \item{batch_mode}{When many vcf files are to be analyzed in the same R session/ namespace with identical parameters, setting the parameter TRUE leads to a significant speed-up of the analysis.}
 
 \item{write_xls}{Create identification results additionally as xls file for easier reading}
+}
+\value{
+R table with a statistic of the identification result
 }
 \description{
 Parses the vcf file and predicts the identity of the sample

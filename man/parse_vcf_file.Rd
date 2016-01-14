@@ -9,6 +9,9 @@ parse_vcf_file(vcf_file_path)
 \arguments{
 \item{vcf_file_path}{Path to the vcf file on the operating system}
 }
+\value{
+Loci-based DNA-mutational fingerprint of the cancer cell line as found in the input VCF file
+}
 \description{
 Loads VCF-based data into the db
 }
