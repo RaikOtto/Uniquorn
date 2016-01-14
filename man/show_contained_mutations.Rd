@@ -6,6 +6,14 @@
 \usage{
 show_contained_mutations(ref_gen = "GRCH37", distinct_mode = T)
 }
+\arguments{
+\item{ref_gen}{Reference genome version}
+
+\item{distinct_mode}{Show mutations for either distinct or non-distinct normalization of mutational weights}
+}
+\value{
+R Table which contains all mutations associated with a particular cancer cell line for a specified reference genome
+}
 \description{
 Show all mutations present in the database for a selected reference Genome
 }

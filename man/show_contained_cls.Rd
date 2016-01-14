@@ -11,6 +11,9 @@ show_contained_cls(ref_gen = "GRCH37", distinct_mode = T)
 
 \item{distinct_mode}{Show training data for the commonly or separately normalized training sets. Options: TRUE/ FALSE}
 }
+\value{
+R table which contains the identifier of all cancer cell line samples with the specific reference genome
+}
 \description{
 Show all cancer cell line identifier present in the database for a selected reference genome.
 }

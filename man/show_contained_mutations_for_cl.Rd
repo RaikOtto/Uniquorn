@@ -4,8 +4,18 @@
 \alias{show_contained_mutations_for_cl}
 \title{Show all mutations present in the database for a selected cancer cell line and reference Genome}
 \usage{
-show_contained_mutations_for_cl(cl_name, ref_gen = "HG19",
+show_contained_mutations_for_cl(name_cl, ref_gen = "GRCH37",
   distinct_mode = T)
+}
+\arguments{
+\item{name_cl}{Name of the cancer cell line sample stored in the database}
+
+\item{ref_gen}{Reference genome version}
+
+\item{distinct_mode}{Show mutations for either distinct or non-distinct normalization of mutational weights}
+}
+\value{
+R table which contains all mutations associated with the defined cancer cell line and reference genome
 }
 \description{
 Show all mutations present in the database for a selected cancer cell line and reference Genome
