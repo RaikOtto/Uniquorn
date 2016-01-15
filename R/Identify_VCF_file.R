@@ -8,200 +8,201 @@
 #' @param only_first_candidate Only the CL identifier with highest score is predicted to be present in the sample
 #' @param distinct_mode Show training data for the commonly or separately normalized training sets. Options: TRUE/ FALSE
 #' @param batch_mode When many vcf files are to be analyzed in the same R session/ namespace with identical parameters, setting the parameter TRUE leads to a significant speed-up of the analysis.
-#' @import DBI stringr
-#' @usage identify_vcf_file( vcf_file = 'my_vcf_file.vcf.gz' )
+#' @import DBI stringr WriteXLS
+#' @examples identify_vcf_file( vcf_file = 'my_vcf_file.vcf.gz' )
 #' @return R table with a statistic of the identification result
 #' @export
 identify_vcf_file = function( 
-  vcf_file,
-  output_file = "",
-  ref_gen = "GRCH37",
-  similarity_threshold = 5.0,
-  mutational_weight_inclusion_threshold = 1.0,
-  only_first_candidate = FALSE,
-  distinct_mode = TRUE,
-  batch_mode = FALSE,
-  write_xls = TRUE
-  ){
+    vcf_file,
+    output_file = "",
+    ref_gen = "GRCH37",
+    similarity_threshold = 5.0,
+    mutational_weight_inclusion_threshold = 1.0,
+    only_first_candidate = FALSE,
+    distinct_mode = TRUE,
+    batch_mode = FALSE,
+    write_xls = TRUE
+    ){
   
-  require( "stringr", quietly = TRUE, warn.conflicts = FALSE )
-  require( "DBI",     quietly = TRUE, warn.conflicts = FALSE )
+    require( "stringr", quietly = TRUE, warn.conflicts = FALSE )
+    require( "DBI",     quietly = TRUE, warn.conflicts = FALSE )
+    require( "WriteXLS",quietly = TRUE, warn.conflicts = FALSE )
   
-  print( paste0("Assuming reference genome ", ref_gen) )
+    print( paste0("Assuming reference genome ", ref_gen) )
   
-  ### pre processing
+    ### pre processing
   
-  package_path    = system.file("", package="Uniquorn")
+    package_path    = system.file("", package="Uniquorn")
 
-  if (distinct_mode)
-    database_path     =  paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
-  if (!distinct_mode)
-    database_path     =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite", sep ="/" )
-
-  # reading file
-  if ( ! file.exists(vcf_file))
-      stop(paste0("Error. Did not find vcf file ",vcf_file) )
-  vcf_fingerprint = parse_vcf_file( vcf_file )
-  
-  if ( output_file == ""  ){
+    if (distinct_mode)
+        database_path     =  paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
+    if (!distinct_mode)
+        database_path     =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite", sep ="/" )
     
-    output_file = paste( vcf_file, "uniquorn_ident.tab", sep ="_")
-  
-  }else if ( dir.exists( output_file ) ){
+    # reading file
+    if ( ! file.exists(vcf_file))
+        stop(paste0("Error. Did not find vcf file ",vcf_file) )
     
-    vcf_file_name = tail(as.character(unlist(str_split(vcf_file, "/"))),1)
-    output_file = paste(output_file,paste( vcf_file_name, "uniquorn_ident.tab", sep ="_"), sep = "/") 
+    vcf_fingerprint = parse_vcf_file( vcf_file )
     
-  }
-  output_file_xls = str_replace( output_file, ".tab$", ".xls" ) 
+    if ( output_file == ""  ){
     
-  if( ! file.exists( database_path ) ){
+        output_file = paste( vcf_file, "uniquorn_ident.tab", sep ="_")
     
-    database_path = paste( package_path, "uniquorn_db_default.sqlite", sep ="/" )
-    warning("CCLE & CoSMIC CLP cancer cell line fingerprint NOT found, defaulting to 60 CellMiner cancer cell lines! 
-            It is strongly advised to add ~1900 CCLE & CoSMIC CLs, see readme.")
-  }
-  
-  drv = RSQLite::SQLite()
-  con = DBI::dbConnect(drv, dbname = database_path)
+    }else if ( dir.exists( output_file ) ){
     
-  print( "Finished reading the VCF file, loading database" )
-  
-  if (exists("sim_list_raw") & batch_mode){
+        vcf_file_name = tail(as.character(unlist(str_split(vcf_file, "/"))),1)
+        output_file = paste(output_file,paste( vcf_file_name, "uniquorn_ident.tab", sep ="_"), sep = "/") 
     
-    sim_list = sim_list_raw
+    }
+    output_file_xls = str_replace( output_file, ".tab$", ".xls" ) 
     
-  } else {
+    if( ! file.exists( database_path ) ){
+    
+        database_path = paste( package_path, "uniquorn_db_default.sqlite", sep ="/" )
+        warning("CCLE & CoSMIC CLP cancer cell line fingerprint NOT found, defaulting to 60 CellMiner cancer cell lines! 
+                It is strongly advised to add ~1900 CCLE & CoSMIC CLs, see readme.")
+    }
+    
+    drv = RSQLite::SQLite()
+    con = DBI::dbConnect(drv, dbname = database_path)
+    
+    print( "Finished reading the VCF file, loading database" )
+    
+    if (exists("sim_list_raw") & batch_mode){
+    
+        sim_list = sim_list_raw
+    
+    } else {
     
      
-    sim_list       = as.data.frame( DBI::dbReadTable( con, "sim_list") )
-    sim_list_stats = as.data.frame( DBI::dbReadTable( con, "sim_list_stats") )
-    sim_list_raw <<- sim_list
-  }
-  
-  dbDisconnect(con)
-  
-  sim_list = sim_list[ sim_list$Ref_Gen == ref_gen  ,]
-  sim_list_stats = sim_list_stats[ sim_list_stats$Ref_Gen == ref_gen  ,]
-  
-  print(paste0( c("Found ", as.character( length( unique(sim_list$CL) ) ), " many CLs for reference genome ", ref_gen ), collapse = "" ) )
-  print("Finished reading database, identifying CL")
-  
-  # filter for weights
-  if ( mutational_weight_inclusion_threshold != 0.0  ){
+        sim_list       = as.data.frame( DBI::dbReadTable( con, "sim_list") )
+        sim_list_stats = as.data.frame( DBI::dbReadTable( con, "sim_list_stats") )
+        sim_list_raw <<- sim_list
+    }
     
-    print( paste0( c("Adjusted mutational inclusion weight, only using mutations that are have a weight higher than ", as.character(mutational_weight_inclusion_threshold)), collapse="") )
+    dbDisconnect(con)
     
-    sim_list = sim_list[ as.double(sim_list$Weight) >= as.double( mutational_weight_inclusion_threshold) ,  ]
-    sum_vec = rep(1, dim(sim_list)[1])
-    sim_list_stats = aggregate( as.double( sum_vec ), by = list( sim_list$CL), FUN = sum  )
+    sim_list = sim_list[ sim_list$Ref_Gen == ref_gen  ,]
+    sim_list_stats = sim_list_stats[ sim_list_stats$Ref_Gen == ref_gen  ,]
     
-    all_weights = aggregate( sim_list$Weight, by = list(sim_list$CL), FUN = sum)
-    mapping = match( sim_list_stats$Group.1, all_weights$Group.1 )
-    sim_list_stats = cbind( sim_list_stats, all_weights$x[mapping] )
+    print(paste0( c("Found ", as.character( length( unique(sim_list$CL) ) ), " many CLs for reference genome ", ref_gen ), collapse = "" ) )
+    print("Finished reading database, identifying CL")
     
-    colnames( sim_list_stats ) = c("CL","Count", "All_weights")
-    sim_list_stats$All_weights = round(sim_list_stats$All_weights,1)
-    print( paste0( c("Found ", as.character( dim(sim_list)[1] ), " many mutations with mutational weight of at least ", mutational_weight_inclusion_threshold), collapse="")  )
-  }
-  
-  list_of_cls       = unique( sim_list$CL )
-  nr_cls            = length( list_of_cls  ) # amount cls
-  
-  found_mut_mapping = which( sim_list$Fingerprint %in% as.character(unlist(vcf_fingerprint)) ) # mapping
-  
-  if ( length( found_mut_mapping ) == 0)
-    found_mut_mapping = c(0)
-
-  ### unweighted scores
-  
-  candidate_hits_abs_all = rep(0, nr_cls)
-  names(candidate_hits_abs_all) = list_of_cls
-  
-  candidate_hits_abs = aggregate( 
-    rep(1, length(found_mut_mapping)),
-    by = list(sim_list$CL[ found_mut_mapping ]), 
-    FUN = sum
-  )
-  candidate_hits_abs_all[ which( list_of_cls %in% candidate_hits_abs$Group.1) ] = as.integer( candidate_hits_abs$x[ match( list_of_cls, candidate_hits_abs$Group.1, nomatch = 0 ) ] )
-  
-  cl_match_stats    = match( list_of_cls, sim_list_stats$CL, nomatch = 0 ) # mapping
-  candidate_hits_rel = round( candidate_hits_abs_all / sim_list_stats$Count[ cl_match_stats ] * 100, 1 ) 
-  
-  ### weighted scores
-  
-  # weights
-  
-  cl_weight     = rep( 0.0, nr_cls )
-  cl_weight_rel = rep( 0.0, nr_cls )
-  all_weighted  = rep( 0.0, nr_cls )
-  
-  # threshold non weighted
-  passed_threshold_vec = rep( F, nr_cls )
-  passed_threshold_vec[ ( candidate_hits_abs_all >= 3 ) & ( candidate_hits_rel >= 2 ) ] = T
-  passed_threshold_weighted = rep( "", nr_cls )
-  
-  # aggregate over weights & CL identifier
-  
-  aggregation = stats::aggregate(
-    x  = as.double( sim_list$Weight[ found_mut_mapping  ] ),
-    by = list( as.character( sim_list$CL[ found_mut_mapping ] )  ),
-    FUN = sum
-  )
-  
-  weight_all = sim_list_stats$All_weights[ match( aggregation$Group.1, sim_list_stats$CL )  ]
-  mapping_to_cls = match( list_of_cls, aggregation$Group.1 , nomatch = 0  )
-  
-  res_cl_weighted = rep( 0, nr_cls )
-  names( res_cl_weighted ) = list_of_cls
-  res_cl_weighted[ names( res_cl_weighted ) %in% aggregation$Group.1  ] = aggregation$x[ mapping_to_cls ]
-  stats_all_weight = sim_list_stats$All_weights[ match( list_of_cls, sim_list_stats$CL  ) ]
-  
-  res_res_cl_weighted = round( as.double(res_cl_weighted  ) / stats_all_weight * 100, 1 )
-  res_cl_weighted = round(res_cl_weighted, 0)
-  
-  # treshold
-  
-  passed_threshold_weighted = rep( F, nr_cls )
-  passed_threshold_weighted[ 
-    ( candidate_hits_abs_all >= 3 ) & 
-    ( candidate_hits_rel >= 3 ) & 
-    (res_res_cl_weighted >= similarity_threshold) 
-  ] = TRUE
-
-  output_cl_names = str_replace( list_of_cls, pattern = "_CCLE|_COSMIC|_CELLMINER|_CUSTOM", replacement = "" )
-  panel_vec = rep("", length( output_cl_names ))
-  panel_vec[ str_detect( list_of_cls, "_CCLE" ) ] = "CCLE"
-  panel_vec[ str_detect( list_of_cls, "_COSMIC" ) ] = "COSMIC"
-  panel_vec[ str_detect( list_of_cls, "_CELLMINER" ) ] = "CELLMINER"
-  panel_vec[ str_detect( list_of_cls, "_CUSTOM" ) ] = "CUSTOM"
-  
-  res_table = data.frame(
-    "CL"                       = output_cl_names,
-    "CL_source"                = panel_vec,
-    "Found_muts_abs"           = as.character( candidate_hits_abs_all ),
-    "Count_mutations_abs"      = as.character(  sim_list_stats$Count[ cl_match_stats ] ),
-    "Found_muts_rel"           = as.character(  candidate_hits_rel ),
-    "Found_muts_weighted"      = as.character( res_cl_weighted ),
-    "Count_mutations_weighted" = as.character( round( stats_all_weight, 0 ) ),
-    "Found_muts_weighted_rel"  = as.character( res_res_cl_weighted ),
-    "Passed_threshold"         = as.character( passed_threshold_weighted )
-  )
-  
-  res_table = res_table[ order( as.double( as.character( res_table$Found_muts_weighted_rel) ), decreasing = TRUE),  ]
-  
-  if (only_first_candidate)
-    res_table$Passed_threshold[ seq(2, length(res_table$Passed_threshold)) ] = FALSE
-  
-  print( paste0( "Candidate(s): ", paste0( ( unique( as.character( res_table$CL )[ res_table$Passed_threshold == TRUE  ]) ), collapse = "," ) )  )
-  
-  print( paste0("Storing information in table: ",output_file ) )
-  
-  write.table( res_table, output_file, sep ="\t", row.names = FALSE, quote = FALSE  )
-  
-  require( "WriteXLS",quietly = TRUE, warn.conflicts = FALSE )
-  if (write_xls)
-    xlsx::write.xlsx( x = res_table, path.expand( output_file_xls ), row.names = FALSE)
-  
-  return( res_table )
+    # filter for weights
+    if ( mutational_weight_inclusion_threshold != 0.0  ){
+    
+        print( paste0( c("Adjusted mutational inclusion weight, only using mutations that are have a weight higher than ", as.character(mutational_weight_inclusion_threshold)), collapse="") )
+        
+        sim_list = sim_list[ as.double(sim_list$Weight) >= as.double( mutational_weight_inclusion_threshold) ,  ]
+        sum_vec = rep(1, dim(sim_list)[1])
+        sim_list_stats = aggregate( as.double( sum_vec ), by = list( sim_list$CL), FUN = sum  )
+        
+        all_weights = aggregate( sim_list$Weight, by = list(sim_list$CL), FUN = sum)
+        mapping = match( sim_list_stats$Group.1, all_weights$Group.1 )
+        sim_list_stats = cbind( sim_list_stats, all_weights$x[mapping] )
+        
+        colnames( sim_list_stats ) = c("CL","Count", "All_weights")
+        sim_list_stats$All_weights = round(sim_list_stats$All_weights,1)
+        print( paste0( c("Found ", as.character( dim(sim_list)[1] ), " many mutations with mutational weight of at least ", mutational_weight_inclusion_threshold), collapse="")  )
+    }
+    
+    list_of_cls       = unique( sim_list$CL )
+    nr_cls            = length( list_of_cls  ) # amount cls
+    
+    found_mut_mapping = which( sim_list$Fingerprint %in% as.character(unlist(vcf_fingerprint)) ) # mapping
+    
+    if ( length( found_mut_mapping ) == 0)
+        found_mut_mapping = c(0)
+    
+        ### unweighted scores
+    
+        candidate_hits_abs_all = rep(0, nr_cls)
+        names(candidate_hits_abs_all) = list_of_cls
+    
+        candidate_hits_abs = aggregate( 
+        rep(1, length(found_mut_mapping)),
+        by = list(sim_list$CL[ found_mut_mapping ]), 
+        FUN = sum
+    )
+    candidate_hits_abs_all[ which( list_of_cls %in% candidate_hits_abs$Group.1) ] = as.integer( candidate_hits_abs$x[ match( list_of_cls, candidate_hits_abs$Group.1, nomatch = 0 ) ] )
+    
+    cl_match_stats    = match( list_of_cls, sim_list_stats$CL, nomatch = 0 ) # mapping
+    candidate_hits_rel = round( candidate_hits_abs_all / sim_list_stats$Count[ cl_match_stats ] * 100, 1 ) 
+    
+    ### weighted scores
+    
+    # weights
+    
+    cl_weight     = rep( 0.0, nr_cls )
+    cl_weight_rel = rep( 0.0, nr_cls )
+    all_weighted  = rep( 0.0, nr_cls )
+    
+    # threshold non weighted
+    passed_threshold_vec = rep( F, nr_cls )
+    passed_threshold_vec[ ( candidate_hits_abs_all >= 3 ) & ( candidate_hits_rel >= 2 ) ] = T
+    passed_threshold_weighted = rep( "", nr_cls )
+    
+    # aggregate over weights & CL identifier
+    
+    aggregation = stats::aggregate(
+        x  = as.double( sim_list$Weight[ found_mut_mapping  ] ),
+        by = list( as.character( sim_list$CL[ found_mut_mapping ] )  ),
+        FUN = sum
+    )
+    
+    weight_all = sim_list_stats$All_weights[ match( aggregation$Group.1, sim_list_stats$CL )  ]
+    mapping_to_cls = match( list_of_cls, aggregation$Group.1 , nomatch = 0  )
+    
+    res_cl_weighted = rep( 0, nr_cls )
+    names( res_cl_weighted ) = list_of_cls
+    res_cl_weighted[ names( res_cl_weighted ) %in% aggregation$Group.1  ] = aggregation$x[ mapping_to_cls ]
+    stats_all_weight = sim_list_stats$All_weights[ match( list_of_cls, sim_list_stats$CL  ) ]
+    
+    res_res_cl_weighted = round( as.double(res_cl_weighted  ) / stats_all_weight * 100, 1 )
+    res_cl_weighted = round(res_cl_weighted, 0)
+    
+    # treshold
+    
+    passed_threshold_weighted = rep( F, nr_cls )
+    passed_threshold_weighted[ 
+        ( candidate_hits_abs_all >= 3 ) & 
+        ( candidate_hits_rel >= 3 ) & 
+        (res_res_cl_weighted >= similarity_threshold) 
+    ] = TRUE
+    
+    output_cl_names = str_replace( list_of_cls, pattern = "_CCLE|_COSMIC|_CELLMINER|_CUSTOM", replacement = "" )
+    panel_vec = rep("", length( output_cl_names ))
+    panel_vec[ str_detect( list_of_cls, "_CCLE" ) ] = "CCLE"
+    panel_vec[ str_detect( list_of_cls, "_COSMIC" ) ] = "COSMIC"
+    panel_vec[ str_detect( list_of_cls, "_CELLMINER" ) ] = "CELLMINER"
+    panel_vec[ str_detect( list_of_cls, "_CUSTOM" ) ] = "CUSTOM"
+    
+    res_table = data.frame(
+        "CL"                       = output_cl_names,
+        "CL_source"                = panel_vec,
+        "Found_muts_abs"           = as.character( candidate_hits_abs_all ),
+        "Count_mutations_abs"      = as.character(  sim_list_stats$Count[ cl_match_stats ] ),
+        "Found_muts_rel"           = as.character(  candidate_hits_rel ),
+        "Found_muts_weighted"      = as.character( res_cl_weighted ),
+        "Count_mutations_weighted" = as.character( round( stats_all_weight, 0 ) ),
+        "Found_muts_weighted_rel"  = as.character( res_res_cl_weighted ),
+        "Passed_threshold"         = as.character( passed_threshold_weighted )
+    )
+    
+    res_table = res_table[ order( as.double( as.character( res_table$Found_muts_weighted_rel) ), decreasing = TRUE),  ]
+    
+    if (only_first_candidate)
+        res_table$Passed_threshold[ seq(2, length(res_table$Passed_threshold)) ] = FALSE
+    
+    print( paste0( "Candidate(s): ", paste0( ( unique( as.character( res_table$CL )[ res_table$Passed_threshold == TRUE  ]) ), collapse = "," ) )  )
+    
+    print( paste0("Storing information in table: ",output_file ) )
+    
+    write.table( res_table, output_file, sep ="\t", row.names = FALSE, quote = FALSE  )
+    
+    if (write_xls)
+        xlsx::write.xlsx( x = res_table, path.expand( output_file_xls ), row.names = FALSE)
+    
+    return( res_table )
 }
