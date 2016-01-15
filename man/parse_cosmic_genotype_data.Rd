@@ -6,6 +6,9 @@
 \usage{
 parse_cosmic_genotype_data(cosmic_file, sim_list)
 }
+\arguments{
+\item{sim_list}{Variable containing mutations & cell line}
+}
 \description{
 Parses cosmic genotype data
 }

@@ -1,4 +1,6 @@
 #' Parses cosmic genotype data
+#' @import stringr
+#' @param sim_list Variable containing mutations & cell line
 #' @export
 parse_cosmic_genotype_data = function( cosmic_file, sim_list ){
    
@@ -33,6 +35,9 @@ parse_cosmic_genotype_data = function( cosmic_file, sim_list ){
 }
 
 #' Parses ccle genotype data
+#' @import DBI stringr
+#' @param ccle_file path to ccle file
+#' @param sim_list Variable containing mutations and cell line
 #' @export
 parse_ccle_genotype_data = function( ccle_file, sim_list ){
     

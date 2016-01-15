@@ -4,6 +4,7 @@
 #' @param name_cl Name of the to-be-added cancer cell line sample. '_CUSTOM' will automatically be added as suffix.
 #' @param safe_mode Only add mutations to the database where there already are mutations found in the cannonical cancer cell lines. This is a safety mechanism against overfitting if there are too few custom training samples.
 #' @param distinct_mode Show training data for the commonly or separately normalized training sets. Options: TRUE/ FALSE
+#' @import DBI stringr 
 #' @export
 add_custom_vcf_to_database = function( 
     vcf_file_path,

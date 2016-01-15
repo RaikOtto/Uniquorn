@@ -8,6 +8,7 @@
 #' @param only_first_candidate Only the CL identifier with highest score is predicted to be present in the sample
 #' @param distinct_mode Show training data for the commonly or separately normalized training sets. Options: TRUE/ FALSE
 #' @param batch_mode When many vcf files are to be analyzed in the same R session/ namespace with identical parameters, setting the parameter TRUE leads to a significant speed-up of the analysis.
+#' @import DBI stringr
 #' @usage identify_vcf_file( vcf_file = 'my_vcf_file.vcf.gz' )
 #' @return R table with a statistic of the identification result
 #' @export
@@ -24,7 +25,6 @@ identify_vcf_file = function(
   ){
   
   require( "stringr", quietly = TRUE, warn.conflicts = FALSE )
-  require( "RSQLite", quietly = TRUE, warn.conflicts = FALSE )
   require( "DBI",     quietly = TRUE, warn.conflicts = FALSE )
   
   print( paste0("Assuming reference genome ", ref_gen) )
