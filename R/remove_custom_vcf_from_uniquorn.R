@@ -14,9 +14,7 @@ remove_custom_vcf_from_database = function(
 ){
     
     # pre processing
-    require( "stringr", quietly = TRUE, warn.conflicts = FALSE )
-    require( "DBI",     quietly = TRUE, warn.conflicts = FALSE )
-    
+
     name_cl = str_to_upper(name_cl)
     
     print(paste0("Reference genome: ",ref_gen))

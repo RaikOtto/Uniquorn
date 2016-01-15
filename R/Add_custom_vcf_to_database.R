@@ -1,5 +1,5 @@
 #' Adds a custom vcf file to the three existing cancer cell line panels
-#' @param vcf_file Input vcf file. Only one sample column allowed.
+#' @param vcf_file_path Input vcf file. Only one sample column allowed.
 #' @param ref_gen Reference genome version. All training sets are associated with a reference genome version. Default: GRCH37
 #' @param name_cl Name of the to-be-added cancer cell line sample. '_CUSTOM' will automatically be added as suffix.
 #' @param safe_mode Only add mutations to the database where there already are mutations found in the cannonical cancer cell lines. This is a safety mechanism against overfitting if there are too few custom training samples.
@@ -15,10 +15,7 @@ add_custom_vcf_to_database = function(
     ){
     
     # pre processing
-    require( "stringr", quietly = TRUE, warn.conflicts = FALSE )
-    require( "RSQLite", quietly = TRUE, warn.conflicts = FALSE )
-    require( "DBI",     quietly = TRUE, warn.conflicts = FALSE )
-    
+
     name_cl = str_to_upper(name_cl)
     
     print(paste0("Reference genome: ",ref_gen))

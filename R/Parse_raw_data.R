@@ -1,7 +1,7 @@
 ### parse files
 #' Parses data into r list variable
-#' @param cosmic_genotype_file The path to the cosmic DNA genotype data file. Ensure that the right reference genome is used
-#' @param ccle_genotype_file The path to the ccle DNA genotype data file. Ensure that the right reference genome is used
+#' @param cosmic_file The path to the cosmic DNA genotype data file. Ensure that the right reference genome is used
+#' @param ccle_file The path to the ccle DNA genotype data file. Ensure that the right reference genome is used
 #' @param ref_gen Reference genome version
 #' @param distinct_mode Should the mutational weights be calculated for all panels together or each for itelf? Recommendation: Seperately
 #' @import DBI stringr
@@ -13,10 +13,7 @@ initiate_canonical_databases = function(
     ref_gen = "GRCH37",
     distinct_mode = TRUE
     ){
-  
-    require( "DBI",     quietly = TRUE, warn.conflicts = FALSE)
-    require( "stringr", quietly = TRUE, warn.conflicts = FALSE)
-    
+
     print( c( "Reference genome: ", ref_gen )  )
     
     ### pre processing

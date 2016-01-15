@@ -3,12 +3,9 @@
 #' @param sim_list Variable containing mutations & cell line
 #' @export
 parse_cosmic_genotype_data = function( cosmic_file, sim_list ){
-   
-    require("stringr", quietly = TRUE, warn.conflicts = FALSE)
-    
+
     split_coords = function(vec){
         
-        require("stringr", quietly = TRUE)
         split_vec = str_split( vec, ":" )
         chrom = split_vec[1]
     }
@@ -40,8 +37,6 @@ parse_cosmic_genotype_data = function( cosmic_file, sim_list ){
 #' @param sim_list Variable containing mutations and cell line
 #' @export
 parse_ccle_genotype_data = function( ccle_file, sim_list ){
-    
-    require("stringr", quietly = T)
     
     exclude_cols_ccle = c(rep("NULL",4),rep("character", 3),rep("NULL",8),"character",rep("NULL",35))
     

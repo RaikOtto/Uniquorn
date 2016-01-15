@@ -35,6 +35,6 @@ R table with a statistic of the identification result
 Parses the vcf file and predicts the identity of the sample
 }
 \examples{
-identify_vcf_file( vcf_file = 'my_vcf_file.vcf.gz' )
+HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn"); identify_vcf_file( HT29_vcf_file )
 }
 

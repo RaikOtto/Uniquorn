@@ -9,7 +9,7 @@
 #' @param distinct_mode Show training data for the commonly or separately normalized training sets. Options: TRUE/ FALSE
 #' @param batch_mode When many vcf files are to be analyzed in the same R session/ namespace with identical parameters, setting the parameter TRUE leads to a significant speed-up of the analysis.
 #' @import DBI stringr WriteXLS
-#' @examples identify_vcf_file( vcf_file = 'my_vcf_file.vcf.gz' )
+#' @examples HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn"); identify_vcf_file( HT29_vcf_file )
 #' @return R table with a statistic of the identification result
 #' @export
 identify_vcf_file = function( 
@@ -24,10 +24,6 @@ identify_vcf_file = function(
     write_xls = TRUE
     ){
   
-    require( "stringr", quietly = TRUE, warn.conflicts = FALSE )
-    require( "DBI",     quietly = TRUE, warn.conflicts = FALSE )
-    require( "WriteXLS",quietly = TRUE, warn.conflicts = FALSE )
-  
     print( paste0("Assuming reference genome ", ref_gen) )
   
     ### pre processing
@@ -36,6 +32,7 @@ identify_vcf_file = function(
 
     if (distinct_mode)
         database_path     =  paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
+
     if (!distinct_mode)
         database_path     =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite", sep ="/" )
     

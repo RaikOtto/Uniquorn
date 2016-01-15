@@ -4,8 +4,6 @@
 #' @export
 parse_vcf_file = function( vcf_file_path  ){
   
-  require( "stringr", quietly = TRUE, warn.conflicts = FALSE)
-  
   if ( file.exists( vcf_file_path ) ){
   
     print( paste0("Reading VCF file: ", vcf_file_path ) )
