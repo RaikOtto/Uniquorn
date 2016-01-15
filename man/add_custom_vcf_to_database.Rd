@@ -7,6 +7,17 @@
 add_custom_vcf_to_database(vcf_file_path, ref_gen = "GRCH37", name_cl = "",
   safe_mode = FALSE, distinct_mode = TRUE)
 }
+\arguments{
+\item{ref_gen}{Reference genome version. All training sets are associated with a reference genome version. Default: GRCH37}
+
+\item{name_cl}{Name of the to-be-added cancer cell line sample. '_CUSTOM' will automatically be added as suffix.}
+
+\item{safe_mode}{Only add mutations to the database where there already are mutations found in the cannonical cancer cell lines. This is a safety mechanism against overfitting if there are too few custom training samples.}
+
+\item{distinct_mode}{Show training data for the commonly or separately normalized training sets. Options: TRUE/ FALSE}
+
+\item{vcf_file}{Input vcf file. Only one sample column allowed.}
+}
 \description{
 Adds a custom vcf file to the three existing cancer cell line panels
 }
