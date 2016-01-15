@@ -9,7 +9,7 @@ Description: This packages enables users to identify cancer cell lines. The iden
     The implemented method is optimized for the Next-generation whole exome and whole genome DNA-sequencing 
     technology. 
 Imports:
-  RSQLite,
+  stringr,
   DBI,
   knitr,
   WriteXLS
