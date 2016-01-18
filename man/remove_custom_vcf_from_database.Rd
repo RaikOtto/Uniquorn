@@ -5,7 +5,7 @@
 \title{Removes a cancer cell line training fingerprint (vcf file) from the database. The names of all training sets can 
 be seen by using the function \code{show_contained_cls}.}
 \usage{
-remove_custom_vcf_from_database( name_cl = "my_custom_cancer_cell_line_name_CUSTOM" )
+remove_custom_vcf_from_database( name_cl = "my_custom_cancer_cell_line_name_CUSTOM", ref_gen = "GRCH37", distinct_mode = TRUE )
 }
 \arguments{
 \item{name_cl}{name of the cancer cell line training fingerprintt}
