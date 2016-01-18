@@ -7,7 +7,7 @@
 identify_vcf_file(vcf_file, output_file = "", ref_gen = "GRCH37",
   similarity_threshold = 5, mutational_weight_inclusion_threshold = 1,
   only_first_candidate = FALSE, distinct_mode = TRUE, batch_mode = FALSE,
-  write_xls = TRUE)
+  write_xls = FALSE)
 }
 \arguments{
 \item{vcf_file}{Input vcf file. Only one sample column allowed.}

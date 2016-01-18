@@ -8,7 +8,7 @@
 #' @param only_first_candidate Only the CL identifier with highest score is predicted to be present in the sample
 #' @param distinct_mode Show training data for the commonly or separately normalized training sets. Options: TRUE/ FALSE
 #' @param batch_mode When many vcf files are to be analyzed in the same R session/ namespace with identical parameters, setting the parameter TRUE leads to a significant speed-up of the analysis.
-#' @import DBI stringr WriteXLS
+#' @import DBI stringr xlsx
 #' @examples HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn"); identify_vcf_file( HT29_vcf_file )
 #' @return R table with a statistic of the identification result
 #' @export
@@ -21,7 +21,7 @@ identify_vcf_file = function(
     only_first_candidate = FALSE,
     distinct_mode = TRUE,
     batch_mode = FALSE,
-    write_xls = TRUE
+    write_xls = FALSE
     ){
   
     print( paste0("Assuming reference genome ", ref_gen) )
