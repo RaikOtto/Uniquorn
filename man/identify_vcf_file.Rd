@@ -7,7 +7,7 @@
 identify_vcf_file(vcf_file, output_file = "", ref_gen = "GRCH37",
   similarity_threshold = 5, mutational_weight_inclusion_threshold = 1,
   only_first_candidate = FALSE, distinct_mode = TRUE, batch_mode = FALSE,
-  write_xls = FALSE)
+  write_xls = FALSE, output_bed_file = FALSE)
 }
 \arguments{
 \item{vcf_file}{Input vcf file. Only one sample column allowed.}
@@ -27,6 +27,8 @@ identify_vcf_file(vcf_file, output_file = "", ref_gen = "GRCH37",
 \item{batch_mode}{When many vcf files are to be analyzed in the same R session/ namespace with identical parameters, setting the parameter TRUE leads to a significant speed-up of the analysis.}
 
 \item{write_xls}{Create identification results additionally as xls file for easier reading}
+
+\item{output_bed_file}{Should a bed file be created which visualizes the found and not found mutations for the cancer cell lines which were predicted to be present in the sample.}
 }
 \value{
 R table with a statistic of the identification result

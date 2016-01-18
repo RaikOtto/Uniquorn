@@ -4,7 +4,8 @@
 #' @param name_cl Name of the to-be-added cancer cell line sample. '_CUSTOM' will automatically be added as suffix.
 #' @param safe_mode Only add mutations to the database where there already are mutations found in the cannonical cancer cell lines. This is a safety mechanism against overfitting if there are too few custom training samples.
 #' @param distinct_mode Show training data for the commonly or separately normalized training sets. Options: TRUE/ FALSE
-#' @import DBI stringr 
+#' @usage add_custom_vcf_to_database("./vcf_file.vcf.gz", ref_gen = "GRCH37", name_cl = "MyCL")
+#' @import DBI stringr
 #' @export
 add_custom_vcf_to_database = function( 
     vcf_file_path,
@@ -63,6 +64,12 @@ add_custom_vcf_to_database = function(
         
         name_cl = str_to_upper( paste(name_cl, "custom", sep ="_"  ) )
         print( paste0( "Adding fingerprint with user-defined name: ", name_cl ) )
+    }
+    
+    name_present = grepl( name_cl, sim_list$CL )
+    
+    if( sum( name_present ) > 0 ){ 
+        stop( paste0( c("Fingerprint with name ",name_cl, " already present in database. Please change the name or remove the old cancer cell line."), collapse = "" )  )
     }
     
     print( paste0( "Building fingerprint from file ",  vcf_file_path )  )

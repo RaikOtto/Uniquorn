@@ -8,6 +8,7 @@
 #' @param only_first_candidate Only the CL identifier with highest score is predicted to be present in the sample
 #' @param distinct_mode Show training data for the commonly or separately normalized training sets. Options: TRUE/ FALSE
 #' @param batch_mode When many vcf files are to be analyzed in the same R session/ namespace with identical parameters, setting the parameter TRUE leads to a significant speed-up of the analysis.
+#' @param output_bed_file Should a bed file be created which visualizes the found and not found mutations for the cancer cell lines which were predicted to be present in the sample.
 #' @import DBI stringr xlsx
 #' @examples HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn"); identify_vcf_file( HT29_vcf_file )
 #' @return R table with a statistic of the identification result
@@ -21,7 +22,8 @@ identify_vcf_file = function(
     only_first_candidate = FALSE,
     distinct_mode = TRUE,
     batch_mode = FALSE,
-    write_xls = FALSE
+    write_xls = FALSE,
+    output_bed_file = FALSE
     ){
   
     print( paste0("Assuming reference genome ", ref_gen) )
@@ -72,7 +74,6 @@ identify_vcf_file = function(
     
     } else {
     
-     
         sim_list       = as.data.frame( DBI::dbReadTable( con, "sim_list") )
         sim_list_stats = as.data.frame( DBI::dbReadTable( con, "sim_list_stats") )
         sim_list_raw <<- sim_list
@@ -197,6 +198,10 @@ identify_vcf_file = function(
     print( paste0("Storing information in table: ",output_file ) )
     
     write.table( res_table, output_file, sep ="\t", row.names = FALSE, quote = FALSE  )
+    
+   # if (output_bed_file)
+        #bed_source = paste( package_path )
+       # xlsx::write.xlsx( x = res_table, path.expand( output_file_xls ), row.names = FALSE)
     
     if (write_xls)
         xlsx::write.xlsx( x = res_table, path.expand( output_file_xls ), row.names = FALSE)
