@@ -56,7 +56,11 @@ Registration for both websites is without charge and not complicated.
 
 One the initialization succeeds, about 2000 cancer cell line training sample for about 1200 different cancer cell lines are available in the Uniquorn's database. 
 
+# 5 Add your own custom cancer cell line samples as training set
 
+You can add you own custom cancer cell lines as additional training-dataset. These samples will be treated just as the 'canonical' training-datasets from e.g. CCLE. Note however, that it is strongly recommended to add at least 10 sample because overfitting might occur if too little custom training-samples are available. 
+
+`add_custom_vcf_to_database()`
 
 Contact: raik.otto@hu-berlin.de
 
