@@ -56,11 +56,28 @@ Registration for both websites is without charge and not complicated.
 
 One the initialization succeeds, about 2000 cancer cell line training sample for about 1200 different cancer cell lines are available in the Uniquorn's database. 
 
-# 5 Add training CL samples
+# 5 Add training CL samples & utility functions
 
 If you want to identify CL samples not contained in the 'canonical' CL set, you can add your own custom CL samples. These samples will be treated just as the 'canonical' training-datasets from e.g. CCLE. Note however, that it is strongly recommended to add at least 10 sample because overfitting might occur if too little custom training-samples are available. 
 
 `add_custom_vcf_to_database( "path_to_file/my_own_CL_samples.vcf"  )`
 
-Contact: raik.otto@hu-berlin.de
+Likewisely, if you want to remove the sample:
 
+`remove_custom_vcf_from_database( "Name_of_my_CL_custom_sample"  )`
+
+If you want to see which CLs are contained:
+
+`show_contained_cls( ref_gen = "GRCH37" )`
+
+If you want to know which mutations are overall contained in the training set for a particular database:
+
+`show_contained_mutations( ref_gen = "GRCH37" )`
+
+Same if you want to know which genomic loci are associated with a particular CL:
+
+`show_contained_mutations_for_cl("SF_268_CELLMINER")`
+
+
+
+Contact: raik.otto@hu-berlin.de
