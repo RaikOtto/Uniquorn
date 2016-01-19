@@ -16,7 +16,7 @@ optional if you have the packages installed and loaded
 
 `source("https://bioconductor.org/biocLite.R")`
 
-# 2 Install the Uniquorn
+# 2 Install Uniquorn
 
 `install_github("RaikOtto/Uniquorn")`
 
