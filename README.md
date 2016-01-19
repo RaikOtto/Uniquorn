@@ -30,7 +30,7 @@ Here the NCI-60 exome sequenced HT29 Cancer Cell line
 
 `data("HT29_vcf_fingerprint")`
 
-`ident_result = identify_vcf_file( HT29_vcf_file  )`
+`ident_result = identify_vcf_file( HT29_vcf_file, ref_gen = "GRCH37"  )`
 
 `head( ident_result )` will show a table with potential identification candidate, how many mutations overall and weighted of the training set have been found and if any training samples have surpased the identification threshold.
 
@@ -52,9 +52,13 @@ Please add the CCLE and CoSMIC CLP Cancer Cell Line (CL) data manually due to le
 
 Registration for both websites is without charge and not complicated.
 
-`initiate_canonical_databases( ccle_file = 'path_to_ccle/CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.tsv', cosmic_file = 'path_to_cosmic/CosmicCLP_MutantExport.tsv.gz' )`
+`initiate_canonical_databases( ccle_file = 'path_to_ccle/CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.tsv', cosmic_file = 'path_to_cosmic/CosmicCLP_MutantExport.tsv.gz', ref_gen = "GRCH37")`
 
-One the initialization succeeds, about 2000 cancer cell line training sample for about 1200 different cancer cell lines are available in the Uniquorn's database. 
+One the initialization succeeds, about 2000 cancer cell line training sample for about 1200 different cancer cell lines are available in the Uniquorn's database.
+
+Note: Currently (January 2016), only the CoSMIC CLP data is available for the reference Genome version GRCh38. It is neccesary, that the reference genome for the training samples is specified if the version is not GRCh37
+
+`initiate_canonical_databases( ccle_file = 'path_to_ccle/CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.tsv', cosmic_file = 'path_to_cosmic/CosmicCLP_MutantExport.tsv.gz', ref_gen = "GRCH38" )`
 
 # 5 Add training CL samples & utility functions
 
