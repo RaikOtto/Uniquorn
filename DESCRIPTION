@@ -12,7 +12,7 @@ Imports:
   stringr,
   DBI,
   knitr,
-  xlsx
+  WriteXLS
 Depends: R (>= 3.2)
 License: Artistic-2.0
 LazyData: TRUE

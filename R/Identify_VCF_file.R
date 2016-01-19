@@ -9,7 +9,7 @@
 #' @param distinct_mode Show training data for the commonly or separately normalized training sets. Options: TRUE/ FALSE
 #' @param batch_mode When many vcf files are to be analyzed in the same R session/ namespace with identical parameters, setting the parameter TRUE leads to a significant speed-up of the analysis.
 #' @param output_bed_file Should a bed file be created which visualizes the found and not found mutations for the cancer cell lines which were predicted to be present in the sample.
-#' @import DBI stringr xlsx
+#' @import DBI stringr WriteXLS
 #' @examples HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn"); identify_vcf_file( HT29_vcf_file )
 #' @return R table with a statistic of the identification result
 #' @export
@@ -204,7 +204,7 @@ identify_vcf_file = function(
        # xlsx::write.xlsx( x = res_table, path.expand( output_file_xls ), row.names = FALSE)
     
     if (write_xls)
-        xlsx::write.xlsx( x = res_table, path.expand( output_file_xls ), row.names = FALSE)
+        write.xlsx( x = res_table, path.expand( output_file_xls ), row.names = FALSE)
     
     return( res_table )
 }
