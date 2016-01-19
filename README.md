@@ -22,11 +22,11 @@ optional if you have the packages installed and loaded
 
 Note that some systems require the prior command `options(unzip = 'internal')` to install from github 
 
-`library("Uniquorn")`
-
 # 3 Test run
 
 Here the NCI-60 exome sequenced HT29 Cancer Cell line
+
+`library("Uniquorn")`
 
 `data("HT29_vcf_fingerprint")`
 
