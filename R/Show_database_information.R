@@ -75,10 +75,7 @@ show_contained_mutations = function( ref_gen = "GRCH37", distinct_mode = T ){
 #' @return R table which contains all mutations associated with the defined cancer cell line and reference genome
 #' @export
 show_contained_mutations_for_cl = function( name_cl, ref_gen = "GRCH37", distinct_mode = T){
-  
-    require("DBI", quietly = TRUE, warn.conflicts = FALSE)
-    require("stringr", quietly = TRUE, warn.conflicts = FALSE)
-    
+
     print(paste0("Reference genome: ",ref_gen))
     
     package_path    = system.file("", package="Uniquorn")
@@ -119,11 +116,8 @@ show_contained_mutations_for_cl = function( name_cl, ref_gen = "GRCH37", distinc
 #' @import DBI stringr
 #' @return R table which contains all cancer cell line samples which contain the specified mutation with respect to the specified reference genome version
 #' @export
-show_which_cls_contain_mutation = function( mutation_name, ref_gen = "GRCH37"){
+show_which_cls_contain_mutation = function( mutation_name, ref_gen = "GRCH37", distinct_mode = TRUE){
   
-    require("DBI", quietly = TRUE, warn.conflicts = FALSE)
-    require("stringr", quietly = TRUE, warn.conflicts = FALSE)
-    
     print(paste0("Reference genome: ",ref_gen))
     
     package_path    = system.file("", package="Uniquorn")

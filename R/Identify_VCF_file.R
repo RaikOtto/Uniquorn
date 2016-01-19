@@ -199,9 +199,9 @@ identify_vcf_file = function(
     
     write.table( res_table, output_file, sep ="\t", row.names = FALSE, quote = FALSE  )
     
-   # if (output_bed_file)
-        #bed_source = paste( package_path )
-       # xlsx::write.xlsx( x = res_table, path.expand( output_file_xls ), row.names = FALSE)
+    if (output_bed_file)
+        bed_source = paste( package_path )
+
     
     if (write_xls)
         write.xlsx( x = res_table, path.expand( output_file_xls ), row.names = FALSE)

@@ -26,6 +26,9 @@ initiate_canonical_databases = function(
     
     database_default_path =  paste( package_path, "uniquorn_db_default.sqlite", sep ="/" )
     
+    if (file.exists(database_path))
+        file.copy( from = database_path, to = database_default_path, overwrite = T )
+    
     drv = RSQLite::SQLite()
     con = DBI::dbConnect(drv, dbname = database_default_path)
   
