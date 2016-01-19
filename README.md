@@ -24,7 +24,7 @@ Note that some systems require the prior command `options(unzip = 'internal')` t
 
 # 3 Test run
 
-Here the NCI-60 exome sequenced HT29 Cancer Cell line
+Here the NCI-60 exome sequenced HT29 Cancer Cell line, reference genome GRCh37/ HG19
 
 `library("Uniquorn")`
 
