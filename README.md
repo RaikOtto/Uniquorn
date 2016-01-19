@@ -42,7 +42,7 @@ Therefore, a robust yet sensitive cancer cell line identification algorithm is r
 
 You will find a file with the ending '_uniquorn_identification.tab' next to the input VCF file if you did not specify the output file path.
 
-# 5 Add CCLE and CoSMIC CLP CL data
+# 4 Add CCLE and CoSMIC CLP CL data
 
 Please add the CCLE and CoSMIC CLP Cancer Cell Line (CL) data manually due to legal regulations! Else only the vanilla 62 CellMiner CLs will be available for identification. You can however manually add custom CLs.
 
