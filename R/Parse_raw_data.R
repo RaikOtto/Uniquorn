@@ -81,14 +81,15 @@ initiate_canonical_databases = function(
     panels = as.character(unique( as.character( sapply( panels, FUN = tail, 1) ) ))
     
     if (!distinct_mode){
+        
         panels = paste0( c(panels), collapse ="|"  )
         database_path =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite3", sep ="/" )
     }
     
     print( paste( "Distinguishing between panels:",paste0( c(panels), collapse = ", "), sep = " ") )
 
-      for (panel in panels) {
-      
+    for (panel in panels) {
+    
         print(panel)
         
         sim_list_panel   = sim_list[ grepl( panel, sim_list$CL) , ]
@@ -134,17 +135,17 @@ initiate_canonical_databases = function(
           sim_list_stats_global <<- sim_list_stats_panel[0,]
         
         sim_list_stats_global = rbind( sim_list_stats_global, sim_list_stats_panel  )
-        
-      }
+    
+    }
   
-  print("Finished aggregating, saving to database")
-  
-  drv = RSQLite::SQLite()
-  con = DBI::dbConnect(drv, dbname = database_path)
-  
-  DBI::dbWriteTable( con, "sim_list", sim_list_global, overwrite = T )
-  DBI::dbWriteTable( con, "sim_list_stats", sim_list_stats_global, overwrite = T )
-  dbDisconnect(con)
-  
-  print ("Initialization of Uniquorn DB finished")
+    print("Finished aggregating, saving to database")
+    
+    drv = RSQLite::SQLite()
+    con = DBI::dbConnect(drv, dbname = database_path)
+    
+    DBI::dbWriteTable( con, "sim_list", sim_list_global, overwrite = T )
+    DBI::dbWriteTable( con, "sim_list_stats", sim_list_stats_global, overwrite = T )
+    dbDisconnect(con)
+    
+    print ("Initialization of Uniquorn DB finished")
 }

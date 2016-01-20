@@ -46,31 +46,7 @@ create_bed_file = function( sim_list, vcf_fingerprint, res_table, output_file, r
         training_coords_res = c( training_bed_file, training_coords_res )
         
         write.table( x = training_coords_res, file =  name_training_bed_file, sep ="", row.names = FALSE, col.names = FALSE, quote = FALSE )
-        
-        # missed
-        
-        missed_bed_file = paste0( 
-            c( 
-                'track name=',
-                'Missed_',
-                identifier,
-                ' description=Missed_trainingset_mutations type=bedDetail db=',
-                ref_gen,
-                ' color=255,0,0 priority=3'
-            ),
-            collapse = ""
-        )
-        
-        missed_coords = training_coords[ which( ! ( training_coords %in% query_coords ) ) ]
-        
-        missed_coords = sapply( missed_coords, FUN = function( vec ){ 
-            chrom = paste( "chr", str_trim( vec[1] ), sep = "" )
-            return( paste0( c( chrom, vec[2], vec[3] ), collapse = "\t" ) )
-        } )
-        missed_coords_res = c( missed_bed_file, missed_coords )
-        
-        write.table( x = missed_coords_res, file =  name_missed_bed_file, sep ="", row.names = FALSE, col.names = FALSE, quote = FALSE )
-        
+
         # query
         
         query_bed_file = paste0( 
@@ -96,7 +72,31 @@ create_bed_file = function( sim_list, vcf_fingerprint, res_table, output_file, r
         } )
         query_res = c( query_bed_file, query_coords_res )
         
-        write.table( x = query_res, file =  name_query_bed_file, sep ="", row.names = FALSE, col.names = FALSE, quote = FALSE )
+        write.table( x = query_res, file =  name_query_bed_file, sep ="", row.names = FALSE, col.names = FALSE, quote = FALSE )        
+                
+        # missed
+        
+        missed_bed_file = paste0( 
+            c( 
+                'track name=',
+                'Missed_',
+                identifier,
+                ' description=Missed_trainingset_mutations type=bedDetail db=',
+                ref_gen,
+                ' color=255,0,0 priority=3'
+            ),
+            collapse = ""
+        )
+        
+        missed_coords = training_coords[ which( ! ( training_coords %in% query_coords ) ) ]
+        
+        missed_coords = sapply( missed_coords, FUN = function( vec ){ 
+            chrom = paste( "chr", str_trim( vec[1] ), sep = "" )
+            return( paste0( c( chrom, vec[2], vec[3] ), collapse = "\t" ) )
+        } )
+        missed_coords_res = c( missed_bed_file, missed_coords )
+        
+        write.table( x = missed_coords_res, file =  name_missed_bed_file, sep ="", row.names = FALSE, col.names = FALSE, quote = FALSE )
         
     }
 }
