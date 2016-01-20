@@ -44,8 +44,8 @@ initiate_canonical_databases = function(
         print( c( "Found CoSMIC: ", file.exists(cosmic_file) )  )
       
         if ( grepl( ".gz$", str_to_lower( cosmic_file ) ) ){
-            require( R.utils, quietly = TRUE, warn.conflicts = FALSE )
-            gunzip( cosmic_file )
+
+            untar( cosmic_file )
         }
         cosmic_file = str_replace( cosmic_file, ".gz$|.GZ$", "" )
       
