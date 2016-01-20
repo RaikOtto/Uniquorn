@@ -82,6 +82,10 @@ Same if you want to know which genomic loci are associated with a particular CL:
 
 `show_contained_mutations_for_cl("SF_268_CELLMINER")`
 
+# Additional note
 
+Note as well, that there are BED files for the IGV Browser added as well, so that one can see the 
+training, query and missed mutations in the genome. This feature can be switched of by setting the
+option `output_bed_file` in the `identify_vcf_file` function `FALSE`.
 
 Contact: raik.otto@hu-berlin.de
