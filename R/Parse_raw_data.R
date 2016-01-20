@@ -45,10 +45,9 @@ initiate_canonical_databases = function(
       
         print( c( "Found CoSMIC: ", file.exists(cosmic_file) )  )
       
-        if ( grepl( ".gz$", str_to_lower( cosmic_file ) ) ){
+        if ( grepl( ".gz$", stringr::str_to_lower( cosmic_file ) ) ){
 
-            print("The CoSMIC file appear to be gzipped. Install the 'R.utils' package manually if the unzip fails on windows systems.")
-            gunzip( cosmic_file )
+            gunzip( cosmic_file, overwrite = TRUE )
         }
         cosmic_file = str_replace( cosmic_file, ".gz$|.GZ$", "" )
       
