@@ -4,7 +4,7 @@
 #' @param ccle_file The path to the ccle DNA genotype data file. Ensure that the right reference genome is used
 #' @param ref_gen Reference genome version
 #' @param distinct_mode Should the mutational weights be calculated for all panels together or each for itelf? Recommendation: Seperately
-#' @import DBI stringr
+#' @import DBI stringr R.utils
 #' @usage initiate_canonical_databases(cosmic_file = "CosmicCLP_MutantExport.tsv", ccle_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf")
 #' @export
 initiate_canonical_databases = function(
@@ -47,7 +47,8 @@ initiate_canonical_databases = function(
       
         if ( grepl( ".gz$", str_to_lower( cosmic_file ) ) ){
 
-            untar( cosmic_file )
+            print("The CoSMIC file appear to be gzipped. Install the 'R.utils' package manually if the unzip fails on windows systems.")
+            gunzip( cosmic_file )
         }
         cosmic_file = str_replace( cosmic_file, ".gz$|.GZ$", "" )
       
