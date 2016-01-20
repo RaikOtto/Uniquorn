@@ -15,8 +15,12 @@ show_contained_cls = function( ref_gen = "GRCH37", distinct_mode = T ){
     if (!distinct_mode)
         database_path =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite", sep ="/" )
     
-    if( ! file.exists( database_path ) )
-        stop(paste0("Did not find the database from which to delete the dataset: ", database_path))
+    if( ! file.exists( database_path ) ){
+        warning("Only found the vanilla CellMiner default database")
+        database_default_path =  paste( package_path, "uniquorn_db_default.sqlite", sep ="/" )
+        database_path = database_default_path
+    }
+        
     
     drv = RSQLite::SQLite()
     con = DBI::dbConnect(drv, dbname = database_path)
