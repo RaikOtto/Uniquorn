@@ -13,7 +13,7 @@ parse_cosmic_genotype_data = function( cosmic_file, sim_list ){
 
     if ( ! grepl("CosmicCLP_MutantExport", cosmic_file)){ # MutantExport
 
-        warning("Warning. This is not the recommended COSMIC genotype file! The recommended file is the 'CosmicCLP_MutantExport.tsv.gz' file.")
+        stop("Warning. This is not the recommended COSMIC genotype file! The recommended file is the 'CosmicCLP_MutantExport.tsv.gz' file.")
         exclude_cols_cosmic = c(rep("NULL",4),"character",rep("NULL",18),"character",rep("NULL",14))
         
     }

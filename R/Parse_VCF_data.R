@@ -17,7 +17,7 @@ parse_vcf_file = function( vcf_file_path  ){
       variations = as.character( unlist( str_split( unlist(vcf_matrix_row[5]), "," ) ) )
       length_variations = length(unlist(str_split( unlist(vcf_matrix_row[5]), "," )))
       
-      chromosome = rep( vcf_matrix_row[1], length(variations)  )
+      chromosome = rep( as.character( vcf_matrix_row[1] ), length(variations)  )
       start      = as.integer( rep( vcf_matrix_row[2], length(variations)  ) )
       
       fingerprint = as.character()
@@ -32,14 +32,22 @@ parse_vcf_file = function( vcf_file_path  ){
         
         chrom      = str_replace( str_to_upper( str_trim( as.character( unlist( chromosome[i] ) ) ) ), "CHR", "" )
         
-        fingerprint = c( fingerprint, paste0( c( chrom, start_var, end_var), collapse = "_" ) )
+        fingerprint = c( 
+            fingerprint, 
+            paste0( c( 
+                as.character(chrom), 
+                as.character(start_var),
+                as.character(end_var)
+            ),
+            collapse = "_" )
+        )
       }
       
       return( fingerprint )
     }
     
     fingerprint = apply( vcf_handle, FUN = split_add, MARGIN = 1  )
-    fingerprint = as.character( fingerprint )
+    fingerprint = unique( as.character( unlist(fingerprint ) ) )
     
     return( fingerprint )
     

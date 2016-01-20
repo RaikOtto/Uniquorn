@@ -1,10 +1,7 @@
 name: Publish Document
 account: rpubs
 server: rpubs.com
-appId:
-        https://api.rpubs.com/api/v1/document/144237/9f4a27cbf10d4daba95c2605a22403e1
 bundleId:
-        https://api.rpubs.com/api/v1/document/144237/9f4a27cbf10d4daba95c2605a22403e1
-url:
-        http://rpubs.com/publish/claim/144237/6fb3639486eb4d6b98e8b1bdcdd46e46
-when: 1453211107.57866
+        https://api.rpubs.com/api/v1/document/144457/dbd85312a4b34b7f8b0b5c2d50e1ecc6
+url: http://rpubs.com/raikotto/144457/edit
+when: 1453292927.48171

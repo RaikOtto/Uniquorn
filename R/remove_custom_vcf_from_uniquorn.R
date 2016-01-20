@@ -42,7 +42,13 @@ remove_custom_vcf_from_database = function(
         
     } else {
         
-        print( paste0(c("Found CL ",name_cl,". Removing from database and recalculating training-sets.", collapse = "") ) )
+        print( 
+            paste0(
+                c("Found CL ",name_cl,
+                ". Removing from database and recalculating training-sets."
+            ), 
+            collapse = "") 
+        )
                
     }
         

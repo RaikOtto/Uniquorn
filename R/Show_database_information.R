@@ -6,9 +6,6 @@
 #' @export
 show_contained_cls = function( ref_gen = "GRCH37", distinct_mode = T ){
 
-    require("DBI", quietly = TRUE, warn.conflicts = FALSE)
-    require("stringr", quietly = TRUE, warn.conflicts = FALSE)
-    
     print(paste0("Reference genome: ",ref_gen))
     
     package_path    = system.file("", package="Uniquorn")
@@ -29,6 +26,11 @@ show_contained_cls = function( ref_gen = "GRCH37", distinct_mode = T ){
     
     print( paste0( c("Found ", dim(sim_list_stats)[1], " many cancer cell lines fingerprints for reference genome ", ref_gen ), collapse = ""  )  )
 
+    print( paste( "CoSMIC CLP: ", as.character( sum( grepl( "_COSMIC", sim_list_stats$CL ) ) ) ) )
+    print( paste( "CCLE: ", as.character( sum( grepl( "_CCLE", sim_list_stats$CL ) ) ) ) )
+    print( paste( "CellMiner: ", as.character( sum( grepl( "_CELLMINER", sim_list_stats$CL ) ) ) ) )
+    print( paste( "CUSTOM: ", as.character( sum( grepl( "_CUSTOM", sim_list_stats$CL ) ) ) ) )
+    
     return( sim_list_stats )  
 }
 

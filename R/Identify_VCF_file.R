@@ -23,7 +23,7 @@ identify_vcf_file = function(
     distinct_mode = TRUE,
     batch_mode = FALSE,
     write_xls = FALSE,
-    output_bed_file = FALSE
+    output_bed_file = TRUE
     ){
   
     print( paste0("Assuming reference genome ", ref_gen) )
@@ -200,7 +200,7 @@ identify_vcf_file = function(
     write.table( res_table, output_file, sep ="\t", row.names = FALSE, quote = FALSE  )
     
     if (output_bed_file)
-         create_bed_file( sim_list, vcf_fingerprint, mapping_to_cls )
+         create_bed_file( sim_list, vcf_fingerprint, res_table, output_file, ref_gen )
 
     
     if (write_xls)

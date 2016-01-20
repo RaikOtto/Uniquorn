@@ -2,7 +2,7 @@
 title: "Overview of the Uniquorn package"
 author: "Raik Otto"
 date: "19. Januar 2016"
-output: html_document
+output: pdf_document
 ---
 
 
@@ -39,7 +39,7 @@ library("Uniquorn")
 ```
 
 ```{r}
-data("HT29_vcf_fingerprint")
+HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn")
 ```
 
 ```{r}
@@ -66,7 +66,7 @@ Please add the CCLE and CoSMIC CLP Cancer Cell Line (CL) data manually due to le
 
 'CosmicCLP_MutantExport.tsv.gz', unpack with e.g. gunzip on linux or 7zip on windows from http://cancer.sanger.ac.uk/cell_lines/download
 
-'CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.tsv' from http://www.broadinstitute.org/ccle/data/browseData
+'CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.maf' from http://www.broadinstitute.org/ccle/data/browseData
 
 Registration for both websites is without charge and not complicated.
 
