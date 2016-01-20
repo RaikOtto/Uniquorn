@@ -36,8 +36,16 @@ remove_custom_vcf_from_database = function(
     sim_list_stats = as.data.frame( DBI::dbReadTable( con, "sim_list_stats") )
     dbDisconnect(con)
     
-    if ( sum( grepl( name_cl, sim_list_stats$CL ) ) == 0 )
+    if ( sum( grepl( name_cl, sim_list_stats$CL ) ) == 0 ){
+        
         stop(paste0("No training set for a cancer cell line found for the name: ", name_cl))
+        
+    } else {
+        
+        print( paste0(c("Found CL ",name_cl,". Removing from database and recalculating training-sets.", collapse = "") ) )
+               
+    }
+        
     
     sim_list = sim_list[ sim_list$CL != name_cl,] # exclude sample here
     sim_list = sim_list[, which( colnames(sim_list) != "Ref_Gen"  ) ]

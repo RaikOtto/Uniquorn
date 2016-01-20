@@ -200,7 +200,7 @@ identify_vcf_file = function(
     write.table( res_table, output_file, sep ="\t", row.names = FALSE, quote = FALSE  )
     
     if (output_bed_file)
-        bed_source = paste( package_path )
+         create_bed_file( sim_list, vcf_fingerprint, mapping_to_cls )
 
     
     if (write_xls)
