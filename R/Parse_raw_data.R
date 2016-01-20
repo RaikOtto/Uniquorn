@@ -4,7 +4,7 @@
 #' @param ccle_file The path to the ccle DNA genotype data file. Ensure that the right reference genome is used
 #' @param ref_gen Reference genome version
 #' @param distinct_mode Should the mutational weights be calculated for all panels together or each for itelf? Recommendation: Seperately
-#' @import DBI stringr RSQLite
+#' @import DBI stringr
 #' @usage initiate_canonical_databases(cosmic_file = "CosmicCLP_MutantExport.tsv", ccle_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf")
 #' @export
 initiate_canonical_databases = function(
@@ -33,7 +33,9 @@ initiate_canonical_databases = function(
     con = DBI::dbConnect(drv, dbname = database_default_path)
   
     sim_list = as.data.frame( DBI::dbReadTable( con, "sim_list") )
-    dbDisconnect(con)
+    
+    DBI::dbDisconnect(con)
+    
     sim_list = sim_list[, which( colnames(sim_list) != "Ref_Gen"  ) ]
     sim_list = sim_list[, which( colnames(sim_list) != "Weight"  ) ]
 
