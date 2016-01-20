@@ -11,6 +11,7 @@ Description: This packages enables users to identify cancer cell lines. The iden
 Imports:
   stringr,
   DBI,
+  RSQLite,
   knitr,
   WriteXLS
 Depends: R (>= 3.2)
