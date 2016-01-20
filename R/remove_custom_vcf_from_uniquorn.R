@@ -53,7 +53,7 @@ remove_custom_vcf_from_database = function(
     
     print("Found & removed the sample. Re-calculating the Cancer cell line data")
     
-    list_of_cls = unique( sim_list$CL )
+    list_of_cls = unique( as.character( sim_list$CL ) )
     panels = sapply( list_of_cls, FUN = str_split, "_"  )
     panels = as.character(unique( as.character( sapply( panels, FUN = tail, 1) ) ))
     
