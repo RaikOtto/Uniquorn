@@ -36,6 +36,8 @@ Here the NCI-60 exome sequenced HT29 Cancer Cell line, reference genome GRCh37/ 
 
 `head( ident_result )` will show a table with potential identification candidate, how many mutations overall and weighted of the training set have been found and if any training samples have surpased the identification threshold.
 
+### Explanation test data
+
 The HT29 cancer cell line vcf file which contains the somatic mutations of the HT-29 cancer cell line is taken from http://watson.nci.nih.gov/projects/nci60/wes/VCF
 The Watson repository contains the same cancer cell line samples as Uniquorn's default training dataset, the original CellMiner panel, available @ http://discover.nci.nih.gov/cellminer/. 
 However, the cancer cell line vcf sample was differentely filtered and different algorithms have been used to predict mutations and variations. Therefore, it was used as example set to show the difficulties associated with an identification of cancer cell line sample: Some mutations are found only in the query version (here HT-29 from Watson) and some only in the training dataset (here HT-29 from CellMiner original panel). Moreover, some mutations of the query cancer cell line map to different cancer cell lines in the CellMiner training database what can lead to an incorrect identification of a cancer cell line. 
