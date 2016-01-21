@@ -2,13 +2,13 @@
 
 Package to identify cancer cell lines (CL)s based on their weighted mutational fingerprint.
 
-# How to make it work: 
 
-Start R
 
-# 1 Quickstart
+# 1 How to make it work:  Quickstart
 
 ## Preparation 
+
+Start R session e.g. RStudio
 
 optional if you have the packages installed and loaded
 
