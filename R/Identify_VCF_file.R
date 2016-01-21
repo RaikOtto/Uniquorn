@@ -9,7 +9,9 @@
 #' @param distinct_mode Show training data for the commonly or separately normalized training sets. Options: TRUE/ FALSE
 #' @param batch_mode When many vcf files are to be analyzed in the same R session/ namespace with identical parameters, setting the parameter TRUE leads to a significant speed-up of the analysis.
 #' @param output_bed_file Should a bed file be created which visualizes the found and not found mutations for the cancer cell lines which were predicted to be present in the sample.
+#' @param manual_identifier_bed_file Manually enter a vector of CL name(s) whose bed files should be created, independently from them passing the detection threshold
 #' @import DBI stringr WriteXLS
+#' @usage identify_vcf_file( path_to_vcf, ref_gen = "GRCH37", mutational_weight_inclusion_threshold = 0.5, similarity_threshold = 10.0 , manual_identifier_bed_file = c( "CL_a_CCLE", "CL_b_CUSTOM" ) )
 #' @examples HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn"); identify_vcf_file( HT29_vcf_file )
 #' @return R table with a statistic of the identification result
 #' @export
@@ -23,7 +25,8 @@ identify_vcf_file = function(
     distinct_mode = TRUE,
     batch_mode = FALSE,
     write_xls = FALSE,
-    output_bed_file = TRUE
+    output_bed_file = TRUE,
+    manual_identifier_bed_file = ""
     ){
   
     print( paste0("Assuming reference genome ", ref_gen) )
@@ -200,7 +203,7 @@ identify_vcf_file = function(
     write.table( res_table, output_file, sep ="\t", row.names = FALSE, quote = FALSE  )
     
     if (output_bed_file)
-         create_bed_file( sim_list, vcf_fingerprint, res_table, output_file, ref_gen )
+         create_bed_file( sim_list, vcf_fingerprint, res_table, output_file, ref_gen, manual_identifier_bed_file )
 
     
     if (write_xls)
