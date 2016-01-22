@@ -12,6 +12,7 @@ Imports:
     stringr,
     DBI,
     R.utils,
+    rmarkdown,
     WriteXLS
 Depends: R (>= 3.2)
 License: Artistic-2.0

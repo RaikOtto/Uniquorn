@@ -4,10 +4,7 @@
 \alias{identify_vcf_file}
 \title{Parses the vcf file and predicts the identity of the sample}
 \usage{
-identify_vcf_file(vcf_file, output_file = "", ref_gen = "GRCH37",
-  similarity_threshold = 5, mutational_weight_inclusion_threshold = 1,
-  only_first_candidate = FALSE, distinct_mode = TRUE, batch_mode = FALSE,
-  write_xls = FALSE, output_bed_file = TRUE)
+identify_vcf_file( path_to_vcf, ref_gen = "GRCH37", mutational_weight_inclusion_threshold = 0.5, similarity_threshold = 10.0 , manual_identifier_bed_file = c( "CL_a_CCLE", "CL_b_CUSTOM" ) )
 }
 \arguments{
 \item{vcf_file}{Input vcf file. Only one sample column allowed.}
@@ -29,6 +26,8 @@ identify_vcf_file(vcf_file, output_file = "", ref_gen = "GRCH37",
 \item{write_xls}{Create identification results additionally as xls file for easier reading}
 
 \item{output_bed_file}{Should a bed file be created which visualizes the found and not found mutations for the cancer cell lines which were predicted to be present in the sample.}
+
+\item{manual_identifier_bed_file}{Manually enter a vector of CL name(s) whose bed files should be created, independently from them passing the detection threshold}
 }
 \value{
 R table with a statistic of the identification result
