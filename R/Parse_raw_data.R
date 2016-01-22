@@ -124,6 +124,8 @@ initiate_canonical_databases = function(
         
         Ref_Gen = rep(ref_gen, dim(sim_list_panel)[1]  )
         sim_list_panel = cbind( sim_list_panel, Ref_Gen )
+        
+        
         Ref_Gen = rep( ref_gen, dim(sim_list_stats_panel)[1]  )
         sim_list_stats_panel = cbind( sim_list_stats_panel, Ref_Gen )
         colnames( sim_list_stats_panel ) = c( "CL","Count","All_weights","Ref_Gen" )
@@ -147,7 +149,7 @@ initiate_canonical_databases = function(
     
     DBI::dbWriteTable( con, "sim_list", sim_list_global, overwrite = T )
     DBI::dbWriteTable( con, "sim_list_stats", sim_list_stats_global, overwrite = T )
-    dbDisconnect(con)
+    DBI::dbDisconnect(con)
     
     print ("Initialization of Uniquorn DB finished")
 }
