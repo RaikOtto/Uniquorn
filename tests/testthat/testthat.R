@@ -1,0 +1,19 @@
+test_that("HT29 test analysis", {
+    
+    library("Uniquorn")
+    library("testthat")
+    
+    HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn")
+    
+    ident_result = identify_vcf_file( HT29_vcf_file, ref_gen = "GRCH37" )
+    
+    expect_that( ident_result, is_a("data.frame") )
+    
+    if ( dim(sim_list_raw) == c(1279658,4) ){
+        expect_that( dim(ident_result), equals( c(1985,9 ) ) )
+    } else if ( dim( sim_list_raw ) == c(68334,4) ) {
+        expect_that( dim(ident_result), equals( c(60,9 ) ) )
+    }
+    
+    
+})

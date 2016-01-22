@@ -30,7 +30,7 @@ identify_vcf_file = function(
     distinct_mode = TRUE,
     batch_mode = FALSE,
     write_xls = FALSE,
-    output_bed_file = TRUE,
+    output_bed_file = FALSE,
     manual_identifier_bed_file = ""
     ){
   
