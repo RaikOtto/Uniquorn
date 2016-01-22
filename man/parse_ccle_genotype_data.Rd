@@ -10,6 +10,8 @@ parse_ccle_genotype_data(ccle_file, sim_list)
 \item{ccle_file}{path to ccle file}
 
 \item{sim_list}{Variable containing mutations and cell line}
+
+\item{ccle_file}{Path to CCLE file on hard disk}
 }
 \description{
 Parses ccle genotype data

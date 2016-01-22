@@ -4,7 +4,9 @@
 \alias{initiate_canonical_databases}
 \title{Parses data into r list variable}
 \usage{
-initiate_canonical_databases(cosmic_file = "CosmicCLP_MutantExport.tsv", ccle_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf")
+initiate_canonical_databases(
+cosmic_file = "CosmicCLP_MutantExport.tsv", 
+ccle_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf")
 }
 \arguments{
 \item{cosmic_file}{The path to the cosmic DNA genotype data file. Ensure that the right reference genome is used}
@@ -13,7 +15,8 @@ initiate_canonical_databases(cosmic_file = "CosmicCLP_MutantExport.tsv", ccle_fi
 
 \item{ref_gen}{Reference genome version}
 
-\item{distinct_mode}{Should the mutational weights be calculated for all panels together or each for itelf? Recommendation: Seperately}
+\item{distinct_mode}{Should the mutational weights be calculated for all panels together or each for itelf? 
+Recommendation: Seperately}
 }
 \description{
 Parses data into r list variable

@@ -2,7 +2,7 @@
 #' @param ref_gen Reference genome version. All training sets are associated with a reference genome version. Default: GRCH37
 #' @param distinct_mode Show training data for the commonly or separately normalized training sets. Options: TRUE/ FALSE
 #' @return R table which contains the identifier of all cancer cell line samples with the specific reference genome
-#' @import DBI stringr
+#' @import DBI stringr RSQLite
 #' @export
 show_contained_cls = function( ref_gen = "GRCH37", distinct_mode = T ){
 
@@ -119,6 +119,7 @@ show_contained_mutations_for_cl = function( name_cl, ref_gen = "GRCH37", distinc
 #' Show all cancer cell lines in the database which contained the specified mutation and reference Genome. Closed interval coordinates. Format mutation: CHR_START_STOP, e.g. 1_123_123
 #' @param mutation_name Name of the mutation in the format CHROMOSOME_START_STOP, e.g. '11_244501_244510'
 #' @param ref_gen Reference genome version
+#' @param distinct_mode Show mutations for either distinct or non-distinct normalization of mutational weights
 #' @import DBI stringr
 #' @return R table which contains all cancer cell line samples which contain the specified mutation with respect to the specified reference genome version
 #' @export

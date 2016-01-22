@@ -10,9 +10,14 @@
 #' @param batch_mode When many vcf files are to be analyzed in the same R session/ namespace with identical parameters, setting the parameter TRUE leads to a significant speed-up of the analysis.
 #' @param output_bed_file Should a bed file be created which visualizes the found and not found mutations for the cancer cell lines which were predicted to be present in the sample.
 #' @param manual_identifier_bed_file Manually enter a vector of CL name(s) whose bed files should be created, independently from them passing the detection threshold
-#' @import DBI stringr WriteXLS
-#' @usage identify_vcf_file( path_to_vcf, ref_gen = "GRCH37", mutational_weight_inclusion_threshold = 0.5, similarity_threshold = 10.0 , manual_identifier_bed_file = c( "CL_a_CCLE", "CL_b_CUSTOM" ) )
-#' @examples HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn"); identify_vcf_file( HT29_vcf_file )
+#' @import DBI stringr WriteXLS RSQLite
+#' @usage identify_vcf_file( 
+#' vcf_file = "./my_cl_vcf.vcf.gz", ref_gen = "GRCH37", 
+#' mutational_weight_inclusion_threshold = 0.5, 
+#' similarity_threshold = 10.0, 
+#' manual_identifier_bed_file = c( "CL_a_CCLE", "CL_b_CUSTOM" ) )
+#' @examples HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn"); 
+#' identify_vcf_file( HT29_vcf_file )
 #' @return R table with a statistic of the identification result
 #' @export
 identify_vcf_file = function( 

@@ -11,6 +11,8 @@ show_which_cls_contain_mutation(mutation_name, ref_gen = "GRCH37",
 \item{mutation_name}{Name of the mutation in the format CHROMOSOME_START_STOP, e.g. '11_244501_244510'}
 
 \item{ref_gen}{Reference genome version}
+
+\item{distinct_mode}{Show mutations for either distinct or non-distinct normalization of mutational weights}
 }
 \value{
 R table which contains all cancer cell line samples which contain the specified mutation with respect to the specified reference genome version

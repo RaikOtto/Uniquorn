@@ -4,7 +4,11 @@
 \alias{identify_vcf_file}
 \title{Parses the vcf file and predicts the identity of the sample}
 \usage{
-identify_vcf_file( path_to_vcf, ref_gen = "GRCH37", mutational_weight_inclusion_threshold = 0.5, similarity_threshold = 10.0 , manual_identifier_bed_file = c( "CL_a_CCLE", "CL_b_CUSTOM" ) )
+identify_vcf_file( 
+vcf_file = "./my_cl_vcf.vcf.gz", ref_gen = "GRCH37", 
+mutational_weight_inclusion_threshold = 0.5, 
+similarity_threshold = 10.0, 
+manual_identifier_bed_file = c( "CL_a_CCLE", "CL_b_CUSTOM" ) )
 }
 \arguments{
 \item{vcf_file}{Input vcf file. Only one sample column allowed.}
@@ -36,6 +40,7 @@ R table with a statistic of the identification result
 Parses the vcf file and predicts the identity of the sample
 }
 \examples{
-HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn"); identify_vcf_file( HT29_vcf_file )
+HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn"); 
+identify_vcf_file( HT29_vcf_file )
 }
 

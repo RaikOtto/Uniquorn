@@ -7,6 +7,8 @@
 parse_cosmic_genotype_data(cosmic_file, sim_list)
 }
 \arguments{
+\item{cosmic_file}{Path to cosmic clp file in hard disk}
+
 \item{sim_list}{Variable containing mutations & cell line}
 }
 \description{
