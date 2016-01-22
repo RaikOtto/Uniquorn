@@ -80,12 +80,12 @@ remove_custom_vcf_from_database = function(
         sim_list_panel   = sim_list[ grepl( panel, sim_list$CL) , ]
         member_var_panel = rep( 1, dim(sim_list_panel)[1] )
         
-        sim_list_stats_panel = aggregate( member_var_panel , by = list( sim_list_panel$CL ), FUN = sum )
+        sim_list_stats_panel = stats::aggregate( member_var_panel , by = list( sim_list_panel$CL ), FUN = sum )
         colnames(sim_list_stats_panel) = c( "CL", "Count" )
         
         print("Aggregating over mutational frequency to obtain mutational weight")
         
-        weights_panel = aggregate( member_var_panel , by = list( sim_list_panel$Fingerprint ), FUN = sum )
+        weights_panel = stats::aggregate( member_var_panel , by = list( sim_list_panel$Fingerprint ), FUN = sum )
         weights_panel$x = 1.0 / as.double( weights_panel$x )
         
         mapping_panel = match( as.character( sim_list_panel$Fingerprint ), as.character( weights_panel$Group.1) )
