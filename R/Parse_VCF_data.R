@@ -4,18 +4,18 @@
 #' @export
 parse_vcf_file = function( vcf_file_path  ){
   
-  if ( file.exists( vcf_file_path ) ){
+  if ( base::file.exists( vcf_file_path ) ){
   
     print( paste0("Reading VCF file: ", vcf_file_path ) )
     
-    vcf_handle = read.table( vcf_file_path, sep ="\t", header = F, comment.char = "#", fill = T )
+    vcf_handle = utils::read.table( vcf_file_path, sep ="\t", header = F, comment.char = "#", fill = T )
     
     split_add = function( vcf_matrix_row ){
       
       reference  = as.character( unlist( vcf_matrix_row[4] ) )
-      length_ref = length( unlist(str_split( reference  ,"") ))
-      variations = as.character( unlist( str_split( unlist(vcf_matrix_row[5]), "," ) ) )
-      length_variations = length(unlist(str_split( unlist(vcf_matrix_row[5]), "," )))
+      length_ref = length( unlist( stringr::str_split( reference  ,"") ))
+      variations = as.character( unlist( stringr::str_split( unlist(vcf_matrix_row[5]), "," ) ) )
+      length_variations = length(unlist( stringr::str_split( unlist(vcf_matrix_row[5]), "," )))
       
       chromosome = rep( as.character( vcf_matrix_row[1] ), length(variations)  )
       start      = as.integer( rep( vcf_matrix_row[2], length(variations)  ) )

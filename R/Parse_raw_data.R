@@ -7,7 +7,16 @@
 #' @param ref_gen Reference genome version
 #' @param distinct_mode Should the mutational weights be calculated for all panels together or each for itelf? Recommendation: Seperately
 #' @import DBI stringr R.utils RSQLite
-#' @usage \alias(initiate_canonical_databases)( cosmic_file = "CosmicCLP_MutantExport.tsv", ccle_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf", ref_gen = "GRCH37", distinct_mode = TRUE)
+#' @usage 
+#' initiate_canonical_databases( 
+#' 
+#' cosmic_file = "CosmicCLP_MutantExport.tsv", 
+#' 
+#' ccle_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.maf", 
+#' 
+#' ref_gen = "GRCH37",
+#' 
+#' distinct_mode = TRUE)
 #' @export
 initiate_canonical_databases = function(
     cosmic_file = "CosmicCLP_MutantExport.tsv",
@@ -18,18 +27,18 @@ initiate_canonical_databases = function(
 
     print( c( "Reference genome: ", ref_gen )  )
     
-    ### pre processing
+    ### pre-processing
     
     package_path    = system.file("", package="Uniquorn")
-    database_path =  paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
+    database_path =  base::paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
     
     if (!distinct_mode)
-        database_path   =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite", sep ="/" )
+        database_path   =  base::paste( package_path, "uniquorn_non_distinct_panels_db.sqlite", sep ="/" )
     
-    database_default_path =  paste( package_path, "uniquorn_db_default.sqlite", sep ="/" )
+    database_default_path =  base::paste( package_path, "uniquorn_db_default.sqlite", sep ="/" )
     
-    if (file.exists(database_path))
-        file.copy( from = database_path, to = database_default_path, overwrite = T )
+    if ( base::file.exists(database_path) )
+        base::file.copy( from = database_path, to = database_default_path, overwrite = T )
     
     drv = RSQLite::SQLite()
     con = DBI::dbConnect(drv, dbname = database_default_path)
@@ -80,7 +89,7 @@ initiate_canonical_databases = function(
     
     list_of_cls = unique( sim_list$CL )
     panels = sapply( list_of_cls, FUN = str_split, "_"  )
-    panels = as.character(unique( as.character( sapply( panels, FUN = tail, 1) ) ))
+    panels = as.character(unique( as.character( sapply( panels, FUN = utils::tail, 1) ) ))
     
     if (!distinct_mode){
         
@@ -97,12 +106,12 @@ initiate_canonical_databases = function(
         sim_list_panel   = sim_list[ grepl( panel, sim_list$CL) , ]
         member_var_panel = rep( 1, dim(sim_list_panel)[1] )
         
-        sim_list_stats_panel = aggregate( member_var_panel , by = list( sim_list_panel$CL ), FUN = sum )
+        sim_list_stats_panel = stats::aggregate( member_var_panel , by = list( sim_list_panel$CL ), FUN = sum )
         colnames(sim_list_stats_panel) = c( "CL", "Count" )
         
         print("Aggregating over mutational frequency to obtain mutational weight")
             
-        weights_panel = aggregate( member_var_panel , by = list( sim_list_panel$Fingerprint ), FUN = sum )
+        weights_panel = stats::aggregate( member_var_panel , by = list( sim_list_panel$Fingerprint ), FUN = sum )
         weights_panel$x = 1.0 / as.double( weights_panel$x )
         
         mapping_panel = match( as.character( sim_list_panel$Fingerprint ), as.character( weights_panel$Group.1) )

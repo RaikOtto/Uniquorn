@@ -6,8 +6,11 @@
 be seen by using the function \code{show_contained_cls}.}
 \usage{
 remove_custom_vcf_from_database( 
-name_cl = "my_custom_cancer_cell_line_name_CUSTOM", 
+
+name_cl, 
+
 ref_gen = "GRCH37", 
+
 distinct_mode = TRUE )
 }
 \arguments{

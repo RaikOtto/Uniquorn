@@ -4,8 +4,19 @@
 #' @param name_cl Name of the to-be-added cancer cell line sample. '_CUSTOM' will automatically be added as suffix.
 #' @param safe_mode Only add mutations to the database where there already are mutations found in the cannonical cancer cell lines. This is a safety mechanism against overfitting if there are too few custom training samples.
 #' @param distinct_mode Show training data for the commonly or separately normalized training sets. Options: TRUE/ FALSE
-#' @usage add_custom_vcf_to_database( vcf_file_path = "./vcf_file.vcf.gz", ref_gen = "GRCH37", name_cl = "MyCL", safe_mode = FALSE, distinct_mode = TRUE)
-#' @import DBI stringr
+#' @import DBI
+#' @usage 
+#' add_custom_vcf_to_database( 
+#' 
+#' vcf_file_path, 
+#' 
+#' ref_gen = "GRCH37", 
+#' 
+#' name_cl = "", 
+#' 
+#' safe_mode = FALSE, 
+#' 
+#' distinct_mode = TRUE)
 #' @export
 add_custom_vcf_to_database = function( 
     vcf_file_path,
@@ -19,19 +30,19 @@ add_custom_vcf_to_database = function(
 
     name_cl = str_to_upper(name_cl)
     
-    print(paste0("Reference genome: ",ref_gen))
+    base::print( base::paste0( "Reference genome: ",ref_gen ) )
   
-    package_path    = system.file("", package="Uniquorn")
+    package_path    = base::system.file("", package="Uniquorn")
     
     if (distinct_mode)
-        database_path     =  paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
+        database_path     =  base::paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
 
     if (!distinct_mode)
-        database_path     =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite", sep ="/" )
+        database_path     =  base::paste( package_path, "uniquorn_non_distinct_panels_db.sqlite", sep ="/" )
     
-    if( ! file.exists( database_path ) ){
+    if( ! base::file.exists( database_path ) ){
         
-        database_path = paste( package_path, "uniquorn_db_default.sqlite", sep ="/" )
+        database_path = base::paste( package_path, "uniquorn_db_default.sqlite", sep ="/" )
         warning("CCLE & CoSMIC CLP cancer cell line fingerprint NOT found, defaulting to 60 CellMiner cancer cell lines! 
                 It is strongly advised to add ~1900 CCLE & CoSMIC CLs, see readme.")
     }
@@ -48,25 +59,25 @@ add_custom_vcf_to_database = function(
     if ( dim(sim_list)[1] == 0 )
         warning( paste( "Warning: Identification might be spurious due to low amount of training sample. No cancer cell line data stored at this point for reference genome:", ref_gen, sep =" " ) )
     
-    sim_list = sim_list[, which( colnames(sim_list) != "Ref_Gen"  ) ]
-    sim_list = sim_list[, which( colnames(sim_list) != "Weight"  ) ]
+    sim_list = sim_list[, base::which( colnames(sim_list) != "Ref_Gen"  ) ]
+    sim_list = sim_list[, base::which( colnames(sim_list) != "Weight"  ) ]
     
     # reading vcf
     
     if ( name_cl == "" ){
         
-        vcf_identifier = as.character( tail( unlist( str_split( vcf_file_path, "/" ) ), 1) )
-        name_cl = head( unlist( str_split( vcf_identifier, ".vcf|.VCF" ) )  , 1)
-        name_cl = str_to_upper( paste(name_cl, "CUSTOM", sep ="_"  ) )
-        print( paste0( "No cl name provided, adding auto-generated fingerprint: ", name_cl ) )
+        vcf_identifier = as.character( utils::tail( unlist( str_split( vcf_file_path, "/" ) ), 1) )
+        name_cl = utils::head( unlist( stringr::str_split( vcf_identifier, ".vcf|.VCF" ) )  , 1)
+        name_cl = stringr::str_to_upper( base::paste( name_cl, "CUSTOM", sep ="_"  ) )
+        print( base::paste0( "No cl name provided, adding auto-generated fingerprint: ", name_cl ) )
         
     } else {
         
-        name_cl = str_to_upper( paste(name_cl, "custom", sep ="_"  ) )
-        print( paste0( "Adding fingerprint with user-defined name: ", name_cl ) )
+        name_cl = stringr::str_to_upper( base::paste(name_cl, "custom", sep ="_"  ) )
+        base::print( base::paste0( "Adding fingerprint with user-defined name: ", name_cl ) )
     }
     
-    name_present = grepl( name_cl, sim_list$CL )
+    name_present = base::grepl( name_cl, sim_list$CL )
     
     if( sum( name_present ) > 0 ){ 
         stop( paste0( c("Fingerprint with name ",name_cl, " already present in database. Please change the name or remove the old cancer cell line."), collapse = "" )  )
@@ -90,7 +101,7 @@ add_custom_vcf_to_database = function(
     
     list_of_cls = unique( sim_list$CL )
     panels = sapply( list_of_cls, FUN = str_split, "_"  )
-    panels = as.character(unique( as.character( sapply( panels, FUN = tail, 1) ) ))
+    panels = as.character(unique( as.character( sapply( panels, FUN = utils::tail, 1) ) ))
     
     if (!distinct_mode){
         panels = paste0( c(panels), collapse ="|"  )
@@ -106,12 +117,12 @@ add_custom_vcf_to_database = function(
         sim_list_panel   = sim_list[ grepl( panel, sim_list$CL) , ]
         member_var_panel = rep( 1, dim(sim_list_panel)[1] )
         
-        sim_list_stats_panel = aggregate( member_var_panel , by = list( sim_list_panel$CL ), FUN = sum )
+        sim_list_stats_panel = stats::aggregate( member_var_panel , by = list( sim_list_panel$CL ), FUN = sum )
         colnames(sim_list_stats_panel) = c( "CL", "Count" )
         
         print("Aggregating over mutational frequency to obtain mutational weight")
         
-        weights_panel = aggregate( member_var_panel , by = list( sim_list_panel$Fingerprint ), FUN = sum )
+        weights_panel = stats::aggregate( member_var_panel , by = list( sim_list_panel$Fingerprint ), FUN = sum )
         weights_panel$x = 1.0 / as.double( weights_panel$x )
         
         mapping_panel = match( as.character( sim_list_panel$Fingerprint ), as.character( weights_panel$Group.1) )

@@ -3,11 +3,15 @@
 #' @param name_cl name of the cancer cell line training fingerprintt
 #' @param ref_gen Reference genome version. All training sets are associated with a reference genome version. Default: GRCH37
 #' @param distinct_mode Delete the CL sample from the database that is normalized together or separately. Choices: TRUE and FALSE
-#' @usage remove_custom_vcf_from_database( 
-#' name_cl = "my_custom_cancer_cell_line_name_CUSTOM", 
+#' @import DBI
+#' @usage 
+#' remove_custom_vcf_from_database( 
+#' 
+#' name_cl, 
+#' 
 #' ref_gen = "GRCH37", 
+#' 
 #' distinct_mode = TRUE )
-#' @import DBI stringr
 #' @return Message that indicates if the removal was succesful
 #' @export
 remove_custom_vcf_from_database = function( 
@@ -63,8 +67,8 @@ remove_custom_vcf_from_database = function(
     print("Found & removed the sample. Re-calculating the Cancer cell line data")
     
     list_of_cls = unique( as.character( sim_list$CL ) )
-    panels = sapply( list_of_cls, FUN = str_split, "_"  )
-    panels = as.character(unique( as.character( sapply( panels, FUN = tail, 1) ) ))
+    panels = sapply( list_of_cls, FUN = stringr::str_split, "_"  )
+    panels = as.character(unique( as.character( sapply( panels, FUN = utils::tail, 1) ) ))
     
     if (!distinct_mode){
         panels = paste0( c(panels), collapse ="|"  )

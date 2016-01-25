@@ -4,7 +4,15 @@
 \alias{initiate_canonical_databases}
 \title{initiate_canonical_databases}
 \usage{
-\alias(initiate_canonical_databases)( cosmic_file = "CosmicCLP_MutantExport.tsv", ccle_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf", ref_gen = "GRCH37", distinct_mode = TRUE)
+initiate_canonical_databases( 
+
+cosmic_file = "CosmicCLP_MutantExport.tsv", 
+
+ccle_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.maf", 
+
+ref_gen = "GRCH37",
+
+distinct_mode = TRUE)
 }
 \arguments{
 \item{cosmic_file}{The path to the cosmic DNA genotype data file. Ensure that the right reference genome is used}

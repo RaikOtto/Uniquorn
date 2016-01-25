@@ -8,9 +8,28 @@
 #' @param output_file Path to output file
 #' @param ref_gen Reference genome version
 #' @param manual_identifier Manually enter a vector of CL name(s) whose bed files should be created, independently from them passing the detection threshold
-#' @import stringr 
+#' @usage 
+#' create_bed_file(
+#' 
+#' sim_list,
+#' 
+#' vcf_fingerprint,
+#' 
+#' res_table,
+#' 
+#' output_file,
+#' 
+#' ref_gen,
+#' 
+#' manual_identifier
+#' 
+#' )
 create_bed_file = function( sim_list, vcf_fingerprint, res_table, output_file, ref_gen, manual_identifier ){
  
+    # prep
+
+    # start
+    
     print("Creating bed files")
     
     found_res_tab = res_table[ as.logical( res_table$Passed_threshold ), ]
@@ -53,7 +72,7 @@ create_bed_file = function( sim_list, vcf_fingerprint, res_table, output_file, r
             } )
             training_coords_res = c( training_bed_file, training_coords_res )
             
-            write.table( x = training_coords_res, file =  name_training_bed_file, sep ="", row.names = FALSE, col.names = FALSE, quote = FALSE )
+            utils::write.table( x = training_coords_res, file =  name_training_bed_file, sep ="", row.names = FALSE, col.names = FALSE, quote = FALSE )
     
             # query
             
@@ -80,7 +99,7 @@ create_bed_file = function( sim_list, vcf_fingerprint, res_table, output_file, r
             } )
             query_res = c( query_bed_file, query_coords_res )
             
-            write.table( x = query_res, file =  name_query_bed_file, sep ="", row.names = FALSE, col.names = FALSE, quote = FALSE )        
+            utils::write.table( x = query_res, file =  name_query_bed_file, sep ="", row.names = FALSE, col.names = FALSE, quote = FALSE )        
                     
             # missed
             
@@ -104,7 +123,7 @@ create_bed_file = function( sim_list, vcf_fingerprint, res_table, output_file, r
             } )
             missed_coords_res = c( missed_bed_file, missed_coords )
             
-            write.table( x = missed_coords_res, file =  name_missed_bed_file, sep ="", row.names = FALSE, col.names = FALSE, quote = FALSE )
+            utils::write.table( x = missed_coords_res, file =  name_missed_bed_file, sep ="", row.names = FALSE, col.names = FALSE, quote = FALSE )
         }
     }
 }

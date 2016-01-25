@@ -4,7 +4,17 @@
 \alias{add_custom_vcf_to_database}
 \title{Adds a custom vcf file to the three existing cancer cell line panels}
 \usage{
-add_custom_vcf_to_database( vcf_file_path = "./vcf_file.vcf.gz", ref_gen = "GRCH37", name_cl = "MyCL", safe_mode = FALSE, distinct_mode = TRUE)
+add_custom_vcf_to_database( 
+
+vcf_file_path, 
+
+ref_gen = "GRCH37", 
+
+name_cl = "", 
+
+safe_mode = FALSE, 
+
+distinct_mode = TRUE)
 }
 \arguments{
 \item{vcf_file_path}{Input vcf file. Only one sample column allowed.}

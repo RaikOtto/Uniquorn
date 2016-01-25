@@ -4,8 +4,21 @@
 \alias{create_bed_file}
 \title{create_bed_file}
 \usage{
-create_bed_file(sim_list, vcf_fingerprint, res_table, output_file, ref_gen,
-  manual_identifier)
+create_bed_file(
+
+sim_list,
+
+vcf_fingerprint,
+
+res_table,
+
+output_file,
+
+ref_gen,
+
+manual_identifier
+
+)
 }
 \arguments{
 \item{sim_list}{R table which contains the mutations from the training database for the cancer cell lines}

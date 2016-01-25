@@ -2,9 +2,20 @@
 % Please edit documentation in R/Identify_VCF_file.R
 \name{identify_vcf_file}
 \alias{identify_vcf_file}
-\title{Parses the vcf file and predicts the identity of the sample}
+\title{identify_vcf_file}
 \usage{
-\alias{identify_vcf_file}( vcf_file = "./my_cl_vcf.vcf.gz", ref_gen = "GRCH37", mutational_weight_inclusion_threshold = 0.5, similarity_threshold = 10.0, manual_identifier_bed_file = c( "CL_a_CCLE", "CL_b_CUSTOM" ), write_xls = TRUE, batch_mode = FALSE, only_first_candidate = FALSE, output_file = "", distinct_mode = TRUE )
+identify_vcf_file( 
+vcf_file,
+output_file = "",
+ref_gen = "GRCH37",
+similarity_threshold = 5.0,
+mutational_weight_inclusion_threshold = 1.0,
+only_first_candidate = FALSE,
+distinct_mode = TRUE,
+batch_mode = FALSE,
+write_xls = FALSE,
+output_bed_file = FALSE,
+manual_identifier_bed_file = "")
 }
 \arguments{
 \item{vcf_file}{Input vcf file. Only one sample column allowed.}
@@ -25,15 +36,19 @@
 
 \item{write_xls}{Create identification results additionally as xls file for easier reading}
 
+\item{output_bed_file}{If BED files for IGV visualization should be created for the Cancer Cell lines that pass the threshold}
+
 \item{manual_identifier_bed_file}{Manually enter a vector of CL name(s) whose bed files should be created, independently from them passing the detection threshold}
 }
 \value{
 R table with a statistic of the identification result
 }
 \description{
-Parses the vcf file and predicts the identity of the sample
+\code{identify_vcf_file} parses the vcf file and predicts the identity of the sample
 }
 \examples{
-HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn"); identify_vcf_file( HT29_vcf_file )
+HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn");
+
+identify_vcf_file( HT29_vcf_file )
 }
 

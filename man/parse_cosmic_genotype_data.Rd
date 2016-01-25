@@ -2,7 +2,7 @@
 % Please edit documentation in R/Parser_scripts.R
 \name{parse_cosmic_genotype_data}
 \alias{parse_cosmic_genotype_data}
-\title{Parses cosmic genotype data}
+\title{parse_cosmic_genotype_data}
 \usage{
 parse_cosmic_genotype_data(cosmic_file, sim_list)
 }

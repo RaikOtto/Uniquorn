@@ -2,7 +2,7 @@
 % Please edit documentation in R/Parser_scripts.R
 \name{parse_ccle_genotype_data}
 \alias{parse_ccle_genotype_data}
-\title{Parses ccle genotype data}
+\title{parse_ccle_genotype_data}
 \usage{
 parse_ccle_genotype_data(ccle_file, sim_list)
 }
