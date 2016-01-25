@@ -7,7 +7,7 @@
 #' @param ref_gen Reference genome version
 #' @param distinct_mode Should the mutational weights be calculated for all panels together or each for itelf? Recommendation: Seperately
 #' @import DBI stringr R.utils RSQLite
-#' @usage initiate_canonical_databases( cosmic_file = "CosmicCLP_MutantExport.tsv", ccle_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf")
+#' @usage \alias(initiate_canonical_databases)( cosmic_file = "CosmicCLP_MutantExport.tsv", ccle_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf", ref_gen = "GRCH37", distinct_mode = TRUE)
 #' @export
 initiate_canonical_databases = function(
     cosmic_file = "CosmicCLP_MutantExport.tsv",

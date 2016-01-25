@@ -4,11 +4,7 @@
 \alias{identify_vcf_file}
 \title{Parses the vcf file and predicts the identity of the sample}
 \usage{
-identify_vcf_file( 
-vcf_file = "./my_cl_vcf.vcf.gz", ref_gen = "GRCH37", 
-mutational_weight_inclusion_threshold = 0.5, 
-similarity_threshold = 10.0, 
-manual_identifier_bed_file = c( "CL_a_CCLE", "CL_b_CUSTOM" ) )
+\alias{identify_vcf_file}( vcf_file = "./my_cl_vcf.vcf.gz", ref_gen = "GRCH37", mutational_weight_inclusion_threshold = 0.5, similarity_threshold = 10.0, manual_identifier_bed_file = c( "CL_a_CCLE", "CL_b_CUSTOM" ), write_xls = TRUE, batch_mode = FALSE, only_first_candidate = FALSE, output_file = "", distinct_mode = TRUE )
 }
 \arguments{
 \item{vcf_file}{Input vcf file. Only one sample column allowed.}
@@ -29,8 +25,6 @@ manual_identifier_bed_file = c( "CL_a_CCLE", "CL_b_CUSTOM" ) )
 
 \item{write_xls}{Create identification results additionally as xls file for easier reading}
 
-\item{output_bed_file}{Should a bed file be created which visualizes the found and not found mutations for the cancer cell lines which were predicted to be present in the sample.}
-
 \item{manual_identifier_bed_file}{Manually enter a vector of CL name(s) whose bed files should be created, independently from them passing the detection threshold}
 }
 \value{
@@ -40,7 +34,6 @@ R table with a statistic of the identification result
 Parses the vcf file and predicts the identity of the sample
 }
 \examples{
-HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn"); 
-identify_vcf_file( HT29_vcf_file )
+HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn"); identify_vcf_file( HT29_vcf_file )
 }
 
