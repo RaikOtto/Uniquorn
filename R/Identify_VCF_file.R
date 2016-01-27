@@ -68,6 +68,10 @@ identify_vcf_file = function(
 
     sim_list       = inititate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list" )
     sim_list_stats = inititate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list_stats" )
+    
+    if ( ( sum( grepl( "_COSMIC", sim_list_stats$CL ) ) + sum( grepl( "_CCLE", sim_list_stats$CL ) ) ) == 0 )
+        warning("CCLE & CoSMIC CLP cancer cell line fingerprint NOT found, defaulting to 60 CellMiner cancer cell lines! 
+                It is strongly advised to add ~1900 CCLE & CoSMIC CLs, see readme.")
 
     sim_list = sim_list[ sim_list$Ref_Gen == ref_gen  ,]
     sim_list_stats = sim_list_stats[ sim_list_stats$Ref_Gen == ref_gen  ,]

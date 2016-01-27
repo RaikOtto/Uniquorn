@@ -16,21 +16,19 @@
 inititate_db_and_load_data = function( ref_gen, distinct_mode, request_table, load_default_db = FALSE ){
     
     package_path    = system.file("", package="Uniquorn")
+    default_database_path =  paste( package_path, "uniquorn_db_default.sqlite", sep ="/" )
+    
     database_path =  paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
 
     if (!distinct_mode)
         database_path =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite", sep ="/" )
     
-    if( (! file.exists( database_path) ) | ( load_default_db ) ){
-
-        database_path =  paste( package_path, "uniquorn_db_default.sqlite", sep ="/" )
-        warning("CCLE & CoSMIC CLP cancer cell line fingerprint NOT found, defaulting to 60 CellMiner cancer cell lines! 
-                    It is strongly advised to add ~1900 CCLE & CoSMIC CLs, see readme.")
-    }
-    
     drv = RSQLite::SQLite()
-    con = DBI::dbConnect(drv, dbname = database_path)
+    con = DBI::dbConnect(drv, dbname = default_database_path)
     
+    if( file.exists( database_path) & (! load_default_db ) )
+        con = DBI::dbConnect(drv, dbname = database_path)
+
     res = as.data.frame( DBI::dbReadTable( con, request_table) )
 
     DBI::dbDisconnect(con)
@@ -61,17 +59,10 @@ write_data_to_db = function( content_table, table_name, ref_gen = "GRCH37", dist
     
     package_path    = system.file("", package="Uniquorn")
     
-    if (distinct_mode)
-        database_path =  paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
+    database_path =  paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
 
     if (!distinct_mode)
         database_path =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite", sep ="/" )
-    
-    if( ! file.exists( database_path ) ){
-        warning("Writing to default database! This is not recommended. Please consider adding the CCLE and CoSMIC training sets for optimal Uniquorn function.")
-        database_default_path =  paste( package_path, "uniquorn_db_default.sqlite", sep ="/" )
-        database_path = database_default_path
-    }
     
     drv = RSQLite::SQLite()
     con = DBI::dbConnect(drv, dbname = database_path)
