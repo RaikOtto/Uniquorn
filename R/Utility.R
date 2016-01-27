@@ -55,7 +55,14 @@ inititate_db_and_load_data = function( ref_gen, distinct_mode, request_table, lo
 #' overwrite,
 #' test_mode )
 #' @import DBI RSQLite
-write_data_to_db = function( content_table, table_name, ref_gen = "GRCH37", distinct_mode = TRUE, overwrite = TRUE, test_mode = FALSE ){
+write_data_to_db = function( 
+    content_table, 
+    table_name, 
+    ref_gen = "GRCH37", 
+    distinct_mode = TRUE, 
+    overwrite = TRUE, 
+    test_mode = FALSE 
+    ){
     
     package_path    = system.file("", package="Uniquorn")
     
@@ -80,7 +87,8 @@ write_data_to_db = function( content_table, table_name, ref_gen = "GRCH37", dist
 #' 
 #' This function re-calculates the weights of mutation after a change of the training set
 #' @inheritParams write_data_to_db
-#' @param sim_list R Table which contains a mapping from mutations/ variations to their containing CLs
+#' @param sim_list R Table which contains a mapping 
+#' from mutations/ variations to their containing CLs
 re_calculate_cl_weights = function( sim_list, ref_gen, distinct_mode ){
     
     package_path    = system.file("", package="Uniquorn")
@@ -91,10 +99,15 @@ re_calculate_cl_weights = function( sim_list, ref_gen, distinct_mode ){
     
     if (!distinct_mode){
         panels = paste0( c(panels), collapse ="|"  )
-        database_path =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite3", sep ="/" )
+        database_path =  paste( package_path, 
+            "uniquorn_non_distinct_panels_db.sqlite3", sep ="/" )
     }
     
-    print( paste( "Distinguishing between panels:",paste0( c(panels), collapse = ", "), sep = " ") )
+    print( paste( "Distinguishing between panels:",
+        paste0( c(panels), collapse = ", "), sep = " ") )
+    
+    if(! exists("sim_list_global"))
+        sim_list_global = sim_list[0,]
     
     for (panel in panels) {
         
@@ -103,15 +116,21 @@ re_calculate_cl_weights = function( sim_list, ref_gen, distinct_mode ){
         sim_list_panel   = sim_list[ grepl( panel, sim_list$CL) , ]
         member_var_panel = rep( 1, dim(sim_list_panel)[1] )
         
-        sim_list_stats_panel = stats::aggregate( member_var_panel , by = list( sim_list_panel$CL ), FUN = sum )
+        sim_list_stats_panel = stats::aggregate( member_var_panel , 
+            by = list( sim_list_panel$CL ), FUN = sum )
+        
         colnames(sim_list_stats_panel) = c( "CL", "Count" )
         
         print("Aggregating over mutational frequency to obtain mutational weight")
         
-        weights_panel = stats::aggregate( member_var_panel , by = list( sim_list_panel$Fingerprint ), FUN = sum )
+        weights_panel = stats::aggregate( member_var_panel , 
+            by = list( sim_list_panel$Fingerprint ), FUN = sum )
+        
         weights_panel$x = 1.0 / as.double( weights_panel$x )
         
-        mapping_panel = match( as.character( sim_list_panel$Fingerprint ), as.character( weights_panel$Group.1) )
+        mapping_panel = match( as.character( sim_list_panel$Fingerprint ), 
+            as.character( weights_panel$Group.1) )
+        
         sim_list_panel = cbind( sim_list_panel, weights_panel$x[mapping_panel] )
         colnames( sim_list_panel )[3] = "Weight"
         
@@ -123,8 +142,10 @@ re_calculate_cl_weights = function( sim_list, ref_gen, distinct_mode ){
             FUN = sum
         )
         
-        mapping_agg_stats_panel = which( aggregation_all_panel$Group.1 %in% sim_list_stats_panel[,1], arr.ind = TRUE  )
-        sim_list_stats_panel = cbind( sim_list_stats_panel, aggregation_all_panel$x[mapping_agg_stats_panel] )
+        mapping_agg_stats_panel = which( aggregation_all_panel$Group.1 %in% 
+            sim_list_stats_panel[,1], arr.ind = TRUE  )
+        sim_list_stats_panel = cbind( sim_list_stats_panel, 
+            aggregation_all_panel$x[mapping_agg_stats_panel] )
         
         #print("Finished aggregating, writing to database")
         
@@ -134,13 +155,10 @@ re_calculate_cl_weights = function( sim_list, ref_gen, distinct_mode ){
         sim_list_stats_panel = cbind( sim_list_stats_panel, Ref_Gen )
         colnames( sim_list_stats_panel ) = c( "CL","Count","All_weights","Ref_Gen" )
         
-        if(! exists("sim_list_global"))
-            sim_list_global <<- sim_list[0,]
-        
         sim_list_global = rbind(sim_list_global,sim_list_panel)
         
         if(! exists("sim_list_stats_global"))
-            sim_list_stats_global <<- sim_list_stats_panel[0,]
+            sim_list_stats_global = sim_list_stats_panel[0,]
         
         sim_list_stats_global = rbind( sim_list_stats_global, sim_list_stats_panel  )
         

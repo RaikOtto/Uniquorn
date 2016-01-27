@@ -1,10 +1,16 @@
 #' Adds a custom vcf file to the three existing cancer cell line panels
 #' @param vcf_file_path Input vcf file. Only one sample column allowed.
-#' @param ref_gen Reference genome version. All training sets are associated with a reference genome version. Default: GRCH37
-#' @param name_cl Name of the to-be-added cancer cell line sample. '_CUSTOM' will automatically be added as suffix.
-#' @param safe_mode Only add mutations to the database where there already are mutations found in the cannonical cancer cell lines. This is a safety mechanism against overfitting if there are too few custom training samples.
-#' @param distinct_mode Show training data for the commonly or separately normalized training sets. Options: TRUE/ FALSE
+#' @param ref_gen Reference genome version. All training sets are associated 
+#' with a reference genome version. Default: GRCH37
+#' @param name_cl Name of the to-be-added cancer cell line sample. '_CUSTOM' 
+#' will automatically be added as suffix.
+#' @param safe_mode Only add mutations to the database where there already are 
+#' mutations found in the cannonical cancer cell lines. This is a safety 
+#' mechanism against overfitting if there are too few custom training samples.
+#' @param distinct_mode Show training data for the commonly or separately 
+#' normalized training sets. Options: TRUE/ FALSE
 #' @param test_mode Is this a test? Just for internal use
+#' @return Message if the adding has succeeded
 #' @import DBI
 #' @usage 
 #' add_custom_vcf_to_database( 
@@ -39,11 +45,15 @@ add_custom_vcf_to_database = function(
     
     base::print( base::paste0( "Reference genome: ",ref_gen ) )
     
-    sim_list_stats = inititate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list_stats")
+    sim_list_stats = inititate_db_and_load_data( ref_gen = ref_gen, 
+        distinct_mode = distinct_mode, request_table = "sim_list_stats")
+    
     sim_list_stats = sim_list_stats[ sim_list_stats$Ref_Gen == ref_gen,]
     
     if ( dim(sim_list_stats)[1] == 0 )
-        warning( paste( "Warning: Identification might be spurious due to low amount of training sample. No cancer cell line data stored at this point for reference genome:", ref_gen, sep =" " ) )
+        warning( paste( "Warning: Identification might be spurious due to 
+        low amount of training sample. No cancer cell line data stored 
+        at this point for reference genome:", ref_gen, sep =" " ) )
     
     # reading vcf
     
@@ -63,10 +73,14 @@ add_custom_vcf_to_database = function(
     name_present = base::grepl( name_cl, sim_list_stats$CL )
     
     if( sum( name_present ) > 0 ){ 
-        stop( paste0( c("Fingerprint with name ",name_cl, " already present in database. Please change the name or remove the old cancer cell line."), collapse = "" )  )
+        stop( paste0( c("Fingerprint with name ",name_cl, 
+            " already present in database. Please change the 
+            name or remove the old cancer cell line."), 
+            collapse = "" )  )
     }
     
-    sim_list = inititate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list" )
+    sim_list = inititate_db_and_load_data( ref_gen = ref_gen, 
+        distinct_mode = distinct_mode, request_table = "sim_list" )
     sim_list = sim_list[ sim_list$Ref_Gen == ref_gen,]
     sim_list = sim_list[, base::which( colnames(sim_list) != "Ref_Gen"  ) ]
     sim_list = sim_list[, base::which( colnames(sim_list) != "Weight"  ) ]
@@ -76,7 +90,8 @@ add_custom_vcf_to_database = function(
     vcf_fingerprint = as.character( parse_vcf_file( vcf_file_path ) )
     
     if( safe_mode )
-        vcf_fingerprint = vcf_fingerprint[ which( vcf_fingerprint %in% sim_list$Fingerprint ) ]
+        vcf_fingerprint = vcf_fingerprint[ which( 
+        vcf_fingerprint %in% sim_list$Fingerprint ) ]
     
     vcf_fingerprint = data.frame( 
         "Fingerprint" = vcf_fingerprint,
@@ -87,12 +102,18 @@ add_custom_vcf_to_database = function(
     
     print("Finished parsing, aggregating over parsed Cancer Cell Line data")
     
-    res_vec = re_calculate_cl_weights( sim_list = sim_list, ref_gen = ref_gen, distinct_mode = TRUE )
+    res_vec = re_calculate_cl_weights( sim_list = sim_list, 
+        ref_gen = ref_gen, distinct_mode = TRUE )
     
     print("Finished aggregating, saving to database")
     
-    write_data_to_db( content_table = res_vec[1], "sim_list",       ref_gen = "GRCH37", distinct_mode = distinct_mode, overwrite = TRUE, test_mode = test_mode )
-    write_data_to_db( content_table = res_vec[2], "sim_list_stats", ref_gen = "GRCH37", distinct_mode = distinct_mode, overwrite = TRUE, test_mode = test_mode )
+    write_data_to_db( content_table = res_vec[1], "sim_list",       
+        ref_gen = "GRCH37",  distinct_mode = distinct_mode, 
+        overwrite = TRUE, test_mode = test_mode )
+    
+    write_data_to_db( content_table = res_vec[2], "sim_list_stats", 
+        ref_gen = "GRCH37", distinct_mode = distinct_mode, 
+        overwrite = TRUE, test_mode = test_mode )
     
     print("Finished adding CL")
 }

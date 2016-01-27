@@ -45,6 +45,8 @@ show_contained_cls = function( ref_gen = "GRCH37", distinct_mode = TRUE ){
 #' show_contained_mutations( 
 #' ref_gen, 
 #' distinct_mode )
+#' @examples 
+#' contained_cls = show_contained_mutations( ref_gen = "GRCH37", distinct_mode = TRUE )
 #' @return R Table which contains all mutations associated with a particular cancer cell line for a specified reference genome
 #' @export
 show_contained_mutations = function( ref_gen = "GRCH37", distinct_mode = TRUE ){
