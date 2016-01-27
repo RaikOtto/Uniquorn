@@ -89,6 +89,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="install-uniquorn" class="section level2">
 <h2>Install Uniquorn</h2>
+<p>If Uniquorn is available on bioconductor, you can simply type biocLite(“Uniquorn”) and continue to the next paragraph.</p>
 <p><code>install_github(&quot;RaikOtto/Uniquorn&quot;)</code></p>
 <p>Note that some systems require the prior command <code>options(unzip = 'internal')</code> to install from github.</p>
 <p>Note as well, that dependency packages can be install with e.g. install.packages(“stringr”)</p>
@@ -96,43 +97,40 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="test-run" class="section level2">
 <h2>Test run</h2>
 <p>Here the NCI-60 exome sequenced HT29 Cancer Cell line, reference genome GRCh37/ HG19</p>
-<p><code>library(&quot;Uniquorn&quot;)</code></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">HT29_vcf_file =<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/HT29.vcf.gz&quot;</span>, <span class="dt">package=</span><span class="st">&quot;Uniquorn&quot;</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;Uniquorn&quot;</span>)
+HT29_vcf_file =<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/HT29.vcf.gz&quot;</span>, <span class="dt">package=</span><span class="st">&quot;Uniquorn&quot;</span>)
 ident_result =<span class="st"> </span><span class="kw">identify_vcf_file</span>( HT29_vcf_file, <span class="dt">ref_gen =</span> <span class="st">&quot;GRCH37&quot;</span>  )</code></pre></div>
 <pre><code>## [1] &quot;Assuming reference genome GRCH37&quot;
-## [1] &quot;Reading VCF file: /Users/raikotto/Dropbox/PhD/Uniquorn_project/Uniquorn/inst/extdata/HT29.vcf.gz&quot;
-## [1] &quot;Finished reading the VCF file, loading database&quot;</code></pre>
-<pre><code>## Warning in identify_vcf_file(HT29_vcf_file, ref_gen = &quot;GRCH37&quot;): CCLE &amp; CoSMIC CLP cancer cell line fingerprint NOT 
-##             found, defaulting to 60 CellMiner cancer cell lines! 
-##             It is strongly advised to add ~1900 CCLE &amp; CoSMIC CLs, see readme.</code></pre>
-<pre><code>## [1] &quot;Found 60 many CLs for reference genome GRCH37&quot;
+## [1] &quot;Reading VCF file: /Library/Frameworks/R.framework/Versions/3.3/Resources/library/Uniquorn/extdata/HT29.vcf.gz&quot;
+## [1] &quot;Finished reading the VCF file, loading database&quot;
+## [1] &quot;Found 1989 many CLs for reference genome GRCH37&quot;
 ## [1] &quot;Finished reading database, identifying CL&quot;
 ## [1] &quot;Adjusted mutational inclusion weight, \n            only using mutations that are have a weight higher than 1&quot;
-## [1] &quot;Found 53314 many mutations with mutational weight of at least 1&quot;
+## [1] &quot;Found 223239 many mutations with mutational weight of at least 1&quot;
 ## [1] &quot;Candidate(s): HT29&quot;
-## [1] &quot;Storing information in table: /Users/raikotto/Dropbox/PhD/Uniquorn_project/Uniquorn/inst/extdata/HT29.vcf.gz_uniquorn_ident.tab&quot;</code></pre>
+## [1] &quot;Storing information in table: /Library/Frameworks/R.framework/Versions/3.3/Resources/library/Uniquorn/extdata/HT29.vcf.gz_uniquorn_ident.tab&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>( ident_result )</code></pre></div>
-<pre><code>##          CL CL_source Found_muts_abs Count_mutations_abs Found_muts_rel
-## 19     HT29 CELLMINER            584                 619           94.3
-## 56 NCI_H226 CELLMINER              2                 192              1
-## 46     U251 CELLMINER              1                 120            0.8
-## 13  OVCAR_4 CELLMINER              2                 284            0.7
-## 57     PC_3 CELLMINER              1                 206            0.5
-## 51  OVCAR_3 CELLMINER              1                 273            0.4
-##    Found_muts_weighted Count_mutations_weighted Found_muts_weighted_rel
-## 19                 584                      619                    94.3
-## 56                   2                      192                       1
-## 46                   1                      120                     0.8
-## 13                   2                      284                     0.7
-## 57                   1                      206                     0.5
-## 51                   1                      273                     0.4
-##    Passed_threshold
-## 19             TRUE
-## 56            FALSE
-## 46            FALSE
-## 13            FALSE
-## 57            FALSE
-## 51            FALSE</code></pre>
+<pre><code>##            CL CL_source Found_muts_abs Count_mutations_abs Found_muts_rel
+## 19       HT29 CELLMINER            584                 619           94.3
+## 1687     HT29      CCLE             39                  58           67.2
+## 1976   SNU308      CCLE              1                  21            4.8
+## 1924   COV318      CCLE              1                  31            3.2
+## 56   NCI_H226 CELLMINER              2                 192              1
+## 46       U251 CELLMINER              1                 120            0.8
+##      Found_muts_weighted Count_mutations_weighted Found_muts_weighted_rel
+## 19                   584                      619                    94.3
+## 1687                  39                       58                    67.2
+## 1976                   1                       21                     4.8
+## 1924                   1                       31                     3.2
+## 56                     2                      192                       1
+## 46                     1                      120                     0.8
+##      Passed_threshold
+## 19               TRUE
+## 1687             TRUE
+## 1976            FALSE
+## 1924            FALSE
+## 56              FALSE
+## 46              FALSE</code></pre>
 <p>This will show a table with potential identification candidate, how many mutations overall and weighted of the training set have been found and if any training samples have surpased the identification threshold.</p>
 <div id="explanation-test-data" class="section level3">
 <h3>Explanation test data</h3>

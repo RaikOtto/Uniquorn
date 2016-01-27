@@ -26,6 +26,8 @@ optional if you have the packages installed and loaded
 
 ## Install Uniquorn
 
+If Uniquorn is available on bioconductor, you can simply type biocLite("Uniquorn") and continue to the next paragraph.
+
 `install_github("RaikOtto/Uniquorn")`
 
 Note that some systems require the prior command `options(unzip = 'internal')` to install from github.
@@ -36,9 +38,8 @@ Note as well, that dependency packages can be install with e.g. install.packages
 
 Here the NCI-60 exome sequenced HT29 Cancer Cell line, reference genome GRCh37/ HG19
 
-`library("Uniquorn")`
-
 ```{r}
+library("Uniquorn")
 HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn")
 ident_result = identify_vcf_file( HT29_vcf_file, ref_gen = "GRCH37"  )
 head( ident_result )
