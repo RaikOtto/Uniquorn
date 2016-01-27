@@ -26,8 +26,6 @@ initiate_db_and_load_data = function( ref_gen, distinct_mode, request_table, loa
     if (!distinct_mode)
         database_path =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite", sep ="/" )
     
-    print(package_path)
-    
     drv = RSQLite::SQLite()
     con = DBI::dbConnect(drv, dbname = default_database_path)
     

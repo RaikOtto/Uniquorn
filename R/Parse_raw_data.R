@@ -56,17 +56,19 @@ initiate_canonical_databases = function(
       sim_list = parse_ccle_genotype_data( ccle_file, sim_list )
     }
     
-    if ( (! file.exists(cosmic_file) ) & (! file.exists(ccle_file)) )
-      stop("Did neither find CCLE & CoSMIC CLP file! Aborting.")
+    if ( (! file.exists(cosmic_file) ) & (! file.exists(ccle_file)) ){ 
+      warning("Did neither find CCLE & CoSMIC CLP file! Aborting.")
+    } else {
     
-    print("Finished parsing, aggregating over parsed Cancer Cell Line data")
-
-    res_vec = re_calculate_cl_weights( sim_list = sim_list, ref_gen = ref_gen, distinct_mode = TRUE )
-  
-    print("Finished aggregating, saving to database")
+        print("Finished parsing, aggregating over parsed Cancer Cell Line data")
     
-    write_data_to_db( content_table = as.data.frame( res_vec[1] ), "sim_list",       ref_gen = "GRCH37", distinct_mode = distinct_mode, overwrite = TRUE )
-    write_data_to_db( content_table = as.data.frame( res_vec[2] ), "sim_list_stats", ref_gen = "GRCH37", distinct_mode = distinct_mode, overwrite = TRUE )
-    
-    print ("Initialization of Uniquorn DB finished")
+        res_vec = re_calculate_cl_weights( sim_list = sim_list, ref_gen = ref_gen, distinct_mode = TRUE )
+      
+        print("Finished aggregating, saving to database")
+        
+        write_data_to_db( content_table = as.data.frame( res_vec[1] ), "sim_list",       ref_gen = "GRCH37", distinct_mode = distinct_mode, overwrite = TRUE )
+        write_data_to_db( content_table = as.data.frame( res_vec[2] ), "sim_list_stats", ref_gen = "GRCH37", distinct_mode = distinct_mode, overwrite = TRUE )
+        
+        print ("Initialization of Uniquorn DB finished")
+    }
 }
