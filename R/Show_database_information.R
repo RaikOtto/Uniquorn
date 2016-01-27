@@ -1,5 +1,6 @@
-#' Show all cancer cell line identifier present in the database for a selected reference genome.
+#' show_contained_cls
 #' 
+#' Show all cancer cell line identifier present in the database for a selected reference genome:
 #' This function shows the names, amount of mutations/ variations, overall weight of the mutations of all contained training CLs 
 #' for a chosen reference genome.
 #' 
@@ -7,7 +8,9 @@
 #' @param distinct_mode Show training data for the commonly or separately normalized training sets. Options: TRUE/ FALSE
 #' @return R table which contains the identifier of all cancer cell line samples with the specific reference genome and the weight of all mutations
 #' @usage 
-#' contained_cls = show_contained_cls( ref_gen = "GRCH37", distinct_mode = TRUE )
+#' contained_cls = show_contained_cls( 
+#' ref_gen = "GRCH37", 
+#' distinct_mode = TRUE )
 #' @import DBI RSQLite
 #' @export
 show_contained_cls = function( ref_gen = "GRCH37", distinct_mode = TRUE ){
@@ -26,15 +29,18 @@ show_contained_cls = function( ref_gen = "GRCH37", distinct_mode = TRUE ){
     return( sim_list_stats )
 }
 
-#' Show all mutations present in the database for a selected reference Genome
+#' show_contained_mutations
 #' 
+#' Show all mutations present in the database for a selected reference Genome: 
 #' This function shows all training-set mutations for a selected reference genome, i.e. the mutations that are being used
 #' for identification of query cancer cell lines.
 #' 
 #' @param ref_gen Reference genome version
 #' @param distinct_mode Show mutations for either distinct or non-distinct normalization of mutational weights
 #' @usage 
-#' show_contained_mutations( ref_gen = "GRCH37", distinct_mode = TRUE )
+#' show_contained_mutations( 
+#' ref_gen = "GRCH37", 
+#' distinct_mode = TRUE )
 #' @return R Table which contains all mutations associated with a particular cancer cell line for a specified reference genome
 #' @export
 show_contained_mutations = function( ref_gen = "GRCH37", distinct_mode = TRUE ){
@@ -50,7 +56,10 @@ show_contained_mutations = function( ref_gen = "GRCH37", distinct_mode = TRUE ){
     return( sim_list )  
 }
 
+#' show_contained_mutations_for_cl
+#' 
 #' Show all mutations present in the database for a selected cancer cell line and reference Genome
+#' 
 #' @param ref_gen Reference genome version
 #' @param distinct_mode Show mutations for either distinct or non-distinct normalization of mutational weights
 #' @param name_cl Name of the cancer cell line sample stored in the database

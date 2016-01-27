@@ -2,7 +2,7 @@
 % Please edit documentation in R/Show_database_information.R
 \name{show_contained_mutations_for_cl}
 \alias{show_contained_mutations_for_cl}
-\title{Show all mutations present in the database for a selected cancer cell line and reference Genome}
+\title{show_contained_mutations_for_cl}
 \usage{
 SK_OV_3_CELLMINER_mutations = show_contained_mutations_for_cl( 
 name_cl = "SK_OV_3_CELLMINER", 
