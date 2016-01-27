@@ -30,8 +30,4 @@ Suggests:
     testthat,
     rmarkdown
 biocViews: 
-    WorkflowStep,
-    Genome, 
-    Germline, 
-    Somatic, 
-    CancerData
+    WorkflowStep
