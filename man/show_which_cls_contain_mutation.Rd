@@ -4,7 +4,10 @@
 \alias{show_which_cls_contain_mutation}
 \title{show_which_cls_contain_mutation}
 \usage{
-Cls_containing_mutations = show_which_cls_contain_mutation( "10_103354427_103354427", ref_gen = "GRCH37" )
+Cls_containing_mutations = show_which_cls_contain_mutation( 
+mutation_name = "10_103354427_103354427", 
+ref_gen = "GRCH37", 
+distinct_mode = TRUE )
 }
 \arguments{
 \item{mutation_name}{Name of the mutation in the format CHROMOSOME_START_STOP, e.g. '11_244501_244510'}

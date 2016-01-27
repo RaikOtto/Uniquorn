@@ -9,13 +9,9 @@
 #' @import DBI stringr R.utils RSQLite
 #' @usage 
 #' initiate_canonical_databases( 
-#' 
 #' cosmic_file = "CosmicCLP_MutantExport.tsv", 
-#' 
 #' ccle_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.maf", 
-#' 
 #' ref_gen = "GRCH37",
-#' 
 #' distinct_mode = TRUE)
 #' @export
 initiate_canonical_databases = function(
@@ -34,13 +30,11 @@ initiate_canonical_databases = function(
     
     if (!distinct_mode)
         database_path   =  base::paste( package_path, "uniquorn_non_distinct_panels_db.sqlite", sep ="/" )
-    
-    database_default_path =  base::paste( package_path, "uniquorn_db_default.sqlite", sep ="/" )
-    
+
     if ( base::file.exists(database_path) )
         base::file.copy( from = database_path, to = database_default_path, overwrite = TRUE )
     
-    sim_list = inititate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_tables = "sim_list" )
+    sim_list       = inititate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list" )
     
     sim_list = sim_list[, which( colnames(sim_list) != "Ref_Gen"  ) ]
     sim_list = sim_list[, which( colnames(sim_list) != "Weight"  ) ]
@@ -58,14 +52,12 @@ initiate_canonical_databases = function(
         cosmic_file = str_replace( cosmic_file, ".gz$|.GZ$", "" )
       
         sim_list = parse_cosmic_genotype_data( cosmic_file, sim_list )
-        parse_files = c(parse_files, cosmic_file)
     }
   
     if (file.exists(ccle_file)){
       
       print( c( "Found CCLE: ", file.exists( ccle_file ) )  )
       sim_list = parse_ccle_genotype_data( ccle_file, sim_list )
-      parse_files = c(parse_files, ccle_file)
     }
     
     if (length(parse_files) == 0)
@@ -74,11 +66,6 @@ initiate_canonical_databases = function(
     # overwrite existing db
     if (file.exists(database_path))
         file.remove( database_path )
-    
-    print("Started pre-calculations")
-    
-    if ( exists("sim_list_stats"))
-        rm( sim_list_stats )
     
     print("Finished parsing, aggregating over parsed Cancer Cell Line data")
 

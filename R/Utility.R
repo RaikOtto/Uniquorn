@@ -3,10 +3,13 @@
 #' Intern utility function, loads database and return the sim_list and sim_list_stats variables.
 #' 
 #' @inheritParams identify_vcf_file
-#' @param request_tables Names of the tables to be extracted from the database
+#' @param request_table Names of the tables to be extracted from the database
 #' @return the sim_list and sim_list_stats variable
 #' @usage 
-#' inititate_db_and_load_data( ref_gen = "GRCH37", distinct_mode = TRUE )
+#' inititate_db_and_load_data(
+#' ref_gen = "GRCH37", 
+#' distinct_mode = TRUE,
+#' request_table = "sim_list" )
 #' @import DBI RSQLite
 inititate_db_and_load_data = function( ref_gen, distinct_mode, request_table ){
     
@@ -39,6 +42,7 @@ inititate_db_and_load_data = function( ref_gen, distinct_mode, request_table ){
 #' 
 #' Intern utility function, writes to database the sim_list and sim_list_stats variables
 #' 
+#' @inheritParams identify_vcf_file
 #' @param sim_list R Table which contain a mapping of mutations to cancer cell lines for a specific reference genome
 #' @param sim_list_stats Contains an aggergated R table that shows the amount and weight of mutations for a reference genome
 #' @param content_table Tables to be written in db
@@ -47,7 +51,13 @@ inititate_db_and_load_data = function( ref_gen, distinct_mode, request_table ){
 #' @param test_mode Is this a test? Just for internal use 
 #' @return the sim_list and sim_list_stats variable
 #' @usage 
-#' write_data_to_db( sim_list = sim_list, sim_list_stats sim_list_stats, ref_gen = "GRCH37", distinct_mode = TRUE )
+#' write_data_to_db( 
+#' content_table = sim_list, 
+#' table_name = "sim_list_stats",
+#' ref_gen = "GRCH37",
+#' distinct_mode = TRUE,
+#' overwrite = TRUE,
+#' test_mode = FALSE )
 #' @import DBI RSQLite
 write_data_to_db = function( content_table, table_name, ref_gen = "GRCH37", distinct_mode = TRUE, overwrite = TRUE, test_mode = FALSE ){
     
@@ -80,7 +90,7 @@ write_data_to_db = function( content_table, table_name, ref_gen = "GRCH37", dist
 #' Re-calculate sim_list_weights
 #' 
 #' This function re-calculates the weights of mutation after a change of the training set
-#' @inheritParams identify_vcf_file
+#' @inheritParams write_data_to_db
 re_calculate_cl_weights = function( sim_list, ref_gen, distinct_mode ){
     
     package_path    = system.file("", package="Uniquorn")

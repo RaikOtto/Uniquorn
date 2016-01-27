@@ -7,7 +7,7 @@
 #' @param distinct_mode Show training data for the commonly or separately normalized training sets. Options: TRUE/ FALSE
 #' @return R table which contains the identifier of all cancer cell line samples with the specific reference genome and the weight of all mutations
 #' @usage 
-#' contained_cls = show_contained_cls( ref_gen = "GRCH37" )
+#' contained_cls = show_contained_cls( ref_gen = "GRCH37", distinct_mode = TRUE )
 #' @import DBI RSQLite
 #' @export
 show_contained_cls = function( ref_gen = "GRCH37", distinct_mode = TRUE ){
@@ -56,7 +56,10 @@ show_contained_mutations = function( ref_gen = "GRCH37", distinct_mode = TRUE ){
 #' @param name_cl Name of the cancer cell line sample stored in the database
 #' @import DBI
 #' @usage 
-#' SK_OV_3_CELLMINER_mutations = show_contained_mutations_for_cl( name_cl = "SK_OV_3_CELLMINER", ref_gen = "GRCH37" )
+#' SK_OV_3_CELLMINER_mutations = show_contained_mutations_for_cl( 
+#' name_cl = "SK_OV_3_CELLMINER", 
+#' ref_gen = "GRCH37", 
+#' distinct_mode = TRUE )
 #' @return R table which contains all mutations associated with the defined cancer cell line and reference genome
 #' @export
 show_contained_mutations_for_cl = function( name_cl, ref_gen = "GRCH37", distinct_mode = TRUE){
@@ -90,7 +93,10 @@ show_contained_mutations_for_cl = function( name_cl, ref_gen = "GRCH37", distinc
 #' @param ref_gen Reference genome version
 #' @param distinct_mode Show mutations for either distinct or non-distinct normalization of mutational weights
 #' @usage 
-#' Cls_containing_mutations = show_which_cls_contain_mutation( "10_103354427_103354427", ref_gen = "GRCH37" ) 
+#' Cls_containing_mutations = show_which_cls_contain_mutation( 
+#' mutation_name = "10_103354427_103354427", 
+#' ref_gen = "GRCH37", 
+#' distinct_mode = TRUE )
 #' @import DBI stringr
 #' @return R table which contains all cancer cell line samples which contain the specified mutation with respect to the specified reference genome version
 #' @export

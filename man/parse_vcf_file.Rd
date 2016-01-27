@@ -4,7 +4,7 @@
 \alias{parse_vcf_file}
 \title{Loads VCF-based data into the db}
 \usage{
-parse_vcf_file(vcf_file_path)
+parse_vcf_file( vcf_file_path = "path_to_vcf_file" )
 }
 \arguments{
 \item{vcf_file_path}{Path to the vcf file on the operating system}

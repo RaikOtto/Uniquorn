@@ -10,7 +10,6 @@
 #' @param mutational_weight_inclusion_threshold Include only mutations with a weight of at least x. Range: 0.0 to 1.0. 1= unique to CL. ~0 = found in many CL samples. 
 #' @param only_first_candidate Only the CL identifier with highest score is predicted to be present in the sample
 #' @param distinct_mode Show training data for the commonly or separately normalized training sets. Options: TRUE/ FALSE
-#' @param batch_mode When many vcf files are to be analyzed in the same R session/ namespace with identical parameters, setting the parameter TRUE leads to a significant speed-up of the analysis.
 #' @param manual_identifier_bed_file Manually enter a vector of CL name(s) whose bed files should be created, independently from them passing the detection threshold
 #' @param output_bed_file If BED files for IGV visualization should be created for the Cancer Cell lines that pass the threshold
 #' @import DBI WriteXLS RSQLite
@@ -23,14 +22,13 @@
 #' mutational_weight_inclusion_threshold = 1.0,
 #' only_first_candidate = FALSE,
 #' distinct_mode = TRUE,
-#' batch_mode = FALSE,
 #' write_xls = FALSE,
 #' output_bed_file = FALSE,
 #' manual_identifier_bed_file = "")
 #' @examples 
 #' HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn");
 #' 
-#' identify_vcf_file( HT29_vcf_file )
+#' identification = identify_vcf_file( HT29_vcf_file )
 #' @return R table with a statistic of the identification result
 #' @export
 identify_vcf_file = function( 
@@ -41,7 +39,6 @@ identify_vcf_file = function(
     mutational_weight_inclusion_threshold = 1.0,
     only_first_candidate = FALSE,
     distinct_mode = TRUE,
-    batch_mode = FALSE,
     write_xls = FALSE,
     output_bed_file = FALSE,
     manual_identifier_bed_file = ""
@@ -51,7 +48,7 @@ identify_vcf_file = function(
   
     ### pre processing
     
-    vcf_fingerprint = Uniquorn::parse_vcf_file( vcf_file )
+    vcf_fingerprint = parse_vcf_file( vcf_file )
     
     if ( output_file == ""  ){
     
@@ -66,19 +63,10 @@ identify_vcf_file = function(
     output_file_xls = stringr::str_replace( output_file, ".tab$", ".xls" ) 
     
     print( "Finished reading the VCF file, loading database" )
-    
-    if (base::exists("sim_list_raw") & batch_mode){
-    
-        sim_list = sim_list_raw
-    
-    } else {
-        
-        sim_list       = inititate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list" )
-        sim_list_stats = inititate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list_stats" )
-    
-        sim_list_raw <<- sim_list
-    }
-    
+
+    sim_list       = inititate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list" )
+    sim_list_stats = inititate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list_stats" )
+
     sim_list = sim_list[ sim_list$Ref_Gen == ref_gen  ,]
     sim_list_stats = sim_list_stats[ sim_list_stats$Ref_Gen == ref_gen  ,]
     

@@ -4,7 +4,10 @@
 \alias{show_contained_mutations_for_cl}
 \title{Show all mutations present in the database for a selected cancer cell line and reference Genome}
 \usage{
-SK_OV_3_CELLMINER_mutations = show_contained_mutations_for_cl( name_cl = "SK_OV_3_CELLMINER", ref_gen = "GRCH37" )
+SK_OV_3_CELLMINER_mutations = show_contained_mutations_for_cl( 
+name_cl = "SK_OV_3_CELLMINER", 
+ref_gen = "GRCH37", 
+distinct_mode = TRUE )
 }
 \arguments{
 \item{name_cl}{Name of the cancer cell line sample stored in the database}

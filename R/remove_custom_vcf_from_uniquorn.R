@@ -9,9 +9,14 @@
 #' remove_custom_vcf_from_database( 
 #' name_cl, 
 #' ref_gen = "GRCH37", 
-#' distinct_mode = TRUE)
+#' distinct_mode = TRUE,
+#' test_mode = FALSE)
 #' @examples 
-#' remove_custom_vcf_from_database( "HT29_CELLMINER", test_mode = TRUE )
+#' remove_custom_vcf_from_database( 
+#' name_cl = "HT29_CELLMINER", 
+#' ref_gen = "GRCH37",
+#' distinct_mode = TRUE,
+#' test_mode = TRUE )
 #' @return Message that indicates if the removal was succesful
 #' @export
 remove_custom_vcf_from_database = function( 

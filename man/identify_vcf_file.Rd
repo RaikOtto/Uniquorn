@@ -12,7 +12,6 @@ similarity_threshold = 5.0,
 mutational_weight_inclusion_threshold = 1.0,
 only_first_candidate = FALSE,
 distinct_mode = TRUE,
-batch_mode = FALSE,
 write_xls = FALSE,
 output_bed_file = FALSE,
 manual_identifier_bed_file = "")
@@ -32,8 +31,6 @@ manual_identifier_bed_file = "")
 
 \item{distinct_mode}{Show training data for the commonly or separately normalized training sets. Options: TRUE/ FALSE}
 
-\item{batch_mode}{When many vcf files are to be analyzed in the same R session/ namespace with identical parameters, setting the parameter TRUE leads to a significant speed-up of the analysis.}
-
 \item{write_xls}{Create identification results additionally as xls file for easier reading}
 
 \item{output_bed_file}{If BED files for IGV visualization should be created for the Cancer Cell lines that pass the threshold}
@@ -49,6 +46,6 @@ R table with a statistic of the identification result
 \examples{
 HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn");
 
-identify_vcf_file( HT29_vcf_file )
+identification = identify_vcf_file( HT29_vcf_file )
 }
 

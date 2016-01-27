@@ -12,10 +12,17 @@
 #' ref_gen = "GRCH37", 
 #' name_cl = "", 
 #' safe_mode = FALSE, 
-#' distinct_mode = TRUE)
+#' distinct_mode = TRUE,
+#' test_mode = FALSE)
 #' @examples 
 #' HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn");
-#' add_custom_vcf_to_database( HT29_vcf_file, ref_gen = "GRCH37", test_mode = TRUE )
+#' add_custom_vcf_to_database( 
+#' vcf_file_path = HT29_vcf_file,
+#' name_cl = "",
+#' ref_gen = "GRCH37",
+#' safe_mode = FALSE,
+#' distinct_mode = TRUE,
+#' test_mode = TRUE )
 #' @export
 add_custom_vcf_to_database = function( 
     vcf_file_path,

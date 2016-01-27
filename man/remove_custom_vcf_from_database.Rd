@@ -6,12 +6,10 @@
 be seen by using the function \code{show_contained_cls}.}
 \usage{
 remove_custom_vcf_from_database( 
-
 name_cl, 
-
 ref_gen = "GRCH37", 
-
-distinct_mode = TRUE )
+distinct_mode = TRUE,
+test_mode = FALSE)
 }
 \arguments{
 \item{name_cl}{name of the cancer cell line training fingerprintt}
@@ -19,6 +17,8 @@ distinct_mode = TRUE )
 \item{ref_gen}{Reference genome version. All training sets are associated with a reference genome version. Default: GRCH37}
 
 \item{distinct_mode}{Delete the CL sample from the database that is normalized together or separately. Choices: TRUE and FALSE}
+
+\item{test_mode}{Is this a test? Just for internal use}
 }
 \value{
 Message that indicates if the removal was succesful
@@ -26,5 +26,12 @@ Message that indicates if the removal was succesful
 \description{
 Removes a cancer cell line training fingerprint (vcf file) from the database. The names of all training sets can 
 be seen by using the function \code{show_contained_cls}.
+}
+\examples{
+remove_custom_vcf_from_database( 
+name_cl = "HT29_CELLMINER", 
+ref_gen = "GRCH37",
+distinct_mode = TRUE,
+test_mode = TRUE )
 }
 

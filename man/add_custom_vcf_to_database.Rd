@@ -5,16 +5,12 @@
 \title{Adds a custom vcf file to the three existing cancer cell line panels}
 \usage{
 add_custom_vcf_to_database( 
-
-vcf_file_path, 
-
+ vcf_file_path, 
 ref_gen = "GRCH37", 
-
 name_cl = "", 
-
 safe_mode = FALSE, 
-
-distinct_mode = TRUE)
+distinct_mode = TRUE,
+test_mode = FALSE)
 }
 \arguments{
 \item{vcf_file_path}{Input vcf file. Only one sample column allowed.}
@@ -26,8 +22,20 @@ distinct_mode = TRUE)
 \item{safe_mode}{Only add mutations to the database where there already are mutations found in the cannonical cancer cell lines. This is a safety mechanism against overfitting if there are too few custom training samples.}
 
 \item{distinct_mode}{Show training data for the commonly or separately normalized training sets. Options: TRUE/ FALSE}
+
+\item{test_mode}{Is this a test? Just for internal use}
 }
 \description{
 Adds a custom vcf file to the three existing cancer cell line panels
+}
+\examples{
+HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn");
+add_custom_vcf_to_database( 
+vcf_file_path = HT29_vcf_file,
+name_cl = "",
+ref_gen = "GRCH37",
+safe_mode = FALSE,
+distinct_mode = TRUE,
+test_mode = TRUE )
 }
 

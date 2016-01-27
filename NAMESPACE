@@ -3,7 +3,6 @@
 export(add_custom_vcf_to_database)
 export(identify_vcf_file)
 export(initiate_canonical_databases)
-export(parse_vcf_file)
 export(remove_custom_vcf_from_database)
 export(show_contained_cls)
 export(show_contained_mutations)
