@@ -183,7 +183,7 @@ identify_vcf_file = function(
     
     # treshold
     
-    passed_threshold_weighted = rep( F, nr_cls )
+    passed_threshold_weighted = rep( FALSE, nr_cls )
     passed_threshold_weighted[ 
         ( candidate_hits_abs_all >= 3 ) & 
         ( candidate_hits_rel >= 3 ) & 

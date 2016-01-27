@@ -8,7 +8,7 @@ parse_vcf_file = function( vcf_file_path  ){
   
     print( paste0("Reading VCF file: ", vcf_file_path ) )
     
-    vcf_handle = utils::read.table( vcf_file_path, sep ="\t", header = F, comment.char = "#", fill = T )
+    vcf_handle = utils::read.table( vcf_file_path, sep ="\t", header = FALSE, comment.char = "#", fill = TRUE )
     
     split_add = function( vcf_matrix_row ){
       

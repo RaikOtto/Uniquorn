@@ -4,7 +4,7 @@
 \alias{show_contained_cls}
 \title{Show all cancer cell line identifier present in the database for a selected reference genome.}
 \usage{
-show_contained_cls(ref_gen = "GRCH37", distinct_mode = T)
+show_contained_cls(ref_gen = "GRCH37", distinct_mode = TRUE)
 }
 \arguments{
 \item{ref_gen}{Reference genome version. All training sets are associated with a reference genome version. Default: GRCH37}

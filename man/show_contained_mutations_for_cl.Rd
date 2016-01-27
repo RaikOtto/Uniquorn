@@ -5,7 +5,7 @@
 \title{Show all mutations present in the database for a selected cancer cell line and reference Genome}
 \usage{
 show_contained_mutations_for_cl(name_cl, ref_gen = "GRCH37",
-  distinct_mode = T)
+  distinct_mode = TRUE)
 }
 \arguments{
 \item{name_cl}{Name of the cancer cell line sample stored in the database}

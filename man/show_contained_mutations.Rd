@@ -4,7 +4,7 @@
 \alias{show_contained_mutations}
 \title{Show all mutations present in the database for a selected reference Genome}
 \usage{
-show_contained_mutations(ref_gen = "GRCH37", distinct_mode = T)
+show_contained_mutations(ref_gen = "GRCH37", distinct_mode = TRUE)
 }
 \arguments{
 \item{ref_gen}{Reference genome version}

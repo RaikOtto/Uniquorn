@@ -12,7 +12,7 @@ Imports:
     RSQLite,
     R.utils,
     WriteXLS
-Depends: 
+Depends:
     R (>= 3.2),
     stringr
 License: Artistic-2.0
@@ -29,3 +29,6 @@ VignetteBuilder:
 Suggests: 
     testthat,
     rmarkdown
+biocViews: 
+    ExperimentData,
+    TechnologyData

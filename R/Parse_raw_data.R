@@ -38,7 +38,7 @@ initiate_canonical_databases = function(
     database_default_path =  base::paste( package_path, "uniquorn_db_default.sqlite", sep ="/" )
     
     if ( base::file.exists(database_path) )
-        base::file.copy( from = database_path, to = database_default_path, overwrite = T )
+        base::file.copy( from = database_path, to = database_default_path, overwrite = TRUE )
     
     drv = RSQLite::SQLite()
     con = DBI::dbConnect(drv, dbname = database_default_path)
@@ -126,7 +126,7 @@ initiate_canonical_databases = function(
           FUN = sum
         )
         
-        mapping_agg_stats_panel = which( aggregation_all_panel$Group.1 %in% sim_list_stats_panel[,1], arr.ind = T  )
+        mapping_agg_stats_panel = which( aggregation_all_panel$Group.1 %in% sim_list_stats_panel[,1], arr.ind = TRUE  )
         sim_list_stats_panel = cbind( sim_list_stats_panel, aggregation_all_panel$x[mapping_agg_stats_panel] )
         
         #print("Finished aggregating, writing to database")
@@ -156,8 +156,8 @@ initiate_canonical_databases = function(
     drv = RSQLite::SQLite()
     con = DBI::dbConnect(drv, dbname = database_path)
     
-    DBI::dbWriteTable( con, "sim_list", sim_list_global, overwrite = T )
-    DBI::dbWriteTable( con, "sim_list_stats", sim_list_stats_global, overwrite = T )
+    DBI::dbWriteTable( con, "sim_list", sim_list_global, overwrite = TRUE )
+    DBI::dbWriteTable( con, "sim_list_stats", sim_list_stats_global, overwrite = TRUE )
     DBI::dbDisconnect(con)
     
     print ("Initialization of Uniquorn DB finished")

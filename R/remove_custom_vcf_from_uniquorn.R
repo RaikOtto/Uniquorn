@@ -104,7 +104,7 @@ remove_custom_vcf_from_database = function(
             FUN = sum
         )
         
-        mapping_agg_stats_panel = which( aggregation_all_panel$Group.1 %in% sim_list_stats_panel[,1], arr.ind = T  )
+        mapping_agg_stats_panel = which( aggregation_all_panel$Group.1 %in% sim_list_stats_panel[,1], arr.ind = TRUE  )
         sim_list_stats_panel = cbind( sim_list_stats_panel, aggregation_all_panel$x[mapping_agg_stats_panel] )
         
         #print("Finished aggregating, writing to database")
