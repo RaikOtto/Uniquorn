@@ -30,7 +30,6 @@ Suggests:
     testthat,
     rmarkdown
 biocViews: 
-    Software,
     WorkflowStep,
     Genome, 
     Germline, 
