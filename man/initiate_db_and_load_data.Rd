@@ -27,8 +27,4 @@ Returns the sim_list and sim_list_stats variable
 \description{
 Intern utility function, loads database and return the sim_list and sim_list_stats variables.
 }
-\examples{
-sim_list = initiate_db_and_load_data( ref_gen = "GRCH37", distinct_mode = TRUE,
-request_table = "sim_list", load_default_db = FALSE )
-}
 

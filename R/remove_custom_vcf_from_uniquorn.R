@@ -32,8 +32,8 @@ remove_custom_vcf_from_database = function(
     
     print(paste0("Reference genome: ",ref_gen))
     
-    sim_list       = inititate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list" )
-    sim_list_stats = inititate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list_stats" )
+    sim_list       = initiate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list" )
+    sim_list_stats = initiate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list_stats" )
 
     if ( sum( grepl( name_cl, sim_list_stats$CL ) ) == 0 ){
         
