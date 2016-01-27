@@ -9,12 +9,12 @@ Description: This packages enables users to identify cancer cell lines. The iden
     technology. 
 Imports: 
     DBI,
+    stringr,
     RSQLite,
     R.utils,
     WriteXLS
 Depends:
-    R (>= 3.2),
-    stringr
+    R (>= 3.2)
 License: Artistic-2.0
 LazyData: TRUE
 Type: Package

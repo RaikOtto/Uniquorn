@@ -28,7 +28,7 @@ remove_custom_vcf_from_database = function(
     
     # pre processing
 
-    name_cl = str_to_upper(name_cl)
+    name_cl = stringr::str_to_upper(name_cl)
     
     print(paste0("Reference genome: ",ref_gen))
     

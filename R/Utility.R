@@ -89,6 +89,7 @@ write_data_to_db = function( content_table, table_name, ref_gen = "GRCH37", dist
 #' 
 #' This function re-calculates the weights of mutation after a change of the training set
 #' @inheritParams write_data_to_db
+#' @param sim_list R Table which contains a mapping from mutations/ variations to their containing CLs
 re_calculate_cl_weights = function( sim_list, ref_gen, distinct_mode ){
     
     package_path    = system.file("", package="Uniquorn")

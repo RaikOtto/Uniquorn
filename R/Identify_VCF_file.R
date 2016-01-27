@@ -157,12 +157,12 @@ identify_vcf_file = function(
         (res_res_cl_weighted >= similarity_threshold) 
     ] = TRUE
     
-    output_cl_names = str_replace( list_of_cls, pattern = "_CCLE|_COSMIC|_CELLMINER|_CUSTOM", replacement = "" )
+    output_cl_names = stringr::str_replace( list_of_cls, pattern = "_CCLE|_COSMIC|_CELLMINER|_CUSTOM", replacement = "" )
     panel_vec = rep("", length( output_cl_names ))
-    panel_vec[ str_detect( list_of_cls, "_CCLE" ) ] = "CCLE"
-    panel_vec[ str_detect( list_of_cls, "_COSMIC" ) ] = "COSMIC"
-    panel_vec[ str_detect( list_of_cls, "_CELLMINER" ) ] = "CELLMINER"
-    panel_vec[ str_detect( list_of_cls, "_CUSTOM" ) ] = "CUSTOM"
+    panel_vec[ stringr::str_detect( list_of_cls, "_CCLE" ) ] = "CCLE"
+    panel_vec[ stringr::str_detect( list_of_cls, "_COSMIC" ) ] = "COSMIC"
+    panel_vec[ stringr::str_detect( list_of_cls, "_CELLMINER" ) ] = "CELLMINER"
+    panel_vec[ stringr::str_detect( list_of_cls, "_CUSTOM" ) ] = "CUSTOM"
     
     res_table = data.frame(
         "CL"                       = output_cl_names,

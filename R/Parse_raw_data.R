@@ -25,8 +25,9 @@ initiate_canonical_databases = function(
     
     ### pre-processing
     
-    package_path    = system.file("", package="Uniquorn")
-    database_path =  base::paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
+    package_path  = system.file("", package="Uniquorn")
+    database_path = base::paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
+    database_default_path = base::paste( package_path, "uniquorn_db_default.sqlite", sep ="/" )
     
     if (!distinct_mode)
         database_path   =  base::paste( package_path, "uniquorn_non_distinct_panels_db.sqlite", sep ="/" )
@@ -49,7 +50,7 @@ initiate_canonical_databases = function(
 
             gunzip( cosmic_file, overwrite = TRUE )
         }
-        cosmic_file = str_replace( cosmic_file, ".gz$|.GZ$", "" )
+        cosmic_file = stringr::str_replace( cosmic_file, ".gz$|.GZ$", "" )
       
         sim_list = parse_cosmic_genotype_data( cosmic_file, sim_list )
     }

@@ -43,9 +43,9 @@ create_bed_file = function( sim_list, vcf_fingerprint, res_table, output_file, r
         
             print(identifier)
             
-            name_training_bed_file = str_replace( output_file, "_uniquorn_ident.tab", paste0( c( "_uniquorn_ident_mutations_training_set_",identifier,".bed"), collapse = "" ) )
-            name_query_bed_file    = str_replace( output_file, "_uniquorn_ident.tab", paste0( c( "_uniquorn_ident_mutations_query_set_",identifier,".bed"), collapse = ""  ) ) 
-            name_missed_bed_file   = str_replace( output_file, "_uniquorn_ident.tab", paste0( c( "_uniquorn_ident_mutations_missed_set_",identifier,".bed"), collapse = ""  ) )
+            name_training_bed_file = stringr::str_replace( output_file, "_uniquorn_ident.tab", paste0( c( "_uniquorn_ident_mutations_training_set_",identifier,".bed"), collapse = "" ) )
+            name_query_bed_file    = stringr::str_replace( output_file, "_uniquorn_ident.tab", paste0( c( "_uniquorn_ident_mutations_query_set_",identifier,".bed"), collapse = ""  ) ) 
+            name_missed_bed_file   = stringr::str_replace( output_file, "_uniquorn_ident.tab", paste0( c( "_uniquorn_ident_mutations_missed_set_",identifier,".bed"), collapse = ""  ) )
             
             # training
             
@@ -62,12 +62,12 @@ create_bed_file = function( sim_list, vcf_fingerprint, res_table, output_file, r
             )
             
             training_coords = sim_list$Fingerprint[ sim_list$CL == identifier ]
-            training_coords = str_trim( training_coords )
+            training_coords = stringr::str_trim( training_coords )
             training_coords = training_coords[ ! grepl("^[c(']", training_coords ) ]
-            training_coords = str_split( training_coords, "_" )
+            training_coords = stringr::str_split( training_coords, "_" )
             
             training_coords_res = sapply( training_coords, FUN = function( vec ){ 
-                chrom = paste( "chr", str_trim( vec[1] ), sep = "" )
+                chrom = paste( "chr", stringr::str_trim( vec[1] ), sep = "" )
                 return( paste0( c( chrom, as.character( as.integer( vec[2] ) ), as.integer( as.integer( vec[3] ) ) ), collapse = "\t" ) )
             } )
             training_coords_res = c( training_bed_file, training_coords_res )
@@ -89,12 +89,12 @@ create_bed_file = function( sim_list, vcf_fingerprint, res_table, output_file, r
             )
             
             query_coords = vcf_fingerprint
-            query_coords = str_trim( query_coords )
+            query_coords = stringr::str_trim( query_coords )
             query_coords = query_coords[ ! grepl("^[c(']", query_coords ) ]
-            query_coords = str_split( query_coords, "_" )
+            query_coords = stringr::str_split( query_coords, "_" )
             
             query_coords_res = sapply( query_coords, FUN = function( vec ){ 
-                chrom = paste( "chr", str_trim( vec[1] ), sep = "" )
+                chrom = paste( "chr", stringr::str_trim( vec[1] ), sep = "" )
                 return( paste0( c( chrom, as.character( as.integer( vec[2] ) ), as.integer( as.integer( vec[3] ) ) ), collapse = "\t" ) )
             } )
             query_res = c( query_bed_file, query_coords_res )
@@ -118,7 +118,7 @@ create_bed_file = function( sim_list, vcf_fingerprint, res_table, output_file, r
             missed_coords = training_coords[ which( ! ( training_coords %in% query_coords ) ) ]
             
             missed_coords = sapply( missed_coords, FUN = function( vec ){ 
-                chrom = paste( "chr", str_trim( vec[1] ), sep = "" )
+                chrom = paste( "chr", stringr::str_trim( vec[1] ), sep = "" )
                 return( paste0( c( chrom, as.character( as.integer( vec[2] ) ), as.integer( as.integer( vec[3] ) ) ), collapse = "\t" ) )
             } )
             missed_coords_res = c( missed_bed_file, missed_coords )
