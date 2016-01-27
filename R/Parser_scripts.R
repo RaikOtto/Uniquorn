@@ -4,6 +4,7 @@
 #' 
 #' @param sim_list Variable containing mutations & cell line
 #' @param cosmic_file Path to cosmic clp file in hard disk
+#' @return The R Table sim_list which contains the CoSMIC CLP fingerprints 
 parse_cosmic_genotype_data = function( cosmic_file, sim_list ){
 
     split_coords = function(vec){
@@ -40,6 +41,7 @@ parse_cosmic_genotype_data = function( cosmic_file, sim_list ){
 #' 
 #' @param sim_list Variable containing mutations and cell line
 #' @param ccle_file Path to CCLE file on hard disk
+#' @return The R Table sim_list which contains the CCLE fingerprints
 parse_ccle_genotype_data = function( ccle_file, sim_list ){
     
     exclude_cols_ccle = c(rep("NULL",4),rep("character", 3),rep("NULL",8),"character",rep("NULL",35))

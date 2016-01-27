@@ -8,6 +8,7 @@
 #' @param output_file Path to output file
 #' @param ref_gen Reference genome version
 #' @param manual_identifier Manually enter a vector of CL name(s) whose bed files should be created, independently from them passing the detection threshold
+#' @return Returns a message which indicates if the BED file creation has succeeded
 #' @usage 
 #' create_bed_file(
 #' 
