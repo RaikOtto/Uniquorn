@@ -81,9 +81,9 @@ identify_vcf_file = function(
     
     print( "Finished reading the VCF file, loading database" )
 
-    sim_list       = inititate_db_and_load_data( ref_gen = ref_gen, 
+    sim_list       = initiate_db_and_load_data( ref_gen = ref_gen, 
         distinct_mode = distinct_mode, request_table = "sim_list" )
-    sim_list_stats = inititate_db_and_load_data( ref_gen = ref_gen, 
+    sim_list_stats = initiate_db_and_load_data( ref_gen = ref_gen, 
         distinct_mode = distinct_mode, request_table = "sim_list_stats" )
     
     if ( ( sum( grepl( "_COSMIC", sim_list_stats$CL ) ) + sum( grepl( "_CCLE", sim_list_stats$CL ) ) ) == 0 )

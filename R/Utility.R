@@ -1,4 +1,4 @@
-#' inititate_db_and_load_data
+#' initiate_db_and_load_data
 #' 
 #' Intern utility function, loads database and return the sim_list and sim_list_stats variables.
 #' 
@@ -7,13 +7,16 @@
 #' @param load_default_db Indicate whether the default db should be used as source for the data
 #' @return Returns the sim_list and sim_list_stats variable
 #' @usage 
-#' inititate_db_and_load_data(
+#' initiate_db_and_load_data(
 #' ref_gen, 
 #' distinct_mode,
 #' request_table,
 #' load_default_db )
+#' @examples 
+#' sim_list = initiate_db_and_load_data( ref_gen = "GRCH37", distinct_mode = TRUE,
+#' request_table = "sim_list", load_default_db = FALSE )
 #' @import DBI RSQLite
-inititate_db_and_load_data = function( ref_gen, distinct_mode, request_table, load_default_db = FALSE ){
+initiate_db_and_load_data = function( ref_gen, distinct_mode, request_table, load_default_db = FALSE ){
     
     package_path    = system.file("", package="Uniquorn")
     default_database_path =  paste( package_path, "uniquorn_db_default.sqlite", sep ="/" )

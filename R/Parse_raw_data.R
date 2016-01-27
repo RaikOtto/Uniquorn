@@ -32,7 +32,7 @@ initiate_canonical_databases = function(
     
     ### pre-processing
     
-    sim_list = inititate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list", load_default_db = TRUE )
+    sim_list = initiate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list", load_default_db = TRUE )
     
     sim_list = sim_list[, which( colnames(sim_list) != "Ref_Gen"  ) ]
     sim_list = sim_list[, which( colnames(sim_list) != "Weight"  ) ]

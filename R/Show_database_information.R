@@ -21,7 +21,7 @@ show_contained_cls = function( ref_gen = "GRCH37", distinct_mode = TRUE ){
 
     print(paste0("Reference genome: ",ref_gen))
     
-    sim_list_stats = inititate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list_stats" )
+    sim_list_stats = initiate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list_stats" )
     
     print( paste0( c("Found ", dim(sim_list_stats)[1], " many cancer cell lines fingerprints for reference genome ", ref_gen ), collapse = ""  )  )
 
@@ -53,7 +53,7 @@ show_contained_mutations = function( ref_gen = "GRCH37", distinct_mode = TRUE ){
   
     print(paste0("Reference genome: ",ref_gen))
     
-    sim_list = inititate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list" )
+    sim_list = initiate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list" )
     
     print( paste0( c("Found ", dim(sim_list)[1], " many cancer cell lines associated mutations for reference genome ", ref_gen ), collapse = ""  )  )
   
@@ -86,7 +86,7 @@ show_contained_mutations_for_cl = function( name_cl, ref_gen = "GRCH37", distinc
 
     print(paste0("Reference genome: ",ref_gen))
     
-    sim_list = inititate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list" )
+    sim_list = initiate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list" )
   
     sim_list = sim_list[ sim_list$Ref_Gen == ref_gen,  ]
     mapping  = which( sim_list$CL %in% name_cl, arr.ind = TRUE  )
@@ -129,7 +129,7 @@ show_which_cls_contain_mutation = function( mutation_name, ref_gen = "GRCH37", d
   
     print(paste0("Reference genome: ",ref_gen))
     
-    sim_list = inititate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list" )
+    sim_list = initiate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list" )
   
     sim_list = sim_list[ sim_list$Ref_Gen == ref_gen,  ]
     mapping  = which( sim_list$Fingerprint %in% mutation_name, arr.ind = TRUE)

@@ -45,7 +45,7 @@ add_custom_vcf_to_database = function(
     
     base::print( base::paste0( "Reference genome: ",ref_gen ) )
     
-    sim_list_stats = inititate_db_and_load_data( ref_gen = ref_gen, 
+    sim_list_stats = initiate_db_and_load_data( ref_gen = ref_gen, 
         distinct_mode = distinct_mode, request_table = "sim_list_stats")
     
     sim_list_stats = sim_list_stats[ sim_list_stats$Ref_Gen == ref_gen,]
