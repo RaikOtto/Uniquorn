@@ -33,7 +33,8 @@ show_contained_cls = function( ref_gen = "GRCH37", distinct_mode = TRUE ){
 #' 
 #' @param ref_gen Reference genome version
 #' @param distinct_mode Show mutations for either distinct or non-distinct normalization of mutational weights
-#' @usage show_contained_mutations( ref_gen = "GRCH37", distinct_mode = TRUE )
+#' @usage 
+#' show_contained_mutations( ref_gen = "GRCH37", distinct_mode = TRUE )
 #' @return R Table which contains all mutations associated with a particular cancer cell line for a specified reference genome
 #' @export
 show_contained_mutations = function( ref_gen = "GRCH37", distinct_mode = TRUE ){
@@ -62,21 +63,7 @@ show_contained_mutations_for_cl = function( name_cl, ref_gen = "GRCH37", distinc
 
     print(paste0("Reference genome: ",ref_gen))
     
-    package_path    = system.file("", package="Uniquorn")
-    
-    if (distinct_mode)
-        database_path =  paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
-    if (!distinct_mode)
-        database_path =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite", sep ="/" )
-    
-    if( ! file.exists( database_path ) )
-        stop(paste0("Did not find uniquorn database, please ensure uniquorn is set up correctly: ", database_path))
-    
-    drv = RSQLite::SQLite()
-    con = DBI::dbConnect(drv, dbname = database_path)
-    
-    sim_list = as.data.frame( DBI::dbReadTable( con, "sim_list") )
-    dbDisconnect(con)
+    sim_list = inititate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_tables = c("sim_list") )
   
     sim_list = sim_list[ sim_list$Ref_Gen == ref_gen,  ]
     mapping  = which( sim_list$CL %in% name_cl, arr.ind = TRUE  )
@@ -111,21 +98,7 @@ show_which_cls_contain_mutation = function( mutation_name, ref_gen = "GRCH37", d
   
     print(paste0("Reference genome: ",ref_gen))
     
-    package_path    = system.file("", package="Uniquorn")
-    
-    if (distinct_mode)
-        database_path =  paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
-    if (!distinct_mode)
-        database_path =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite", sep ="/" )
-    
-    if( ! file.exists( database_path ) )
-        stop(paste0("Did not find the database from which to delete the dataset: ", database_path))
-    
-    drv = RSQLite::SQLite()
-    con = DBI::dbConnect(drv, dbname = database_path)
-    
-    sim_list = as.data.frame( DBI::dbReadTable( con, "sim_list") )
-    dbDisconnect(con)
+    sim_list = inititate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_tables = c("sim_list") )
   
     sim_list = sim_list[ sim_list$Ref_Gen == ref_gen,  ]
     mapping  = which( sim_list$Fingerprint %in% mutation_name, arr.ind = TRUE)
