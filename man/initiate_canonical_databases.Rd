@@ -19,7 +19,17 @@ distinct_mode = TRUE)
 
 \item{distinct_mode}{Should the mutational weights be calculated for all panels together or each for itelf? Recommendation: Seperately}
 }
+\value{
+Returns message if parsing process has succeeded
+}
 \description{
 Parses data into r list variable
+}
+\examples{
+initiate_canonical_databases(
+cosmic_file = "CosmicCLP_MutantExport.tsv",
+ccle_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.maf",
+ref_gen = "GRCH37",
+distinct_mode = TRUE )
 }
 

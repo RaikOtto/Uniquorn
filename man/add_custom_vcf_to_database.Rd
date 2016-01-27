@@ -15,15 +15,23 @@ test_mode = FALSE)
 \arguments{
 \item{vcf_file_path}{Input vcf file. Only one sample column allowed.}
 
-\item{ref_gen}{Reference genome version. All training sets are associated with a reference genome version. Default: GRCH37}
+\item{ref_gen}{Reference genome version. All training sets are associated 
+with a reference genome version. Default: GRCH37}
 
-\item{name_cl}{Name of the to-be-added cancer cell line sample. '_CUSTOM' will automatically be added as suffix.}
+\item{name_cl}{Name of the to-be-added cancer cell line sample. '_CUSTOM' 
+will automatically be added as suffix.}
 
-\item{safe_mode}{Only add mutations to the database where there already are mutations found in the cannonical cancer cell lines. This is a safety mechanism against overfitting if there are too few custom training samples.}
+\item{safe_mode}{Only add mutations to the database where there already are 
+mutations found in the cannonical cancer cell lines. This is a safety 
+mechanism against overfitting if there are too few custom training samples.}
 
-\item{distinct_mode}{Show training data for the commonly or separately normalized training sets. Options: TRUE/ FALSE}
+\item{distinct_mode}{Show training data for the commonly or separately 
+normalized training sets. Options: TRUE/ FALSE}
 
 \item{test_mode}{Is this a test? Just for internal use}
+}
+\value{
+Message if the adding has succeeded
 }
 \description{
 Adds a custom vcf file to the three existing cancer cell line panels

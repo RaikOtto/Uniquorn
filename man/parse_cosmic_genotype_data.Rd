@@ -11,6 +11,9 @@ parse_cosmic_genotype_data(cosmic_file, sim_list)
 
 \item{sim_list}{Variable containing mutations & cell line}
 }
+\value{
+The R Table sim_list which contains the CoSMIC CLP fingerprints
+}
 \description{
 Parses cosmic genotype data
 }

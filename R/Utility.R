@@ -4,7 +4,7 @@
 #' 
 #' @inheritParams identify_vcf_file
 #' @param request_table Names of the tables to be extracted from the database
-#' @load_default_db Indicate whether the default db should be used as source for the data
+#' @param load_default_db Indicate whether the default db should be used as source for the data
 #' @return Returns the sim_list and sim_list_stats variable
 #' @usage 
 #' inititate_db_and_load_data(
@@ -87,6 +87,7 @@ write_data_to_db = function(
 #' 
 #' This function re-calculates the weights of mutation after a change of the training set
 #' @inheritParams write_data_to_db
+#' @return A list containing both the sim_list at pos 1 and sim_list_stats at pos 2 data frames.
 #' @param sim_list R Table which contains a mapping 
 #' from mutations/ variations to their containing CLs
 re_calculate_cl_weights = function( sim_list, ref_gen, distinct_mode ){

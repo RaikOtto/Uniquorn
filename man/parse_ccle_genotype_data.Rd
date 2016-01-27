@@ -11,6 +11,9 @@ parse_ccle_genotype_data(ccle_file, sim_list)
 
 \item{sim_list}{Variable containing mutations and cell line}
 }
+\value{
+The R Table sim_list which contains the CCLE fingerprints
+}
 \description{
 Parses ccle genotype data
 }

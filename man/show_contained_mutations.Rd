@@ -21,4 +21,7 @@ Show all mutations present in the database for a selected reference Genome:
 This function shows all training-set mutations for a selected reference genome, i.e. the mutations that are being used
 for identification of query cancer cell lines.
 }
+\examples{
+contained_cls = show_contained_mutations( ref_gen = "GRCH37", distinct_mode = TRUE )
+}
 

@@ -47,7 +47,7 @@
 #' identification = identify_vcf_file( HT29_vcf_file )
 #' @return R table with a statistic of the identification result
 #' @export
-identify_vcf_file = function( 
+identify_vcf_file = function(
     vcf_file,
     output_file = "",
     ref_gen = "GRCH37",

@@ -6,6 +6,7 @@
 #' @param ccle_file The path to the ccle DNA genotype data file. Ensure that the right reference genome is used
 #' @param ref_gen Reference genome version
 #' @param distinct_mode Should the mutational weights be calculated for all panels together or each for itelf? Recommendation: Seperately
+#' @return Returns message if parsing process has succeeded
 #' @import DBI R.utils RSQLite
 #' @usage 
 #' initiate_canonical_databases( 

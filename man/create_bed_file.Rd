@@ -33,6 +33,9 @@ manual_identifier
 
 \item{manual_identifier}{Manually enter a vector of CL name(s) whose bed files should be created, independently from them passing the detection threshold}
 }
+\value{
+Returns a message which indicates if the BED file creation has succeeded
+}
 \description{
 Creates BED files from the found and not found annotated mutations
 }
