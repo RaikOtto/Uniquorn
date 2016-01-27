@@ -12,9 +12,6 @@
 #' distinct_mode,
 #' request_table,
 #' load_default_db )
-#' @examples 
-#' sim_list = initiate_db_and_load_data( ref_gen = "GRCH37", distinct_mode = TRUE,
-#' request_table = "sim_list", load_default_db = FALSE )
 #' @import DBI RSQLite
 initiate_db_and_load_data = function( ref_gen, distinct_mode, request_table, load_default_db = FALSE ){
     
