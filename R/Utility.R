@@ -146,5 +146,5 @@ re_calculate_cl_weights = function( sim_list, ref_gen, distinct_mode ){
         
     }
     
-    return( c( sim_list_global, sim_list_stats_global ) )
+    return( list( as.data.frame( sim_list_global ), as.data.frame( sim_list_stats_global ) ) )
 }
