@@ -20,12 +20,8 @@ initiate_db_and_load_data = function( ref_gen, distinct_mode, request_table, loa
     
     package_path = system.file("", package="Uniquorn")
     default_database_path =  paste( package_path, "uniquorn_db_default.sqlite", sep ="/" )
-    
-    if (! file.exists( default_database_path )){
-        default_database_path =  paste( package_path, "/inst/uniquorn_db_default.sqlite", sep ="/" )
-    }
-    
-    database_path =  paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
+
+    database_path = paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
 
     if (!distinct_mode)
         database_path =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite", sep ="/" )
@@ -37,7 +33,7 @@ initiate_db_and_load_data = function( ref_gen, distinct_mode, request_table, loa
         con = DBI::dbConnect(drv, dbname = database_path)
 
     res = as.data.frame( DBI::dbReadTable( con, request_table) )
-
+    
     DBI::dbDisconnect(con)
     
     return( res )
