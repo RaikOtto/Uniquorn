@@ -4,26 +4,26 @@
 #' @param name_cl Name of the to-be-added cancer cell line sample. '_CUSTOM' will automatically be added as suffix.
 #' @param safe_mode Only add mutations to the database where there already are mutations found in the cannonical cancer cell lines. This is a safety mechanism against overfitting if there are too few custom training samples.
 #' @param distinct_mode Show training data for the commonly or separately normalized training sets. Options: TRUE/ FALSE
+#' @param test_mode Is this a test? Just for internal use
 #' @import DBI
 #' @usage 
 #' add_custom_vcf_to_database( 
-#' 
-#' vcf_file_path, 
-#' 
+#'  vcf_file_path, 
 #' ref_gen = "GRCH37", 
-#' 
 #' name_cl = "", 
-#' 
 #' safe_mode = FALSE, 
-#' 
 #' distinct_mode = TRUE)
+#' @examples 
+#' HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn");
+#' add_custom_vcf_to_database( HT29_vcf_file, ref_gen = "GRCH37", test_mode = TRUE )
 #' @export
 add_custom_vcf_to_database = function( 
     vcf_file_path,
     ref_gen = "GRCH37",
     name_cl = "",
     safe_mode = FALSE,
-    distinct_mode = TRUE
+    distinct_mode = TRUE,
+    test_mode = FALSE
     ){
     
     # pre processing
@@ -31,36 +31,12 @@ add_custom_vcf_to_database = function(
     name_cl = str_to_upper(name_cl)
     
     base::print( base::paste0( "Reference genome: ",ref_gen ) )
-  
-    package_path    = base::system.file("", package="Uniquorn")
     
-    if (distinct_mode)
-        database_path     =  base::paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
-
-    if (!distinct_mode)
-        database_path     =  base::paste( package_path, "uniquorn_non_distinct_panels_db.sqlite", sep ="/" )
-    
-    if( ! base::file.exists( database_path ) ){
-        
-        database_path = base::paste( package_path, "uniquorn_db_default.sqlite", sep ="/" )
-        warning("CCLE & CoSMIC CLP cancer cell line fingerprint NOT found, defaulting to 60 CellMiner cancer cell lines! 
-                It is strongly advised to add ~1900 CCLE & CoSMIC CLs, see readme.")
-    }
-    
-    drv = RSQLite::SQLite()
-    con = DBI::dbConnect(drv, dbname = database_path)
-    
-    sim_list       = as.data.frame( DBI::dbReadTable( con, "sim_list") )
-    sim_list_stats = as.data.frame( DBI::dbReadTable( con, "sim_list_stats") )
-    
-    sim_list = sim_list[ sim_list$Ref_Gen == ref_gen,]
+    sim_list_stats = inititate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list_stats")
     sim_list_stats = sim_list_stats[ sim_list_stats$Ref_Gen == ref_gen,]
     
-    if ( dim(sim_list)[1] == 0 )
+    if ( dim(sim_list_stats)[1] == 0 )
         warning( paste( "Warning: Identification might be spurious due to low amount of training sample. No cancer cell line data stored at this point for reference genome:", ref_gen, sep =" " ) )
-    
-    sim_list = sim_list[, base::which( colnames(sim_list) != "Ref_Gen"  ) ]
-    sim_list = sim_list[, base::which( colnames(sim_list) != "Weight"  ) ]
     
     # reading vcf
     
@@ -77,11 +53,16 @@ add_custom_vcf_to_database = function(
         base::print( base::paste0( "Adding fingerprint with user-defined name: ", name_cl ) )
     }
     
-    name_present = base::grepl( name_cl, sim_list$CL )
+    name_present = base::grepl( name_cl, sim_list_stats$CL )
     
     if( sum( name_present ) > 0 ){ 
         stop( paste0( c("Fingerprint with name ",name_cl, " already present in database. Please change the name or remove the old cancer cell line."), collapse = "" )  )
     }
+    
+    sim_list = inititate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list" )
+    sim_list = sim_list[ sim_list$Ref_Gen == ref_gen,]
+    sim_list = sim_list[, base::which( colnames(sim_list) != "Ref_Gen"  ) ]
+    sim_list = sim_list[, base::which( colnames(sim_list) != "Weight"  ) ]
     
     print( paste0( "Building fingerprint from file ",  vcf_file_path )  )
     
@@ -99,75 +80,12 @@ add_custom_vcf_to_database = function(
     
     print("Finished parsing, aggregating over parsed Cancer Cell Line data")
     
-    list_of_cls = unique( sim_list$CL )
-    panels = sapply( list_of_cls, FUN = str_split, "_"  )
-    panels = as.character(unique( as.character( sapply( panels, FUN = utils::tail, 1) ) ))
-    
-    if (!distinct_mode){
-        panels = paste0( c(panels), collapse ="|"  )
-        database_path =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite3", sep ="/" )
-    }
-    
-    print( paste( "Distinguishing between panels:",paste0( c(panels), collapse = ", "), sep = " ") )
-    
-    for (panel in panels) {
-        
-        print(panel)
-        
-        sim_list_panel   = sim_list[ grepl( panel, sim_list$CL) , ]
-        member_var_panel = rep( 1, dim(sim_list_panel)[1] )
-        
-        sim_list_stats_panel = stats::aggregate( member_var_panel , by = list( sim_list_panel$CL ), FUN = sum )
-        colnames(sim_list_stats_panel) = c( "CL", "Count" )
-        
-        print("Aggregating over mutational frequency to obtain mutational weight")
-        
-        weights_panel = stats::aggregate( member_var_panel , by = list( sim_list_panel$Fingerprint ), FUN = sum )
-        weights_panel$x = 1.0 / as.double( weights_panel$x )
-        
-        mapping_panel = match( as.character( sim_list_panel$Fingerprint ), as.character( weights_panel$Group.1) )
-        sim_list_panel = cbind( sim_list_panel, weights_panel$x[mapping_panel] )
-        colnames( sim_list_panel )[3] = "Weight"
-        
-        # calculate weights
-        
-        aggregation_all_panel = stats::aggregate( 
-            x  = as.double( sim_list_panel$Weight ),
-            by = list( as.character( sim_list_panel$CL ) ),
-            FUN = sum
-        )
-        
-        mapping_agg_stats_panel = which( aggregation_all_panel$Group.1 %in% sim_list_stats_panel[,1], arr.ind = T  )
-        sim_list_stats_panel = cbind( sim_list_stats_panel, aggregation_all_panel$x[mapping_agg_stats_panel] )
-        
-        #print("Finished aggregating, writing to database")
-        
-        Ref_Gen = rep(ref_gen, dim(sim_list_panel)[1]  )
-        sim_list_panel = cbind( sim_list_panel, Ref_Gen )
-        Ref_Gen = rep( ref_gen, dim(sim_list_stats_panel)[1]  )
-        sim_list_stats_panel = cbind( sim_list_stats_panel, Ref_Gen )
-        colnames( sim_list_stats_panel ) = c( "CL","Count","All_weights","Ref_Gen" )
-        
-        if(! exists("sim_list_global"))
-            sim_list_global <<- sim_list[0,]
-        
-        sim_list_global = rbind(sim_list_global,sim_list_panel)
-        
-        if(! exists("sim_list_stats_global"))
-            sim_list_stats_global <<- sim_list_stats_panel[0,]
-        
-        sim_list_stats_global = rbind( sim_list_stats_global, sim_list_stats_panel  )
-        
-    }
+    res_vec = re_calculate_cl_weights( sim_list = sim_list, ref_gen = ref_gen, distinct_mode = TRUE )
     
     print("Finished aggregating, saving to database")
     
-    drv = RSQLite::SQLite()
-    con = DBI::dbConnect(drv, dbname = database_path)
-    
-    DBI::dbWriteTable( con, "sim_list", sim_list_global, overwrite = T )
-    DBI::dbWriteTable( con, "sim_list_stats", sim_list_stats_global, overwrite = T )
-    dbDisconnect(con)
+    write_data_to_db( content_table = res_vec[1], "sim_list",       ref_gen = "GRCH37", distinct_mode = distinct_mode, overwrite = TRUE, test_mode = test_mode )
+    write_data_to_db( content_table = res_vec[2], "sim_list_stats", ref_gen = "GRCH37", distinct_mode = distinct_mode, overwrite = TRUE, test_mode = test_mode )
     
     print("Finished adding CL")
 }

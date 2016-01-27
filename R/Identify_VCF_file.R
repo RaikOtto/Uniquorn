@@ -51,18 +51,6 @@ identify_vcf_file = function(
   
     ### pre processing
     
-    package_path    = system.file("", package="Uniquorn")
-
-    if (distinct_mode)
-        database_path     =  paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
-
-    if (!distinct_mode)
-        database_path     =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite", sep ="/" )
-    
-    # reading file
-    if ( ! file.exists(vcf_file))
-        stop(paste0("Error. Did not find vcf file ",vcf_file) )
-    
     vcf_fingerprint = Uniquorn::parse_vcf_file( vcf_file )
     
     if ( output_file == ""  ){
@@ -77,16 +65,6 @@ identify_vcf_file = function(
     }
     output_file_xls = stringr::str_replace( output_file, ".tab$", ".xls" ) 
     
-    if( ! base::file.exists( database_path ) ){
-    
-        database_path = base::paste( package_path, "uniquorn_db_default.sqlite", sep ="/" )
-        warning("CCLE & CoSMIC CLP cancer cell line fingerprint NOT found, defaulting to 60 CellMiner cancer cell lines! 
-                It is strongly advised to add ~1900 CCLE & CoSMIC CLs, see readme.")
-    }
-    
-    drv = RSQLite::SQLite()
-    con = DBI::dbConnect(drv, dbname = database_path)
-    
     print( "Finished reading the VCF file, loading database" )
     
     if (base::exists("sim_list_raw") & batch_mode){
@@ -94,13 +72,12 @@ identify_vcf_file = function(
         sim_list = sim_list_raw
     
     } else {
+        
+        sim_list       = inititate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list" )
+        sim_list_stats = inititate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list_stats" )
     
-        sim_list       = base::as.data.frame( DBI::dbReadTable( con, "sim_list") )
-        sim_list_stats = base::as.data.frame( DBI::dbReadTable( con, "sim_list_stats") )
         sim_list_raw <<- sim_list
     }
-    
-    dbDisconnect(con)
     
     sim_list = sim_list[ sim_list$Ref_Gen == ref_gen  ,]
     sim_list_stats = sim_list_stats[ sim_list_stats$Ref_Gen == ref_gen  ,]
