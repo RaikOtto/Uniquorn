@@ -1,0 +1,45 @@
+---
+title: "Overview Vignette for the Uniquorn Package"
+author: "Raik Otto"
+date: "January 14, 2016"
+output: 
+  rmarkdown::html_vignette: 
+    toc: true
+
+vignette: >
+  %\VignetteIndexEntry{Overview Vignette for Uniquorn Package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r, echo=FALSE, message=FALSE}
+library(Uniquorn)
+library(DBI)
+```
+
+## Introduction
+
+Yet to comne
+
+## Data Origin
+
+```{r}
+list.files(system.file("extdata", package = "Uniquorn"))
+```
+
+## Adding Cancer cell line training sets
+
+## Querying for contained Cancer cell lines and mutations
+
+## Working with the full CCLE dataset
+
+
+## Future directions
+
+Yet to come
+
+## Session Info
+```{r}
+   sessionInfo() 
+```
