@@ -9,6 +9,7 @@ test_that("HT29 test analysis", {
     
     expect_that( ident_result, is_a("data.frame") )
     
-    expect_that( dim(ident_result), equals( c(1985,9 ) |equals( c(60,9 )  ) ) )
+    expect_that( dim(ident_result)[1], equals( 60 ) )
+    expect_that( dim(ident_result)[2], equals( 9  ) )
     
 })
