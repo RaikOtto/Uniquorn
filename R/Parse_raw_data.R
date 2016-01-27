@@ -7,7 +7,7 @@
 #' @param ref_gen Reference genome version
 #' @param distinct_mode Should the mutational weights be calculated for all panels together or each for itelf? Recommendation: Seperately
 #' @return Returns message if parsing process has succeeded
-#' @import DBI R.utils RSQLite
+#' @import DBI R.utils RSQLite stringr
 #' @usage 
 #' initiate_canonical_databases( 
 #' cosmic_file = "CosmicCLP_MutantExport.tsv", 
