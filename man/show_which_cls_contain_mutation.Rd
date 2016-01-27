@@ -4,10 +4,10 @@
 \alias{show_which_cls_contain_mutation}
 \title{show_which_cls_contain_mutation}
 \usage{
-Cls_containing_mutations = show_which_cls_contain_mutation( 
-mutation_name = "10_103354427_103354427", 
-ref_gen = "GRCH37", 
-distinct_mode = TRUE )
+show_which_cls_contain_mutation( 
+mutation_name, 
+ref_gen, 
+distinct_mode)
 }
 \arguments{
 \item{mutation_name}{Name of the mutation in the format CHROMOSOME_START_STOP, e.g. '11_244501_244510'}
@@ -21,5 +21,11 @@ R table which contains all cancer cell line samples which contain the specified 
 }
 \description{
 Show all cancer cell lines in the database which contained the specified mutation and reference Genome. Closed interval coordinates. Format mutation: CHR_START_STOP, e.g. 1_123_123
+}
+\examples{
+Cls_containing_mutations = show_which_cls_contain_mutation( 
+mutation_name = "10_103354427_103354427", 
+ref_gen = "GRCH37", 
+distinct_mode = TRUE )
 }
 

@@ -4,12 +4,12 @@
 #' 
 #' @inheritParams identify_vcf_file
 #' @param request_table Names of the tables to be extracted from the database
-#' @return the sim_list and sim_list_stats variable
+#' @return Returns the sim_list and sim_list_stats variable
 #' @usage 
 #' inititate_db_and_load_data(
-#' ref_gen = "GRCH37", 
-#' distinct_mode = TRUE,
-#' request_table = "sim_list" )
+#' ref_gen, 
+#' distinct_mode,
+#' request_table )
 #' @import DBI RSQLite
 inititate_db_and_load_data = function( ref_gen, distinct_mode, request_table ){
     
@@ -43,8 +43,6 @@ inititate_db_and_load_data = function( ref_gen, distinct_mode, request_table ){
 #' Intern utility function, writes to database the sim_list and sim_list_stats variables
 #' 
 #' @inheritParams identify_vcf_file
-#' @param sim_list R Table which contain a mapping of mutations to cancer cell lines for a specific reference genome
-#' @param sim_list_stats Contains an aggergated R table that shows the amount and weight of mutations for a reference genome
 #' @param content_table Tables to be written in db
 #' @param table_name Name of the table to be written into the DB
 #' @param overwrite Overwrite the potentially existing table
@@ -52,12 +50,12 @@ inititate_db_and_load_data = function( ref_gen, distinct_mode, request_table ){
 #' @return the sim_list and sim_list_stats variable
 #' @usage 
 #' write_data_to_db( 
-#' content_table = sim_list, 
-#' table_name = "sim_list_stats",
-#' ref_gen = "GRCH37",
-#' distinct_mode = TRUE,
-#' overwrite = TRUE,
-#' test_mode = FALSE )
+#' content_table, 
+#' table_name,
+#' ref_gen,
+#' distinct_mode,
+#' overwrite,
+#' test_mode )
 #' @import DBI RSQLite
 write_data_to_db = function( content_table, table_name, ref_gen = "GRCH37", distinct_mode = TRUE, overwrite = TRUE, test_mode = FALSE ){
     

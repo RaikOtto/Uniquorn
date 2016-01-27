@@ -5,8 +5,8 @@
 \title{show_contained_mutations}
 \usage{
 show_contained_mutations( 
-ref_gen = "GRCH37", 
-distinct_mode = TRUE )
+ref_gen, 
+distinct_mode )
 }
 \arguments{
 \item{ref_gen}{Reference genome version}

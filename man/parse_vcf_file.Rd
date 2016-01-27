@@ -2,9 +2,9 @@
 % Please edit documentation in R/Parse_VCF_data.R
 \name{parse_vcf_file}
 \alias{parse_vcf_file}
-\title{Loads VCF-based data into the db}
+\title{parse_vcf_file}
 \usage{
-parse_vcf_file( vcf_file_path = "path_to_vcf_file" )
+parse_vcf_file( vcf_file_path )
 }
 \arguments{
 \item{vcf_file_path}{Path to the vcf file on the operating system}
@@ -13,6 +13,6 @@ parse_vcf_file( vcf_file_path = "path_to_vcf_file" )
 Loci-based DNA-mutational fingerprint of the cancer cell line as found in the input VCF file
 }
 \description{
-Loads VCF-based data into the db
+Parses the vcf file and filters all information except for the start and length of variations/ mutations.
 }
 

@@ -35,7 +35,7 @@ add_custom_vcf_to_database = function(
     
     # pre processing
 
-    name_cl = str_to_upper(name_cl)
+    name_cl = stringr::str_to_upper(name_cl)
     
     base::print( base::paste0( "Reference genome: ",ref_gen ) )
     
@@ -49,7 +49,7 @@ add_custom_vcf_to_database = function(
     
     if ( name_cl == "" ){
         
-        vcf_identifier = as.character( utils::tail( unlist( str_split( vcf_file_path, "/" ) ), 1) )
+        vcf_identifier = as.character( utils::tail( unlist( stringr::str_split( vcf_file_path, "/" ) ), 1) )
         name_cl = utils::head( unlist( stringr::str_split( vcf_identifier, ".vcf|.VCF" ) )  , 1)
         name_cl = stringr::str_to_upper( base::paste( name_cl, "CUSTOM", sep ="_"  ) )
         print( base::paste0( "No cl name provided, adding auto-generated fingerprint: ", name_cl ) )

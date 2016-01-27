@@ -37,6 +37,7 @@ parse_cosmic_genotype_data = function( cosmic_file, sim_list ){
 #' parse_ccle_genotype_data
 #' 
 #' Parses ccle genotype data
+#' 
 #' @param sim_list Variable containing mutations and cell line
 #' @param ccle_file Path to CCLE file on hard disk
 parse_ccle_genotype_data = function( ccle_file, sim_list ){

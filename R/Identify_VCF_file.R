@@ -1,5 +1,7 @@
 #' identify_vcf_file
 #' 
+#' Identifies a cancer cell lines contained in a vcf file based on the pattern (start & length) of all contained mutations/ variations.
+#' 
 #' \code{identify_vcf_file} parses the vcf file and predicts the identity of the sample
 #' 
 #' @param write_xls Create identification results additionally as xls file for easier reading

@@ -41,6 +41,9 @@ manual_identifier_bed_file = "")
 R table with a statistic of the identification result
 }
 \description{
+Identifies a cancer cell lines contained in a vcf file based on the pattern (start & length) of all contained mutations/ variations.
+}
+\details{
 \code{identify_vcf_file} parses the vcf file and predicts the identity of the sample
 }
 \examples{

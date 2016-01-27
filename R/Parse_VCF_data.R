@@ -1,7 +1,10 @@
-#' Loads VCF-based data into the db
+#' parse_vcf_file
+#' 
+#' Parses the vcf file and filters all information except for the start and length of variations/ mutations.
+#' 
 #' @param vcf_file_path Path to the vcf file on the operating system
 #' @usage 
-#' parse_vcf_file( vcf_file_path = "path_to_vcf_file" )
+#' parse_vcf_file( vcf_file_path )
 #' @return Loci-based DNA-mutational fingerprint of the cancer cell line as found in the input VCF file 
 parse_vcf_file = function( vcf_file_path  ){
   
