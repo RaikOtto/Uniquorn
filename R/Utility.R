@@ -4,24 +4,24 @@
 #' 
 #' @inheritParams identify_vcf_file
 #' @param request_table Names of the tables to be extracted from the database
+#' @load_default_db Indicate whether the default db should be used as source for the data
 #' @return Returns the sim_list and sim_list_stats variable
 #' @usage 
 #' inititate_db_and_load_data(
 #' ref_gen, 
 #' distinct_mode,
-#' request_table )
+#' request_table,
+#' load_default_db )
 #' @import DBI RSQLite
-inititate_db_and_load_data = function( ref_gen, distinct_mode, request_table ){
+inititate_db_and_load_data = function( ref_gen, distinct_mode, request_table, load_default_db = FALSE ){
     
     package_path    = system.file("", package="Uniquorn")
-    
-    if (distinct_mode)
-        database_path =  paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
+    database_path =  paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
 
     if (!distinct_mode)
         database_path =  paste( package_path, "uniquorn_non_distinct_panels_db.sqlite", sep ="/" )
     
-    if( ! file.exists( database_path ) ){
+    if( (! file.exists( database_path) ) | ( load_default_db ) ){
 
         database_path =  paste( package_path, "uniquorn_db_default.sqlite", sep ="/" )
         warning("CCLE & CoSMIC CLP cancer cell line fingerprint NOT found, defaulting to 60 CellMiner cancer cell lines! 

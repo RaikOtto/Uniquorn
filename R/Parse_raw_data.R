@@ -25,23 +25,11 @@ initiate_canonical_databases = function(
     
     ### pre-processing
     
-    package_path  = system.file("", package="Uniquorn")
-    database_path = base::paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
-    database_default_path = base::paste( package_path, "uniquorn_db_default.sqlite", sep ="/" )
-    
-    if (!distinct_mode)
-        database_path   =  base::paste( package_path, "uniquorn_non_distinct_panels_db.sqlite", sep ="/" )
-
-    if ( base::file.exists(database_path) )
-        base::file.copy( from = database_path, to = database_default_path, overwrite = TRUE )
-    
-    sim_list       = inititate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list" )
+    sim_list = inititate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list", load_default_db = TRUE )
     
     sim_list = sim_list[, which( colnames(sim_list) != "Ref_Gen"  ) ]
     sim_list = sim_list[, which( colnames(sim_list) != "Weight"  ) ]
 
-    parse_files = c()
-  
     if (file.exists(cosmic_file)){
       
         print( c( "Found CoSMIC: ", file.exists(cosmic_file) )  )
@@ -61,12 +49,8 @@ initiate_canonical_databases = function(
       sim_list = parse_ccle_genotype_data( ccle_file, sim_list )
     }
     
-    if (length(parse_files) == 0)
+    if ( (! file.exists(cosmic_file) ) & (! file.exists(ccle_file)) )
       stop("Did not find CCLE & CoSMIC CLP file! Aborting.")
-    
-    # overwrite existing db
-    if (file.exists(database_path))
-        file.remove( database_path )
     
     print("Finished parsing, aggregating over parsed Cancer Cell Line data")
 
