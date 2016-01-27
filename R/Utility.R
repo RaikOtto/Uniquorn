@@ -18,8 +18,12 @@
 #' @import DBI RSQLite
 initiate_db_and_load_data = function( ref_gen, distinct_mode, request_table, load_default_db = FALSE ){
     
-    package_path    = system.file("", package="Uniquorn")
+    package_path = system.file("", package="Uniquorn")
     default_database_path =  paste( package_path, "uniquorn_db_default.sqlite", sep ="/" )
+    
+    if (! file.exists( default_database_path )){
+        default_database_path =  paste( package_path, "/inst/uniquorn_db_default.sqlite", sep ="/" )
+    }
     
     database_path =  paste( package_path, "uniquorn_distinct_panels_db.sqlite", sep ="/" )
 
