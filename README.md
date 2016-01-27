@@ -22,7 +22,9 @@ optional if you have the packages installed and loaded
 
 `install_github("RaikOtto/Uniquorn")`
 
-Note that some systems require the prior command `options(unzip = 'internal')` to install from github 
+Note that some systems require the prior command `options(unzip = 'internal')` to install from github.
+
+Note as well, that dependency packages can be install with e.g. install.packages("stringr")
 
 ## Test run
 
