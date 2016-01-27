@@ -2,8 +2,6 @@
 
 Package to identify cancer cell lines (CL)s based on their weighted mutational fingerprint.
 
-
-
 # 1 How to make it work:  Quickstart
 
 ## Preparation 
