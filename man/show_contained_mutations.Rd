@@ -4,7 +4,7 @@
 \alias{show_contained_mutations}
 \title{Show all mutations present in the database for a selected reference Genome}
 \usage{
-show_contained_mutations(ref_gen = "GRCH37", distinct_mode = TRUE)
+show_contained_mutations( ref_gen = "GRCH37", distinct_mode = TRUE )
 }
 \arguments{
 \item{ref_gen}{Reference genome version}
@@ -15,6 +15,7 @@ show_contained_mutations(ref_gen = "GRCH37", distinct_mode = TRUE)
 R Table which contains all mutations associated with a particular cancer cell line for a specified reference genome
 }
 \description{
-Show all mutations present in the database for a selected reference Genome
+This function shows all training-set mutations for a selected reference genome, i.e. the mutations that are being used
+for identification of query cancer cell lines.
 }
 

@@ -43,11 +43,14 @@ inititate_db_and_load_data = function( ref_gen, distinct_mode, request_tables ){
 #' 
 #' @param sim_list R Table which contain a mapping of mutations to cancer cell lines for a specific reference genome
 #' @param sim_list_stats Contains an aggergated R table that shows the amount and weight of mutations for a reference genome
+#' @param content_table Tables to be written in db
+#' @param table_name Name of the table to be written into the DB
+#' @param overwrite Overwrite the potentially existing table
 #' @return the sim_list and sim_list_stats variable
 #' @usage 
 #' write_data_to_db( sim_list = sim_list, sim_list_stats sim_list_stats, ref_gen = "GRCH37", distinct_mode = TRUE )
 #' @import DBI RSQLite
-write_data_to_db = function( sim_list, sim_list_stats, ref_gen, distinct_mode ){
+write_data_to_db = function( content_table, table_name, ref_gen = "GRCH37", distinct_mode = TRUE, overwrite = TRUE ){
     
     package_path    = system.file("", package="Uniquorn")
     
@@ -65,6 +68,7 @@ write_data_to_db = function( sim_list, sim_list_stats, ref_gen, distinct_mode ){
     drv = RSQLite::SQLite()
     con = DBI::dbConnect(drv, dbname = database_path)
     
+    DBI::dbWriteTable( con, table_name, content_table, overwrite = overwrite )
     
     DBI::dbDisconnect(con)
 

@@ -87,7 +87,7 @@ add_custom_vcf_to_database = function(
     
     vcf_fingerprint = as.character( parse_vcf_file( vcf_file_path ) )
     
-    if(safe_mode)
+    if( safe_mode )
         vcf_fingerprint = vcf_fingerprint[ which( vcf_fingerprint %in% sim_list$Fingerprint ) ]
     
     vcf_fingerprint = data.frame( 

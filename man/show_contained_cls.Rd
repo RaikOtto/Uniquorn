@@ -4,7 +4,7 @@
 \alias{show_contained_cls}
 \title{Show all cancer cell line identifier present in the database for a selected reference genome.}
 \usage{
-show_contained_cls(ref_gen = "GRCH37", distinct_mode = TRUE)
+contained_cls = show_contained_cls( ref_gen = "GRCH37" )
 }
 \arguments{
 \item{ref_gen}{Reference genome version. All training sets are associated with a reference genome version. Default: GRCH37}
@@ -12,9 +12,10 @@ show_contained_cls(ref_gen = "GRCH37", distinct_mode = TRUE)
 \item{distinct_mode}{Show training data for the commonly or separately normalized training sets. Options: TRUE/ FALSE}
 }
 \value{
-R table which contains the identifier of all cancer cell line samples with the specific reference genome
+R table which contains the identifier of all cancer cell line samples with the specific reference genome and the weight of all mutations
 }
 \description{
-Show all cancer cell line identifier present in the database for a selected reference genome.
+This function shows the names, amount of mutations/ variations, overall weight of the mutations of all contained training CLs 
+for a chosen reference genome.
 }
 

@@ -1,7 +1,8 @@
 #' Loads VCF-based data into the db
 #' @param vcf_file_path Path to the vcf file on the operating system
+#' @usage 
+#' parse_vcf_file( vcf_file_path = "path_to_vcf_file" )
 #' @return Loci-based DNA-mutational fingerprint of the cancer cell line as found in the input VCF file 
-#' @export
 parse_vcf_file = function( vcf_file_path  ){
   
   if ( base::file.exists( vcf_file_path ) ){
