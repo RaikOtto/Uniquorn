@@ -141,9 +141,12 @@ identify_vcf_file = function(
     all_weighted            = rep( 0.0, nr_cls )
     
     passed_threshold_vec    = rep( FALSE, nr_cls )
+    
     res_cl_weighted         = rep( 0.0, nr_cls )
     res_res_cl_weighted     = rep( 0.0, nr_cls )
     stats_all_weight        = rep( 0.0, nr_cls )
+    
+    cl_absolute_mutation_hits = rep( 0.0, nr_cls )
         
     if ( length( found_mut_mapping ) != 0){
         
@@ -192,6 +195,7 @@ identify_vcf_file = function(
         res_res_cl_weighted = round( as.double(res_cl_weighted  ) / stats_all_weight * 100, 1 )
         res_cl_weighted = round(res_cl_weighted, 0)
     
+        cl_absolute_mutation_hits = sim_list_stats$Count[ cl_match_stats ]
     }
     
     # treshold
@@ -214,7 +218,7 @@ identify_vcf_file = function(
         "CL"                       = output_cl_names,
         "CL_source"                = panel_vec,
         "Found_muts_abs"           = as.character( candidate_hits_abs_all ),
-        "Count_mutations_abs"      = as.character(  sim_list_stats$Count[ cl_match_stats ] ),
+        "Count_mutations_abs"      = as.character(  cl_absolute_mutation_hits ),
         "Found_muts_rel"           = as.character(  candidate_hits_rel ),
         "Found_muts_weighted"      = as.character( res_cl_weighted ),
         "Count_mutations_weighted" = as.character( round( stats_all_weight, 0 ) ),
@@ -252,3 +256,4 @@ identify_vcf_file = function(
     
     return( res_table )
 }
+
