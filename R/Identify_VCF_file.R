@@ -127,64 +127,72 @@ identify_vcf_file = function(
     list_of_cls       = unique( sim_list$CL )
     nr_cls            = length( list_of_cls  ) # amount cls
     
-    found_mut_mapping = which( sim_list$Fingerprint %in% 
-        as.character(unlist(vcf_fingerprint)) ) # mapping
+    candidate_hits_abs_all = rep(0, nr_cls)
+    names(candidate_hits_abs_all) = list_of_cls
     
-    if ( length( found_mut_mapping ) == 0)
-        found_mut_mapping = c(0)
+    found_mut_mapping = which( sim_list$Fingerprint %in% as.character(unlist(vcf_fingerprint)) ) # mapping
+        
+    candidate_hits_abs      = rep( 0.0, nr_cls )
+    candidate_hits_abs_all  = rep( 0.0, nr_cls )
+    candidate_hits_rel      = rep( 0.0, nr_cls )
     
+    cl_weight               = rep( 0.0, nr_cls )
+    cl_weight_rel           = rep( 0.0, nr_cls )
+    all_weighted            = rep( 0.0, nr_cls )
+    
+    passed_threshold_vec    = rep( FALSE, nr_cls )
+    res_cl_weighted         = rep( 0.0, nr_cls )
+    res_res_cl_weighted     = rep( 0.0, nr_cls )
+    stats_all_weight        = rep( 0.0, nr_cls )
+        
+    if ( length( found_mut_mapping ) != 0){
+        
         ### unweighted scores
-    
-        candidate_hits_abs_all = rep(0, nr_cls)
-        names(candidate_hits_abs_all) = list_of_cls
-    
+        
         candidate_hits_abs = stats::aggregate( 
-        rep(1, length(found_mut_mapping)),
-        by = list(sim_list$CL[ found_mut_mapping ]), 
-        FUN = sum
-    )
-    candidate_hits_abs_all[ which( list_of_cls %in% candidate_hits_abs$Group.1) ] = 
-        as.integer( candidate_hits_abs$x[ match( 
-            list_of_cls, 
-            candidate_hits_abs$Group.1, 
-            nomatch = 0 ) ] )
-    
-    cl_match_stats    = match( list_of_cls, sim_list_stats$CL, nomatch = 0 ) # mapping
-    candidate_hits_rel = round( 
-        candidate_hits_abs_all / sim_list_stats$Count[ cl_match_stats ] * 100,
+            rep(1, length(found_mut_mapping)),
+            by = list(sim_list$CL[ found_mut_mapping ]), 
+            FUN = sum
+        )
+        
+        candidate_hits_abs_all[ which( list_of_cls %in% candidate_hits_abs$Group.1) ] = 
+            as.integer( candidate_hits_abs$x[ match( 
+                list_of_cls, 
+                candidate_hits_abs$Group.1, 
+                nomatch = 0 ) ] )
+        
+        cl_match_stats    = match( list_of_cls, sim_list_stats$CL, nomatch = 0 ) # mapping
+        candidate_hits_rel = round( 
+            candidate_hits_abs_all / sim_list_stats$Count[ cl_match_stats ] * 100,
         1 ) 
+        
+        ### weighted scores
     
-    ### weighted scores
     
-    # weights
+        # threshold non weighted
+
+        passed_threshold_vec[ ( candidate_hits_abs_all >= 3 ) & ( candidate_hits_rel >= 2 ) ] = TRUE
+        passed_threshold_weighted = rep( "", nr_cls )
+        
+        # aggregate over weights & CL identifier
+        
+        aggregation = stats::aggregate(
+            x  = as.double( sim_list$Weight[ found_mut_mapping  ] ),
+            by = list( as.character( sim_list$CL[ found_mut_mapping ] )  ),
+            FUN = sum
+        )
+        
+        weight_all = sim_list_stats$All_weights[ match( aggregation$Group.1, sim_list_stats$CL )  ]
+        mapping_to_cls = match( list_of_cls, aggregation$Group.1 , nomatch = 0  )
+        
+        names( res_cl_weighted ) = list_of_cls
+        res_cl_weighted[ names( res_cl_weighted ) %in% aggregation$Group.1  ] = aggregation$x[ mapping_to_cls ]
+        stats_all_weight = sim_list_stats$All_weights[ match( list_of_cls, sim_list_stats$CL  ) ]
+        
+        res_res_cl_weighted = round( as.double(res_cl_weighted  ) / stats_all_weight * 100, 1 )
+        res_cl_weighted = round(res_cl_weighted, 0)
     
-    cl_weight     = rep( 0.0, nr_cls )
-    cl_weight_rel = rep( 0.0, nr_cls )
-    all_weighted  = rep( 0.0, nr_cls )
-    
-    # threshold non weighted
-    passed_threshold_vec = rep( FALSE, nr_cls )
-    passed_threshold_vec[ ( candidate_hits_abs_all >= 3 ) & ( candidate_hits_rel >= 2 ) ] = TRUE
-    passed_threshold_weighted = rep( "", nr_cls )
-    
-    # aggregate over weights & CL identifier
-    
-    aggregation = stats::aggregate(
-        x  = as.double( sim_list$Weight[ found_mut_mapping  ] ),
-        by = list( as.character( sim_list$CL[ found_mut_mapping ] )  ),
-        FUN = sum
-    )
-    
-    weight_all = sim_list_stats$All_weights[ match( aggregation$Group.1, sim_list_stats$CL )  ]
-    mapping_to_cls = match( list_of_cls, aggregation$Group.1 , nomatch = 0  )
-    
-    res_cl_weighted = rep( 0, nr_cls )
-    names( res_cl_weighted ) = list_of_cls
-    res_cl_weighted[ names( res_cl_weighted ) %in% aggregation$Group.1  ] = aggregation$x[ mapping_to_cls ]
-    stats_all_weight = sim_list_stats$All_weights[ match( list_of_cls, sim_list_stats$CL  ) ]
-    
-    res_res_cl_weighted = round( as.double(res_cl_weighted  ) / stats_all_weight * 100, 1 )
-    res_cl_weighted = round(res_cl_weighted, 0)
+    }
     
     # treshold
     
