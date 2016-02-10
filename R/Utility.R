@@ -99,6 +99,7 @@ re_calculate_cl_weights = function( sim_list, ref_gen, distinct_mode ){
     panels = as.character(unique( as.character( sapply( panels, FUN = utils::tail, 1) ) ))
     
     if (!distinct_mode){
+        
         panels = paste0( c(panels), collapse ="|"  )
         database_path =  paste( package_path, 
             "uniquorn_non_distinct_panels_db.sqlite3", sep ="/" )

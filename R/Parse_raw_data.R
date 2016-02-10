@@ -57,12 +57,14 @@ initiate_canonical_databases = function(
     }
     
     if ( (! file.exists(cosmic_file) ) & (! file.exists(ccle_file)) ){ 
-      warning("Did neither find CCLE & CoSMIC CLP file! Aborting.")
+      
+        warning("Did neither find CCLE & CoSMIC CLP file! Aborting.")
+        
     } else {
     
         print("Finished parsing, aggregating over parsed Cancer Cell Line data")
     
-        res_vec = re_calculate_cl_weights( sim_list = sim_list, ref_gen = ref_gen, distinct_mode = TRUE )
+        res_vec = re_calculate_cl_weights( sim_list = sim_list, ref_gen = ref_gen, distinct_mode = distinct_mode )
       
         print("Finished aggregating, saving to database")
         
