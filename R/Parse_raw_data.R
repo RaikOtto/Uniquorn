@@ -29,7 +29,7 @@ initiate_canonical_databases = function(
     ){
 
     print( c( "Reference genome: ", ref_gen )  )
-    
+
     ### pre-processing
     
     sim_list = initiate_db_and_load_data( ref_gen = ref_gen, distinct_mode = distinct_mode, request_table = "sim_list", load_default_db = TRUE )
