@@ -26,8 +26,8 @@ parse_cosmic_genotype_data = function( cosmic_file, sim_list ){
     
     coords = as.character( sapply( cosmic_genotype_tab[,2], FUN = stringr::str_replace_all, ":|-", "_" ) )
     cls    = stringr::str_replace_all( stringr::str_to_upper(cosmic_genotype_tab[,1]), "/|(|])| ", "" )
-    cls[ cls == "KM-H2" ] = "KMH2_version1"
-    cls[ cls == "KMH-2" ] = "KMH2_version2"
+    cls[ cls == "KM-H2" ] = "KMH2"
+    cls[ cls == "KMH-2" ] = "KMH2ALTERNATIVE"
     cls    = sapply( cls, FUN = function( cl_name ){ return( paste(cl_name, "COSMIC", sep = "_") ) } )
     
     new_sim_list = data.frame( coords, cls )
