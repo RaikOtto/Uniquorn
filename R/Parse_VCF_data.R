@@ -20,14 +20,14 @@ split_add = function( vcf_matrix_row ){
         length_var = length( unlist( stringr::str_split( variation,"") ))
         
         length_alt = max( length_var, length_ref )
-        end_var    = as.character( as.integer(start_var) + length_alt - 1 )
+        end_var    = as.character( as.integer( as.integer(start_var) + length_alt - 1 ) )
         
         chrom      = stringr::str_replace( stringr::str_to_upper( stringr::str_trim( as.character( unlist( chromosome[i] ) ) ) ), "CHR", "" )
         
         fingerprint = c( 
             fingerprint, 
             paste0( c( 
-                as.character(chrom), 
+                as.character(chrom),
                 as.character(start_var),
                 as.character(end_var)
             ),
