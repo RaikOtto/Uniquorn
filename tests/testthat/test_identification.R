@@ -1,4 +1,4 @@
-test_that("HT29 test analysis", {
+test_check("Uniquorn", {
     
     library("Uniquorn")
     library("testthat")
