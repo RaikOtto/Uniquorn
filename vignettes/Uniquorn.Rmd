@@ -64,7 +64,7 @@ Please add the CCLE and CoSMIC CLP Cancer Cell Line (CL) data manually due to le
 
 'CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.tsv' from http://www.broadinstitute.org/ccle/data/browseData
 
-Registration for both websites is without charge and not complicated.
+Registration for both websites is without charge and easy.
 
 `initiate_canonical_databases( ccle_file = 'path_to_ccle/CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.tsv', cosmic_file = 'path_to_cosmic/CosmicCLP_MutantExport.tsv.gz', ref_gen = "GRCH37")`
 
