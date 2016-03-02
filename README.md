@@ -4,25 +4,13 @@ Package to identify cancer cell lines (CL)s based on their weighted mutational f
 
 # 1 How to make it work:  Quickstart
 
-## Preparation 
+## Installing the Uniquorn
 
 Start R session e.g. RStudio
 
-optional if you have the packages installed and loaded
-
-`install.packages("devtools")`
-
-`library("devtools")`
-
 `source("https://bioconductor.org/biocLite.R")`
 
-## Install Uniquorn
-
-`install_github("RaikOtto/Uniquorn")`
-
-Note that some systems require the prior command `options(unzip = 'internal')` to install from github.
-
-Note as well, that dependency packages can be install with e.g. install.packages("stringr")
+`biocLite("Uniquorn")`
 
 ## Test run
 
