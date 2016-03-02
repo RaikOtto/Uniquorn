@@ -6,7 +6,7 @@ Package to identify cancer cell lines (CL)s based on their weighted mutational f
 
 ## Installing the Uniquorn
 
-Start R session e.g. RStudio
+Start an R session e.g. using RStudio
 
 `source("https://bioconductor.org/biocLite.R")`
 
