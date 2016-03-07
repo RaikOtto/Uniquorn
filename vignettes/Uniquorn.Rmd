@@ -8,31 +8,19 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+# Uniquorn R package
+
 Package to identify cancer cell lines (CL)s based on their weighted mutational fingerprint.
 
 # 1 How to make it work:  Quickstart
 
-## Preparation 
+## Installing the Uniquorn
 
-Start R session e.g. RStudio
-
-optional if you have the packages installed and loaded
-
-`install.packages("devtools")`
-
-`library("devtools")`
+Start an R session e.g. using RStudio
 
 `source("https://bioconductor.org/biocLite.R")`
 
-## Install Uniquorn
-
-If Uniquorn is available on bioconductor, you can simply type biocLite("Uniquorn") and continue to the next paragraph.
-
-`install_github("RaikOtto/Uniquorn")`
-
-Note that some systems require the prior command `options(unzip = 'internal')` to install from github.
-
-Note as well, that dependency packages can be install with e.g. install.packages("stringr")
+`biocLite("Uniquorn")`
 
 ## Test run
 
@@ -64,7 +52,7 @@ Please add the CCLE and CoSMIC CLP Cancer Cell Line (CL) data manually due to le
 
 'CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.tsv' from http://www.broadinstitute.org/ccle/data/browseData
 
-Registration for both websites is without charge and easy.
+Registration for both websites is without charge and not complicated.
 
 `initiate_canonical_databases( ccle_file = 'path_to_ccle/CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.tsv', cosmic_file = 'path_to_cosmic/CosmicCLP_MutantExport.tsv.gz', ref_gen = "GRCH37")`
 
