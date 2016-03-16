@@ -59,15 +59,35 @@ add_custom_vcf_to_database = function(
     
     if ( name_cl == "" ){
         
-        vcf_identifier = as.character( utils::tail( unlist( stringr::str_split( vcf_file_path, "/" ) ), 1) )
-        name_cl = utils::head( unlist( stringr::str_split( vcf_identifier, ".vcf|.VCF" ) )  , 1)
-        name_cl = stringr::str_to_upper( base::paste( name_cl, "CUSTOM", sep ="_"  ) )
-        print( base::paste0( "No cl name provided, adding auto-generated fingerprint: ", name_cl ) )
+        vcf_identifier = as.character( 
+            utils::tail( 
+                unlist( 
+                    stringr::str_split( 
+                        vcf_file_path, 
+                        "/" 
+                    )
+                ), 
+            1)
+        )
+        name_cl = utils::head( 
+            unlist( stringr::str_split( vcf_identifier, ".vcf|.VCF" ) ) ,
+        1)
+        name_cl = stringr::str_to_upper( base::paste( 
+            name_cl, "CUSTOM", sep ="_"  
+        ))
+        print( base::paste0( 
+            "No cl name provided, adding auto-generated fingerprint: ",
+            name_cl
+        ) )
         
     } else {
         
-        name_cl = stringr::str_to_upper( base::paste(name_cl, "custom", sep ="_"  ) )
-        base::print( base::paste0( "Adding fingerprint with user-defined name: ", name_cl ) )
+        name_cl = stringr::str_to_upper( base::paste(name_cl, "custom",
+            sep ="_"
+        ) )
+        base::print( base::paste0( 
+            "Adding fingerprint with user-defined name: ",
+        name_cl ) )
     }
     
     name_present = base::grepl( name_cl, sim_list_stats$CL )
@@ -82,12 +102,17 @@ add_custom_vcf_to_database = function(
     sim_list = initiate_db_and_load_data( ref_gen = ref_gen, 
         distinct_mode = distinct_mode, request_table = "sim_list" )
     sim_list = sim_list[ sim_list$Ref_Gen == ref_gen,]
-    sim_list = sim_list[, base::which( colnames(sim_list) != "Ref_Gen"  ) ]
-    sim_list = sim_list[, base::which( colnames(sim_list) != "Weight"  ) ]
+    sim_list = sim_list[, base::which( 
+        colnames(sim_list) != "Ref_Gen"
+    ) ]
+    sim_list = sim_list[, base::which( 
+        colnames(sim_list) != "Weight"  )]
     
-    print( paste0( "Building fingerprint from file ",  vcf_file_path )  )
+    print( paste0( "Building fingerprint from file ",
+        vcf_file_path )  )
     
-    vcf_fingerprint = as.character( parse_vcf_file( vcf_file_path ) )
+    vcf_fingerprint = as.character( parse_vcf_file(
+        vcf_file_path ) )
     
     if( safe_mode )
         vcf_fingerprint = vcf_fingerprint[ which( 

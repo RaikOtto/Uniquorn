@@ -21,6 +21,8 @@
 #' ~0 = found in many CL samples. 
 #' @param only_first_candidate Only the CL identifier with highest 
 #' score is predicted to be present in the sample
+#' @param minimum_matching_mutations The minimum amount of mutations that 
+#' has to match between query and training sample for a positive prediction
 #' @param distinct_mode Show training data for the commonly or separately 
 #' normalized training sets. Options: TRUE/ FALSE
 #' @param manual_identifier_bed_file Manually enter a vector of CL 
@@ -35,6 +37,7 @@
 #' output_file = "",
 #' ref_gen = "GRCH37",
 #' similarity_threshold = 5.0,
+#' minimum_matching_mutations = 4,
 #' mutational_weight_inclusion_threshold = 1.0,
 #' only_first_candidate = FALSE,
 #' distinct_mode = TRUE,
@@ -52,6 +55,7 @@ identify_vcf_file = function(
     output_file = "",
     ref_gen = "GRCH37",
     similarity_threshold = 5.0,
+    minimum_matching_mutations = 4,
     mutational_weight_inclusion_threshold = 1.0,
     only_first_candidate = FALSE,
     distinct_mode = TRUE,
@@ -202,9 +206,9 @@ identify_vcf_file = function(
     
     passed_threshold_weighted = rep( FALSE, nr_cls )
     passed_threshold_weighted[ 
-        ( candidate_hits_abs_all >= 3 ) & 
-        ( candidate_hits_rel >= 3 ) & 
-        (res_res_cl_weighted >= similarity_threshold) 
+        ( candidate_hits_abs_all >= minimum_matching_mutations ) & 
+        ( candidate_hits_rel     >= 3 ) & 
+        (res_res_cl_weighted     >= similarity_threshold) 
     ] = TRUE
     
     output_cl_names = stringr::str_replace( list_of_cls, pattern = "_CCLE|_COSMIC|_CELLMINER|_CUSTOM", replacement = "" )

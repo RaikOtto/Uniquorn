@@ -9,6 +9,7 @@ vcf_file,
 output_file = "",
 ref_gen = "GRCH37",
 similarity_threshold = 5.0,
+minimum_matching_mutations = 4,
 mutational_weight_inclusion_threshold = 1.0,
 only_first_candidate = FALSE,
 distinct_mode = TRUE,
@@ -28,6 +29,9 @@ associated with a reference genome version. Default: GRCH37}
 \item{similarity_threshold}{Cl identification that surpass this 
 percentage of training mutation weight (importance) are predicted 
 as present in the sample.}
+
+\item{minimum_matching_mutations}{The minimum amount of mutations that 
+has to match between query and training sample for a positive prediction}
 
 \item{mutational_weight_inclusion_threshold}{Include only mutations 
 with a weight of at least x. Range: 0.0 to 1.0. 1= unique to CL. 
