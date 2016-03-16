@@ -17,7 +17,7 @@ Imports:
     R.utils,
     WriteXLS
 Depends: 
-    R (>= 3.2)
+    R (>= 3.3)
 License: Artistic-2.0
 LazyData: TRUE
 Type: Package

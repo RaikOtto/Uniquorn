@@ -1,4 +1,4 @@
-#' identify_vcf_file
+#' identify_VCF_file
 #' 
 #' Identifies a cancer cell lines contained in a vcf file based 
 #' on the pattern (start & length) of all contained mutations/ variations.
@@ -178,7 +178,10 @@ identify_vcf_file = function(
     
         # threshold non weighted
 
-        passed_threshold_vec[ ( candidate_hits_abs_all >= 3 ) & ( candidate_hits_rel >= 2 ) ] = TRUE
+        passed_threshold_vec[ 
+          ( candidate_hits_abs_all >= minimum_matching_mutations ) & 
+          ( candidate_hits_rel     >= similarity_threshold )
+        ] = TRUE
         passed_threshold_weighted = rep( "", nr_cls )
         
         # aggregate over weights & CL identifier
@@ -189,14 +192,24 @@ identify_vcf_file = function(
             FUN = sum
         )
         
-        weight_all = sim_list_stats$All_weights[ match( aggregation$Group.1, sim_list_stats$CL )  ]
-        mapping_to_cls = match( list_of_cls, aggregation$Group.1 , nomatch = 0  )
+        weight_all = sim_list_stats$All_weights[ 
+          match( aggregation$Group.1, sim_list_stats$CL )
+        ]
+        mapping_to_cls = match( 
+          list_of_cls,
+          aggregation$Group.1,
+          nomatch = 0
+        )
         
         names( res_cl_weighted ) = list_of_cls
-        res_cl_weighted[ names( res_cl_weighted ) %in% aggregation$Group.1  ] = aggregation$x[ mapping_to_cls ]
-        stats_all_weight = sim_list_stats$All_weights[ match( list_of_cls, sim_list_stats$CL  ) ]
+        res_cl_weighted[ names( res_cl_weighted ) %in% aggregation$Group.1  ] = 
+          aggregation$x[ mapping_to_cls ]
+        stats_all_weight = sim_list_stats$All_weights[ 
+          match( list_of_cls, sim_list_stats$CL  )
+        ]
         
-        res_res_cl_weighted = round( as.double(res_cl_weighted  ) / stats_all_weight * 100, 1 )
+        res_res_cl_weighted = round( as.double(res_cl_weighted  ) / 
+                                       stats_all_weight * 100, 1 )
         res_cl_weighted = round(res_cl_weighted, 0)
     
         cl_absolute_mutation_hits = sim_list_stats$Count[ cl_match_stats ]
@@ -207,8 +220,8 @@ identify_vcf_file = function(
     passed_threshold_weighted = rep( FALSE, nr_cls )
     passed_threshold_weighted[ 
         ( candidate_hits_abs_all >= minimum_matching_mutations ) & 
-        ( candidate_hits_rel     >= 3 ) & 
-        (res_res_cl_weighted     >= similarity_threshold) 
+        ( candidate_hits_rel     >= similarity_threshold ) & 
+        ( res_res_cl_weighted    >= similarity_threshold ) 
     ] = TRUE
     
     output_cl_names = stringr::str_replace( list_of_cls, pattern = "_CCLE|_COSMIC|_CELLMINER|_CUSTOM", replacement = "" )
