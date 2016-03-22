@@ -30,10 +30,19 @@ parse_cosmic_genotype_data = function( cosmic_file, sim_list ){
     cls[ cls == "KMH-2" ] = "KMH2ALTERNATIVE"
     cls    = sapply( cls, FUN = function( cl_name ){ return( paste(cl_name, "COSMIC", sep = "_") ) } )
     
-    new_sim_list = data.frame( coords, cls )
-    colnames(new_sim_list) = colnames(sim_list)
-    sim_list = rbind( sim_list, new_sim_list )
+    unify = function( CL, coords, cls ){
+        
+        Fingerprint = unique( coords[ cls == CL] )
+        return_val = cbind(Fingerprint, CL)
+        
+        return( return_val )
+    }
     
+    new_coords = sapply( unique(cls), coords, cls, FUN = unify )
+    
+    tmp_list = lapply( new_coords, "names<-", value = c("V1", "V2"))
+    sim_list = do.call("rbind", lapply(tmp_list, data.frame, stringsAsFactors = FALSE))
+ 
     return(sim_list)
 }
 
