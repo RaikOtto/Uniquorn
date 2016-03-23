@@ -30,6 +30,7 @@
 #' them passing the detection threshold
 #' @param output_bed_file If BED files for IGV visualization should be 
 #' created for the Cancer Cell lines that pass the threshold
+#' @param verbose Print additional information
 #' @import DBI WriteXLS RSQLite
 #' @usage 
 #' identify_vcf_file( 
@@ -40,10 +41,11 @@
 #' minimum_matching_mutations = 4,
 #' mutational_weight_inclusion_threshold = 1.0,
 #' only_first_candidate = FALSE,
-#' distinct_mode = TRUE,
 #' write_xls = FALSE,
+#' distinct_mode = TRUE,
 #' output_bed_file = FALSE,
-#' manual_identifier_bed_file = "")
+#' manual_identifier_bed_file = "",
+#' verbose = TRUE)
 #' @examples 
 #' HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn");
 #' 
@@ -61,12 +63,17 @@ identify_vcf_file = function(
     distinct_mode = TRUE,
     write_xls = FALSE,
     output_bed_file = FALSE,
-    manual_identifier_bed_file = ""
+    manual_identifier_bed_file = "",
+    verbose = F
     ){
   
+  if ( verbose )  
     print( paste0("Assuming reference genome ", ref_gen) )
   
     ### pre processing
+  
+  if (verbose)
+    print( paste0("Reading VCF file: ", vcf_file ) )
     
     vcf_fingerprint = parse_vcf_file( vcf_file )
     
@@ -83,37 +90,47 @@ identify_vcf_file = function(
     }
     output_file_xls = stringr::str_replace( output_file, ".tab$", ".xls" ) 
     
-    print( "Finished reading the VCF file, loading database" )
+    if ( verbose )
+      print( "Finished reading the VCF file, loading database" )
 
     sim_list       = initiate_db_and_load_data( ref_gen = ref_gen, 
         distinct_mode = distinct_mode, request_table = "sim_list" )
     sim_list_stats = initiate_db_and_load_data( ref_gen = ref_gen, 
         distinct_mode = distinct_mode, request_table = "sim_list_stats" )
     
+    contained_cls_original = sim_list_stats$CL
+    
     if ( ( sum( grepl( "_COSMIC", sim_list_stats$CL ) ) + sum( grepl( "_CCLE", sim_list_stats$CL ) ) ) == 0 )
-        warning("CCLE & CoSMIC CLP cancer cell line fingerprint NOT 
-            found, defaulting to 60 CellMiner cancer cell lines! 
-            It is strongly advised to add ~1900 CCLE & CoSMIC CLs, see readme."
+        
+      if( verbose )
+          warning("CCLE & CoSMIC CLP cancer cell line fingerprint NOT 
+              found, defaulting to 60 CellMiner cancer cell lines! 
+              It is strongly advised to add ~1900 CCLE & CoSMIC CLs, see readme."
         )
 
     sim_list = sim_list[ sim_list$Ref_Gen == ref_gen  ,]
     sim_list_stats = sim_list_stats[ sim_list_stats$Ref_Gen == ref_gen  ,]
     
-    base::print( base::paste0( c("Found ", base::as.character( 
-        base::length( unique(sim_list$CL) ) ), " many CLs for reference genome ", 
-        ref_gen ), collapse = "" ) )
-    base::print("Finished reading database, identifying CL")
+    if (verbose)
+        print( base::paste0( c("Found ", base::as.character( 
+            base::length( unique(sim_list$CL) ) ), " many CLs for reference genome ", 
+            ref_gen ), collapse = "" ) )
+    
+    if (verbose)
+        print("Finished reading database, identifying CL")
     
     # filter for weights
     if ( mutational_weight_inclusion_threshold != 0.0  ){
     
-        base::print( base::paste0( c("Adjusted mutational inclusion weight, 
+      if (verbose)        
+        print( base::paste0( c("Adjusted mutational inclusion weight, 
             only using mutations that are have a weight higher than ", 
             as.character(mutational_weight_inclusion_threshold)), collapse="") )
         
         sim_list = sim_list[ base::as.double(sim_list$Weight) >= 
             as.double( mutational_weight_inclusion_threshold) ,  ]
         sum_vec = rep(1, dim(sim_list)[1])
+        
         sim_list_stats = stats::aggregate( as.double( sum_vec ), 
             by = list( sim_list$CL), FUN = sum  )
         
@@ -123,10 +140,28 @@ identify_vcf_file = function(
         
         colnames( sim_list_stats ) = c("CL","Count", "All_weights")
         sim_list_stats$All_weights = round(sim_list_stats$All_weights,1)
-        print( paste0( c("Found ", as.character( dim(sim_list)[1] ), 
+       
+        if (verbose)
+         print( paste0( c("Found ", as.character( dim(sim_list)[1] ), 
             " many mutations with mutational weight of at least ", 
             mutational_weight_inclusion_threshold), collapse="")  )
     }
+    
+    dif = length(contained_cls_original) - 
+        length (sim_list_stats$CL)
+    dif_cls = contained_cls_original[
+        which(!(contained_cls_original %in% sim_list_stats$CL))
+    ]
+    
+    if ( (dif != 0) & verbose )
+        warning(paste0(c(
+            as.character(dif),
+            " CLs have no mutations for the chosen weight 
+            and cannot be identified: ",
+            paste0(c(dif_cls), collapse = ", ")
+            , " Probably they are too closely simlar to other training CLs"),
+            collapse=""
+        ))
     
     list_of_cls       = unique( sim_list$CL )
     nr_cls            = length( list_of_cls  ) # amount cls
@@ -243,16 +278,46 @@ identify_vcf_file = function(
         "Passed_threshold"         = as.character( passed_threshold_weighted )
     )
     
+    for (cl in dif_cls){
+
+        res_table = data.frame(
+            "CL"                       = c( as.character(res_table$CL), 
+                                            as.character(cl)),
+            "CL_source"                = c( 
+                res_table$CL_source,tail(unlist(str_split(cl,"_")),1
+            )),
+            "Found_muts_abs"           = c( res_table$Found_muts_abs,
+                as.character( "0" )),
+            "Count_mutations_abs"      = c( res_table$Count_mutations_abs,
+                as.character( "0" )),
+            "Found_muts_rel"           = c( res_table$Found_muts_rel,
+                as.character( "0" )),
+            "Found_muts_weighted"      = c( res_table$Found_muts_weighted,
+                as.character( "0" )),
+            "Count_mutations_weighted" = c( res_table$Count_mutations_weighted,
+                as.character( "0" )),
+            "Found_muts_weighted_rel"  = c( res_table$Found_muts_weighted_rel,
+                as.character( "0" )),
+            "Passed_threshold"         = c( res_table$Passed_threshold,
+                as.character( "FALSE" ))
+        )
+    }
+    
     res_table = res_table[ order( as.double( as.character( res_table$Found_muts_weighted_rel) ), decreasing = TRUE),  ]
     
     if (only_first_candidate)
-        res_table$Passed_threshold[ seq(2, length(res_table$Passed_threshold)) ] = FALSE
+        
+      res_table$Passed_threshold[ seq(2, length(res_table$Passed_threshold)) ] = FALSE
     
-    print( paste0( "Candidate(s): ", paste0( ( unique( 
-        as.character( res_table$CL )[ res_table$Passed_threshold == TRUE  ]) ), 
-        collapse = "," ) )  )
+    if ( verbose )
+        
+      print( paste0( "Candidate(s): ", paste0( ( unique( 
+            as.character( res_table$CL )[ res_table$Passed_threshold == TRUE  ]) ), 
+            collapse = "," ) )  )
     
-    print( paste0("Storing information in table: ",output_file ) )
+    if( verbose )
+        
+      print( paste0("Storing information in table: ",output_file ) )
     
     utils::write.table( res_table, output_file, sep ="\t", row.names = FALSE, quote = FALSE  )
     
@@ -271,6 +336,7 @@ identify_vcf_file = function(
 
         WriteXLS::WriteXLS( x = res_table, path.expand( output_file_xls ), row.names = FALSE)
     
-    return( res_table )
+    if ( verbose ) 
+      res_table
 }
 

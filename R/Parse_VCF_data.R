@@ -49,8 +49,6 @@ split_add = function( vcf_matrix_row ){
 parse_vcf_file = function( vcf_file_path  ){
   
   if ( base::file.exists( vcf_file_path ) ){
-  
-    print( paste0("Reading VCF file: ", vcf_file_path ) )
     
     vcf_handle = utils::read.table( vcf_file_path, sep ="\t", header = FALSE, comment.char = "#", fill = TRUE )
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/Identify_VCF_file.R
 \name{identify_vcf_file}
 \alias{identify_vcf_file}
-\title{identify_vcf_file}
+\title{identify_VCF_file}
 \usage{
 identify_vcf_file( 
 vcf_file,
@@ -12,10 +12,11 @@ similarity_threshold = 5.0,
 minimum_matching_mutations = 4,
 mutational_weight_inclusion_threshold = 1.0,
 only_first_candidate = FALSE,
-distinct_mode = TRUE,
 write_xls = FALSE,
+distinct_mode = TRUE,
 output_bed_file = FALSE,
-manual_identifier_bed_file = "")
+manual_identifier_bed_file = "",
+verbose = TRUE)
 }
 \arguments{
 \item{vcf_file}{Input vcf file. Only one sample column allowed.}
@@ -52,6 +53,8 @@ created for the Cancer Cell lines that pass the threshold}
 \item{manual_identifier_bed_file}{Manually enter a vector of CL 
 name(s) whose bed files should be created, independently from 
 them passing the detection threshold}
+
+\item{verbose}{Print additional information}
 }
 \value{
 R table with a statistic of the identification result
