@@ -298,7 +298,7 @@ identify_vcf_file = function(
                 as.character( "0" )),
             "Found_muts_weighted_rel"  = c( res_table$Found_muts_weighted_rel,
                 as.character( "0" )),
-            "Passed_threshold"         = c( res_table$Passed_threshold,
+            "Passed_threshold"         = c( as.character( res_table$Passed_threshold ),
                 as.character( "FALSE" ))
         )
     }
