@@ -288,8 +288,8 @@ identify_vcf_file = function(
             res_table = data.frame(
                 "CL"                       = c( as.character(res_table$CL), 
                                                 as.character(cl)),
-                "CL_source"                = c( 
-                    res_table$CL_source,tail(unlist(str_split(cl,"_")),1
+                "CL_source"                = c( as.character( res_table$CL_source),
+                    tail(unlist(str_split(cl,"_")),1
                     )),
                 "Found_muts_abs"           = c( res_table$Found_muts_abs,
                                                 as.character( "0" )),
