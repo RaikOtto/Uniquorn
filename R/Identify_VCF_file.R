@@ -286,25 +286,34 @@ identify_vcf_file = function(
         for (cl in dif_cls){
             
             res_table = data.frame(
-                "CL"                       = c( as.character(res_table$CL), 
-                                                as.character(cl)),
-                "CL_source"                = c( as.character( res_table$CL_source),
+                "CL"                       = c( 
+                    as.character(res_table$CL), 
+                    as.character(cl)),
+                "CL_source"                = c( 
+                    as.character( res_table$CL_source),
                     tail(unlist(str_split(cl,"_")),1
                     )),
-                "Found_muts_abs"           = c( res_table$Found_muts_abs,
-                                                as.character( "0" )),
-                "Count_mutations_abs"      = c( res_table$Count_mutations_abs,
-                                                as.character( "0" )),
-                "Found_muts_rel"           = c( res_table$Found_muts_rel,
-                                                as.character( "0" )),
-                "Found_muts_weighted"      = c( res_table$Found_muts_weighted,
-                                                as.character( "0" )),
-                "Count_mutations_weighted" = c( res_table$Count_mutations_weighted,
-                                                as.character( "0" )),
-                "Found_muts_weighted_rel"  = c( res_table$Found_muts_weighted_rel,
-                                                as.character( "0" )),
-                "Passed_threshold"         = c( as.character( res_table$Passed_threshold ),
-                                                as.character( "FALSE" ))
+                "Found_muts_abs"           = c( 
+                    as.character( res_table$Found_muts_abs ),
+                    as.character( "0" )),
+                "Count_mutations_abs"      = c( 
+                    as.character( res_table$Count_mutations_abs),
+                    as.character( "0" )),
+                "Found_muts_rel"           = c( 
+                    as.character( res_table$Found_muts_rel),
+                    as.character( "0" )),
+                "Found_muts_weighted"      = c( 
+                    as.character( res_table$Found_muts_weighted),
+                    as.character( "0" )),
+                "Count_mutations_weighted" = c( 
+                    as.character( res_table$Count_mutations_weighted),
+                    as.character( "0" )),
+                "Found_muts_weighted_rel"  = c( 
+                    as.character( res_table$Found_muts_weighted_rel),
+                    as.character( "0" )),
+                "Passed_threshold"         = c( 
+                    as.character( res_table$Passed_threshold ),
+                    as.character( "FALSE" ))
             )
         }
         
