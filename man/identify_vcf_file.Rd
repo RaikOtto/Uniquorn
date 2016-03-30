@@ -12,11 +12,11 @@ similarity_threshold = 5.0,
 minimum_matching_mutations = 4,
 mutational_weight_inclusion_threshold = 1.0,
 only_first_candidate = FALSE,
-write_xls = FALSE,
 distinct_mode = TRUE,
+write_xls = FALSE,
 output_bed_file = FALSE,
 manual_identifier_bed_file = "",
-verbose = TRUE)
+verbose = FALSE)
 }
 \arguments{
 \item{vcf_file}{Input vcf file. Only one sample column allowed.}

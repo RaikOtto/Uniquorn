@@ -41,11 +41,11 @@
 #' minimum_matching_mutations = 4,
 #' mutational_weight_inclusion_threshold = 1.0,
 #' only_first_candidate = FALSE,
-#' write_xls = FALSE,
 #' distinct_mode = TRUE,
+#' write_xls = FALSE,
 #' output_bed_file = FALSE,
 #' manual_identifier_bed_file = "",
-#' verbose = TRUE)
+#' verbose = FALSE)
 #' @examples 
 #' HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn");
 #' 
@@ -64,7 +64,7 @@ identify_vcf_file = function(
     write_xls = FALSE,
     output_bed_file = FALSE,
     manual_identifier_bed_file = "",
-    verbose = F
+    verbose = FALSE
     ){
   
   if ( verbose )  
@@ -291,7 +291,7 @@ identify_vcf_file = function(
                     as.character(cl)),
                 "CL_source"                = c( 
                     as.character( res_table$CL_source),
-                    tail(unlist(str_split(cl,"_")),1
+                    utils::tail(unlist(str_split(cl,"_")),1
                     )),
                 "Found_muts_abs"           = c( 
                     as.character( res_table$Found_muts_abs ),
@@ -337,7 +337,7 @@ identify_vcf_file = function(
     
     utils::write.table( res_table, output_file, sep ="\t", row.names = FALSE, quote = FALSE  )
     
-    if (output_bed_file)
+    if (output_bed_file & ( sum( as.logical(res_table$Passed_threshold) ) > 0 ))
          create_bed_file( 
              sim_list, 
              vcf_fingerprint, 
@@ -352,7 +352,6 @@ identify_vcf_file = function(
 
         WriteXLS::WriteXLS( x = res_table, path.expand( output_file_xls ), row.names = FALSE)
     
-    if ( verbose ) 
-      res_table
+    return( res_table )
 }
 

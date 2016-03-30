@@ -1,5 +1,26 @@
 \name{NEWS}
 \title{NEWS file for the \pkg{Uniquorn} bioconductor package }
+\section{Changes in version 0.99.9 [2016-03-29]}{
+    \subsection{Improved documentation}{
+        \itemize{
+            \item Minor documentation bugfixes.
+        }
+    }
+}
+\section{Changes in version 0.99.8 [2016-03-25]}{
+    \subsection{Fixed Bug}{
+        \itemize{
+            \item General bugfixing.
+        }
+    }
+}
+\section{Changes in version 0.99.7 [2016-03-24]}{
+    \subsection{Fixed Bug}{
+        \itemize{
+            \item Minor bugfix concerning output of CL identifications.
+        }
+    }
+}
 \section{Changes in version 0.99.6 [2016-03-23]}{
     \subsection{Fixed Bug}{
         \itemize{
