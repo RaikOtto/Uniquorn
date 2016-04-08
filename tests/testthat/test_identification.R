@@ -1,4 +1,5 @@
 library("Uniquorn")
+library("testthat")
 
 HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn")
 

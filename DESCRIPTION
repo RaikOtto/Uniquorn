@@ -1,6 +1,6 @@
 Package: Uniquorn
 Title: Identification of cancer cell lines based on their weighted mutational/ variational fingerprint
-Version: 0.99.10
+Version: 0.99.12
 Authors@R: person("Raik", "Otto", email = "raik.otto@hu-berlin.de", role = c("aut", "cre"))
 Description: This packages enables users to identify cancer cell lines. Cancer cell line 
  misidentification and cross-contamination reprents a significant challenge for 
@@ -22,7 +22,7 @@ License: Artistic-2.0
 LazyData: TRUE
 Type: Package
 Maintainer: 'Raik Otto' <raik.otto@hu-berlin.de>
-Date: 2015-10-11
+Date: 2016-04-08
 Author: Raik Otto
 RoxygenNote: 5.0.1
 NeedsCompilation: no
