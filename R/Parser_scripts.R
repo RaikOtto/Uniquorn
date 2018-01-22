@@ -1,240 +1,150 @@
-#' parse_cosmic_genotype_data
+#' Filter Parsed VCF Files
 #' 
-#' Parses cosmic genotype data
+#' Intern utility function. Filters the parsed VCF file for all informations
+#' except for the start and length of variations/mutations.
 #' 
-#' @param sim_list Variable containing mutations & cell line
-#' @param cosmic_file Path to cosmic clp file in hard disk
-#' @return The R Table sim_list which contains the CoSMIC CLP fingerprints 
-parse_cosmic_genotype_data = function( cosmic_file, sim_list ){
-
-    split_coords = function(vec){
-        
-        split_vec = stringr::str_split( vec, ":" )
-        chrom = split_vec[1]
-    }
-    
-    exclude_cols_cosmic = c(rep("NULL",4),"character",rep("NULL",18),"character",rep("NULL",14))
-    
-
-    if ( ! grepl("CosmicCLP_MutantExport", cosmic_file)){ # MutantExport
-
-        stop("Warning. This is not the recommended COSMIC genotype file! The recommended file is the 'CosmicCLP_MutantExport.tsv.gz' file.")
-        exclude_cols_cosmic = c(rep("NULL",4),"character",rep("NULL",13),"character",rep("NULL",13))
-    }
-    
-    cosmic_genotype_tab = utils::read.csv2( cosmic_file, sep ="\t", colClasses = exclude_cols_cosmic)
-    
-    coords = as.character( sapply( cosmic_genotype_tab[,2], FUN = stringr::str_replace_all, ":|-", "_" ) )
-    cls    = stringr::str_replace_all( stringr::str_to_upper(cosmic_genotype_tab[,1]), "/|(|])| ", "" )
-    cls[ cls == "KM-H2" ] = "KMH2"
-    cls[ cls == "KMH-2" ] = "KMH2ALTERNATIVE"
-    cls    = sapply( cls, FUN = function( cl_name ){ return( paste(cl_name, "COSMIC", sep = "_") ) } )
-    
-    unify = function( CL, coords, cls ){
-        
-        Fingerprint = unique( coords[ cls == CL] )
-        return_val = cbind(Fingerprint, CL)
-        
-        return( return_val )
-    }
-    
-    new_coords = sapply( unique(cls), coords, cls, FUN = unify )
-    
-    tmp_list = lapply( new_coords, "names<-", value = c("V1", "V2"))
-    new_sim_list = do.call("rbind", lapply(tmp_list, data.frame, stringsAsFactors = FALSE))
-    sim_list = rbind( sim_list, new_sim_list )
- 
-    return(sim_list)
-}
-
-#' parse_ccle_genotype_data
-#' 
-#' Parses ccle genotype data
-#' 
-#' @param sim_list Variable containing mutations and cell line
-#' @param ccle_file Path to CCLE file on hard disk
-#' @return The R Table sim_list which contains the CCLE fingerprints
-parse_ccle_genotype_data = function( ccle_file, sim_list ){
-    
-    exclude_cols_ccle = c(rep("NULL",4),rep("character", 3),rep("NULL",8),"character",rep("NULL",35))
-    
-    ccle_genotype_tab = utils::read.csv2( ccle_file, sep ="\t", colClasses = exclude_cols_ccle)
-    
-    coords = as.character( apply(
-        ccle_genotype_tab,
-        FUN = function( vec ){ return( paste0( c(
-            as.character( vec[1] ),
-            as.character( vec[2] ),
-            as.character( vec[3] )
-            ), collapse = "_" ) ) },
-        MARGIN = 1
-    ) )
-    
-    cls    = sapply( ccle_genotype_tab[,4], FUN = stringr::str_split, "_" )
-    cls    = as.character( sapply( cls, FUN = function(vec){ return(vec[1]) }) )
-    cls    = as.character( sapply( cls, FUN = function( cl_name ){ return( paste(cl_name, "CCLE", sep = "_") ) } ) )
-    
-    new_sim_list = data.frame( coords, cls )
-    colnames(new_sim_list) = colnames(sim_list)
-    sim_list = rbind( sim_list, new_sim_list )
-    
-    return(sim_list)
-}
-
-#' parse_vcf_file
-#' 
-#' Parses the vcf file and filters all information except for the start and length of variations/ mutations.
-#' 
-#' @param vcf_file_path Path to the vcf file on the operating system
-#' @param n_threads Specifies number of threads to be used
-#' @import BiocParallel
+#' @param vcf_file character string giving the path to the vcf file
+#'  on the operating system.
+#' @param ref_gen Reference genome version
+#' @param library_name Name of the reference library
 #' @usage 
-#' parse_vcf_file( vcf_file_path, n_threads)
-#' @return Loci-based DNA-mutational fingerprint of the cancer cell line as found in the input VCF file 
-parse_vcf_file = function( vcf_file_path, n_threads ){
+#' parse_vcf_file(
+#'     vcf_file,
+#'     ref_gen,
+#'     library_name
+#' )
+#' @import GenomicRanges stringr
+#' @importFrom IRanges IRanges
+#' @importFrom VariantAnnotation readVcf
+#' @return Loci-based DNA-mutational fingerprint of the cancer cell line
+#'  as found in the input VCF file.
+parse_vcf_file = function(
+    vcf_file,
+    ref_gen,
+    library_name
+){
+    switch(ref_gen,
+        "GRCH37" = {ref_gen = "hg19"}
+    )
+    #seq_obj = VariantAnnotation::seqinfo(
+    #    VariantAnnotation::scanVcfHeader(vcf_file)
+    #)
+    g_query =  VariantAnnotation::readVcf(file = vcf_file)
     
-    if ( base::file.exists( vcf_file_path ) ){
+    # process variants
+    chroms = str_replace(as.character(seqnames(g_query)),
+                         pattern = "chr|CHR", "")
+    start_var = start(g_query)
+    end_var = start_var + width(g_query) - 1
+    
+    chroms_pure = grep(chroms, pattern = "_", invert = TRUE)
+    chroms      = chroms[chroms_pure]
+    chroms      = str_replace(chroms, pattern = "^chr", "")
+    start_var   = start_var[chroms_pure]
+    end_var     = end_var[chroms_pure]
+    
+    cl_id = gsub("^.*/", "", vcf_file)
+    cl_id = gsub(".vcf", "", cl_id, fixed = TRUE)
+    cl_id = gsub(".hg19", "", cl_id, fixed = TRUE)
+    cl_id = toupper(cl_id)
+    cl_id = str_replace_all(cl_id, pattern = "\\.", "_")
+    cl_id = paste0(cl_id, "_", library_name)
+    
+    # build fingerprint and return
+    g_query = GenomicRanges::GRanges(
+        seqnames = chroms,
+        ranges = IRanges(start = start_var, end = end_var),
+        Member_CCLs = rep(cl_id, length(g_query))
+    )
+
+    return(g_query)
+}
+
+write_w0_and_split_w0_into_lower_weights = function(
+    g_mat,
+    library_name,
+    ref_gen
+){
+    
+    ccl_stats <<- data.frame(
+        "CCL" = names(table(as.character(
+            unlist(str_split(g_mat$Member_CCLs, pattern = ","))))),
+        "Mut_count_0" = as.character(table(as.character(unlist(
+            str_split(g_mat$Member_CCLs, pattern = ",")))))
+    )
+    
+    if ( "Member_CCLs" %in% names(GenomicRanges::mcols(g_mat)) ){
         
-        vcf_handle = utils::read.table(
-            vcf_file_path,
-            sep ="\t",
-            header = FALSE,
-            comment.char = "#",
-            fill = TRUE,
-            stringsAsFactors = FALSE
+        member_count = as.integer( str_count(g_mat$Member_CCLs, pattern = ","))
+        member_keep_index    = which( member_count < 10 )
+        member_exclude_index = which( member_count >= 10 )
+        
+        g_mat_exclude <<- g_mat[member_exclude_index]
+        g_mat         <<- g_mat[member_keep_index]
+        
+        write_mutation_grange_objects(
+            mutational_weight_inclusion_threshold = 0,
+            g_mat = g_mat_exclude,
+            library_name = library_name,
+            ref_gen = ref_gen,
+            type = "excluded_variants"
         )
+    }
+    
+    write_mutation_grange_objects(
+        mutational_weight_inclusion_threshold = 0,
+        g_mat = g_mat,
+        library_name = library_name,
+        ref_gen = ref_gen
+    )
+    
+    for(mwit in c(.25,.5,1.0)){
         
-        if (n_threads > 1){
-        
-            fingerprint = BiocParallel::bplapply( 
-                1:n_threads,
-                FUN = split_add_parallel,
-                vcf_matrix_row = vcf_handle,
-                MARGIN = 1,
-                n_threads = n_threads
-            )
+        if ( !(  "Member_CCLs" %in% names(GenomicRanges::mcols(g_mat)) )){
+            
+            hit_index = 0
+            
         } else {
             
-            fingerprint = apply(
-                vcf_handle,
-                FUN = split_add,
-                MARGIN = 1
-            )
+            hit_index = which( str_count(
+                GenomicRanges::mcols(g_mat)$Member_CCLs, pattern = ","
+                ) <= as.integer( round(1/mwit) ) )
         }
-        fingerprint = unique( as.character( unlist(fingerprint) ) )
-
-        return( fingerprint )
         
-    } else {
+        mwit_g_mat = g_mat[hit_index]
         
-        stop( paste0( "Did not find VCF file: ", vcf_file_path  ) )
-    }
-}
-
-#' split_add_parallel
-#' 
-#' @param para_index row of the vcf file
-#' @param vcf_matrix_row A row of the parsed vcf file
-#' @param vcf_handle Handle to the parsed VCF file
-#' @param MARGIN Margin of the parse operation
-#' @param n_threads Specifies number of threads to be used
-#' @return Transformed entry of vcf file, reduced to start and length
-split_add_parallel = function( para_index, vcf_matrix_row, vcf_handle, MARGIN, n_threads ){
-    
-    length_overall = nrow(vcf_matrix_row)
-    intervals = round(seq( 1 , nrow(vcf_matrix_row), length.out = n_threads + 1))
-
-    start_para = intervals[para_index]
-    end_para   = intervals[para_index+1]
-    vcf_matrix_row = vcf_matrix_row[start_para:end_para,]
-
-    fingerprint = apply( 
-        vcf_matrix_row,
-        MARGIN = 1,
-        FUN = function( entry_line ){
-            
-            variations = as.character( unlist( stringr::str_split( unlist( entry_line[5] ), "," ) ) )
-            amount_variations = length(unlist( stringr::str_split( unlist( entry_line[5] ), "," ) ) )
-        
-            chrom = stringr::str_replace(
-                stringr::str_to_upper(
-                    stringr::str_trim(
-                        as.character(
-                            unlist(
-                                entry_line[1]
-                            )
-                        )
-                    )
-                ),
-                "CHR",
-                ""
-            )
-            line_chrom = rep( chrom, amount_variations )
-            line_start = rep( str_trim( as.character( entry_line[2] ) ), amount_variations )
-            line_fingerprint = c()
-        
-            for (j in 1:amount_variations){
-                
-                if ( ( line_chrom[j] %in% c(1:22,"X","Y","M","MT") ) ){
-                
-                    variant_length = nchar( variations[j] ) - 1
-                    line_end = as.character( as.integer(line_start[j]) + variant_length )
-                    
-                    line_fingerprint = c(line_fingerprint,
-                         paste0(
-                             c( 
-                                 str_trim( as.character(line_chrom[j]) ),
-                                 str_trim( as.character(line_start[j]) ),
-                                 str_trim( as.character(line_end) )
-                             ),
-                             collapse = "_"
-                         )
-                    )
-                }
-            }
-            return(line_fingerprint)
-    } )
-    return( fingerprint )
-}
-
-
-#' split_add
-#' 
-#' @param vcf_matrix_row row of the vcf file
-#' @return Transformed entry of vcf file, reduced to start and length
-split_add = function( vcf_matrix_row ){
-    
-    reference  = as.character( unlist( vcf_matrix_row[4] ) )
-    length_ref = length( unlist( stringr::str_split( reference  ,"") ))
-    variations = as.character( unlist( stringr::str_split( unlist( vcf_matrix_row[5] ), "," ) ) )
-    length_variations = length(unlist( stringr::str_split( unlist( vcf_matrix_row[5] ), "," ) ) )
-    
-    chromosome = rep( as.character( vcf_matrix_row[1] ), length(variations)  )
-    start      = as.integer( rep( vcf_matrix_row[2], length(variations)  ) )
-    
-    fingerprint_split_add = as.character()
-    
-    for ( i in seq( length_variations ) ){ 
-        
-        start_var  = as.character( start[i] )
-        variation  = variations[i]
-        length_var = length( unlist( stringr::str_split( variation,"") ))
-        
-        length_alt = max( length_var, length_ref )
-        end_var    = as.character( as.integer( as.integer(start_var) + length_alt - 1 ) )
-        
-        chrom      = stringr::str_replace( stringr::str_to_upper( stringr::str_trim( as.character( unlist( chromosome[i] ) ) ) ), "CHR", "" )
-        
-        fingerprint_split_add = c( 
-            fingerprint_split_add, 
-            paste0( c( 
-                as.character(chrom),
-                as.character(start_var),
-                as.character(end_var)
-            ),
-            collapse = "_" )
+        write_mutation_grange_objects(
+            mutational_weight_inclusion_threshold = mwit,
+            g_mat = mwit_g_mat,
+            library_name = library_name,
+            ref_gen = ref_gen
         )
+        
+        mut_t = table(as.character(unlist(str_split( 
+            GenomicRanges::mcols(mwit_g_mat)$Member_CCLs,pattern = "," ))))
+        
+        ccl_count = rep("0", nrow(ccl_stats))
+        ccl_match = match( ccl_stats$CCL, names(mut_t), nomatch = 0 )
+        ccl_count[ccl_match] = mut_t[ccl_match != 0]
+        ccl_stats = cbind(ccl_stats, ccl_count)
     }
+    colnames(ccl_stats) = c("CCL","W0","W25","W05","W1")
     
-    return( fingerprint_split_add )
+    package_path = system.file("", package = "Uniquorn")
+    
+    input_ccls = unique(as.character(unlist(
+        str_split( g_mat$Member_CCLs, pattern = "," ) ) ))
+    output_ccls = unique(as.character(unlist(
+        str_split( ccl_stats$CCL, pattern = "," ) ) ))
+    missing_ccls = sum((input_ccls %in%  output_ccls) == FALSE)
+    
+    if( missing_ccls != 0) stop("Loading of CCLs has not worked!")
+    
+    CCL_stats_data_path =  paste( c(
+        package_path,"/Libraries/",
+        ref_gen,"/",library_name,
+        "/CCL_List_Uniquorn_DB.RData"),
+        sep ="", collapse= ""
+    )
+    saveRDS(ccl_stats,CCL_stats_data_path)
 }

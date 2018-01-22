@@ -11,24 +11,24 @@ add_missing_cls = function(
     for (cl in dif_cls){
 
         res_table = data.frame(
-             "CL" = c( as.character(res_table$CL), 
-               as.character(cl)),
+            "CL" = c(as.character(res_table$CL), 
+                as.character(cl)),
         "CL_source" = c( as.character( res_table$CL_source),
-            utils::tail(unlist(str_split(cl,"_")),1
-           )),
-        "Found_muts_abs" = c( as.character( res_table$Found_muts_abs ),
+            utils::tail(unlist(str_split(cl,"_")), 1
+        )),
+        "Found_muts_abs" = c(as.character( res_table$Found_muts_abs ),
             as.character( "0" )),
-        "Count_mutations_abs" = c( as.character( res_table$Count_mutations_abs),
-                as.character( "0" )),
+        "Count_mutations_abs" = c(as.character(res_table$Count_mutations_abs),
+            as.character( "0" )),
         "P_values"    = c( as.character( res_table$P_values),
-                           as.character( "1" )),
+                            as.character( "1" )),
         "Q_values"    = c( as.character( res_table$Q_values),
-                           as.character( "1" )),
+                            as.character( "1" )),
         "P_value_sig" = c( as.character( res_table$P_value_sig),
-                           as.character( "FALSE" )),
+                            as.character( "FALSE" )),
         "Q_value_sig" = c( as.character( res_table$Q_value_sig),
-                           as.character( "FALSE" ))
+                            as.character( "FALSE" ))
         )
     }
- return( res_table )
+    return(res_table)
 }

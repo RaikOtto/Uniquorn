@@ -9,51 +9,41 @@
 #' @param ref_gen Reference genome version. All training sets are 
 #' associated with a reference genome version. Default: GRCH37
 #' @param vcf_file Path to vcf_file
-#' @param output_file Path to output report file
-#' @param n_threads Specifies number of threads to be used
-#' @import BiocParallel
+#' @param output_dir Output directory for identification results
 #' @usage 
 #' init_and_load_identification( 
-#' verbose,
-#' ref_gen,
-#' vcf_file,
-#' output_file,
-#' n_threads)
+#'     verbose,
+#'     ref_gen,
+#'     vcf_file,
+#'     output_dir
+#' )
 #' @return Three file path instances and the fingerprint
-init_and_load_identification = function( verbose, ref_gen, vcf_file, output_file, n_threads ){
-
-    if ( verbose )  
-        print( paste0("Assuming reference genome ", ref_gen) )
+init_and_load_identification = function(
+    verbose,
+    ref_gen,
+    vcf_file,
+    output_dir
+){
     
-    ### pre processing
+    vcf_fingerprint = parse_vcf_file(vcf_file)
+    vcf_file_name = tail(as.character(unlist(strsplit(vcf_file, "/"))), 1)
     
-    if (verbose)
-        print( paste0("Reading VCF file: ", vcf_file ) )
-    
-    vcf_fingerprint = parse_vcf_file( vcf_file, n_threads )
-    vcf_file_name = utils::tail( as.character( unlist( stringr::str_split( vcf_file, "/" ) ) ), 1 )
-    
-    if ( output_file == ""  ){
+    if (output_dir == ""){
+        output_file = base::paste(vcf_file, "uniquorn_ident.tab", sep = "_")
         
-        output_file = base::paste( vcf_file, "uniquorn_ident.tab", sep ="_")
-        
-    }else if ( base::dir.exists( output_file ) ){
-        
+    } else if (base::dir.exists(output_dir)){
         output_file = base::paste(
-            output_file,
+            output_dir,
             base::paste( 
                 vcf_file_name,
                 "uniquorn_ident.tab",
-                sep ="_"
+                sep = "_"
             ),
             sep = "/"
         ) 
     }
-    output_file_xls = stringr::str_replace( output_file, ".tab$", ".xls" ) 
+    output_file_xls = base::gsub(".tab$", ".xls", output_file)
     
-    if ( verbose )
-        print( "Finished reading the VCF file, loading database" )
-
     res_list = list( 
         "output_file"     = output_file,
         "output_file_xls" = output_file_xls,
@@ -61,5 +51,5 @@ init_and_load_identification = function( verbose, ref_gen, vcf_file, output_file
         "vcf_file_name"   = vcf_file_name
     )
     
-    return( res_list )
+    return(res_list)
 }

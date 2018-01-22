@@ -2,18 +2,27 @@
 % Please edit documentation in R/Parser_scripts.R
 \name{parse_vcf_file}
 \alias{parse_vcf_file}
-\title{parse_vcf_file}
+\title{Filter Parsed VCF Files}
 \usage{
-parse_vcf_file( vcf_file_path, n_threads)
+parse_vcf_file(
+    vcf_file,
+    ref_gen,
+    library_name
+)
 }
 \arguments{
-\item{vcf_file_path}{Path to the vcf file on the operating system}
+\item{vcf_file}{character string giving the path to the vcf file
+on the operating system.}
 
-\item{n_threads}{Specifies number of threads to be used}
+\item{ref_gen}{Reference genome version}
+
+\item{library_name}{Name of the reference library}
 }
 \value{
-Loci-based DNA-mutational fingerprint of the cancer cell line as found in the input VCF file
+Loci-based DNA-mutational fingerprint of the cancer cell line
+ as found in the input VCF file.
 }
 \description{
-Parses the vcf file and filters all information except for the start and length of variations/ mutations.
+Intern utility function. Filters the parsed VCF file for all informations
+except for the start and length of variations/mutations.
 }

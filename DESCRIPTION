@@ -1,30 +1,36 @@
 Package: Uniquorn
-Title: Identification of cancer cell lines based on their weighted mutational or variational fingerprint
-Version: 1.7.0
+Title: Identification of cancer cell lines based on their weighted mutational/ variational fingerprint
+Version: 1.99.0
 Authors@R: person("Raik", "Otto", email = "raik.otto@hu-berlin.de", role = c("aut", "cre"))
-Description: Identifies cancer cell lines with their small variant fingerprint.
- Cancer cell line misidentification and cross-contamination reprents a significant challenge for cancer researchers.
- The identification is vital and in the frame of this package based on the locations or loci of somatic and germline mutations or variations.
- The input format is vcf and the files have to contain a single cancer cell line sample.
- The implemented method is optimized for the Next-generation whole exome and whole genome DNA-sequencing technology. RNA-seq data is very likely to work as well but hasn't been rigiously tested yet.
- Panel-seq will require manual adjustment of thresholds.
+Description: This packages enables users to identify cancer cell lines. Cancer cell line misidentification and 
+ cross-contamination reprents a significant challenge for cancer researchers. 
+ The identification is vital and in the frame of this package based 
+ on the locations/ loci of somatic and germline mutations/ variations.
+ The input format is vcf/ vcf.gz and the files have to contain a single cancer cell line sample 
+ (i.e. a single member/genotype/gt column in the vcf file).
+ The implemented method is optimized for the Next-generation whole exome and whole genome DNA-sequencing 
+    technology. RNA-seq data is very likely to work as well but hasn't been rigiously tested yet. Panel-seq
+    will require manual adjustment of thresholds
 Imports:
-    DBI,
     stringr,
-    RSQLite,
     R.utils,
     WriteXLS,
     stats,
-    BiocParallel
+    data.table,
+    doParallel,
+    foreach,
+    GenomicRanges,
+    IRanges,
+    VariantAnnotation
 Depends: 
     R (>= 3.4)
 License: Artistic-2.0
 LazyData: TRUE
 Type: Package
 Maintainer: 'Raik Otto' <raik.otto@hu-berlin.de>
-Date: 2017-05-12
+Date: 2017-03-01
 Author: Raik Otto
-RoxygenNote: 6.0.1
+RoxygenNote: 6.0.1.9000
 NeedsCompilation: no
 Packaged: 2016-01-06 17:31:35 UTC; raikotto
 Suggests: 
@@ -33,9 +39,10 @@ Suggests:
     rmarkdown,
     BiocGenerics,
     RUnit
-biocViews: 
+biocViews:
     Software,
     StatisticalMethod,
     WholeGenome,
     ExomeSeq
 VignetteBuilder: knitr
+Encoding: UTF-8

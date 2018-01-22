@@ -1,5 +1,13 @@
 \name{NEWS}
 \title{NEWS file for the \pkg{Uniquorn} bioconductor package }
+\section{Changes in version 1.99.2 [2018-15-01]}{
+    \subsection{Added RNA-seq and panel-seq capability}{
+        \itemize{
+            \item Modified the package to work with large scale RNA-seq and small scale panel-seq data
+            \item Please note that this might break custom libraries. In case of questions please contact the author
+        }
+    }
+}
 \section{Changes in version 1.4.2 [2017-15-05]}{
     \subsection{Added critical scripts}{
         \itemize{

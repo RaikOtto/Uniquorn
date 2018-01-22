@@ -2,11 +2,10 @@
 #' 
 #' Creates BED files from the found and not found annotated mutations
 #' 
-#' @param sim_list R table which contains the mutations from the 
+#' @param match_t R table which contains the mutations from the 
 #' training database for the cancer cell lines
 #' @param vcf_fingerprint contains the mutations that are present 
 #' in the query cancer cell line's vcf file
-#' @param res_table Table containing the identification results
 #' @param output_file Path to output file
 #' @param ref_gen Reference genome version
 #' @param manual_identifier Manually enter a vector of CL name(s) 
@@ -16,44 +15,38 @@
 #' creation has succeeded
 #' @usage 
 #' create_bed_file(
-#' 
-#' sim_list,
-#' 
+#' match_t,
 #' vcf_fingerprint,
-#' 
-#' res_table,
-#' 
 #' output_file,
-#' 
 #' ref_gen,
-#' 
 #' manual_identifier
 #' 
 #' )
 create_bed_file = function( 
-    sim_list,
+    match_t,
     vcf_fingerprint,
-    res_table,
     output_file,
     ref_gen,
     manual_identifier
 ){
- 
+    
     # prep
-
+    
     # start
     
     print("Creating bed files")
     
     found_res_tab = res_table[ as.logical( res_table$Conf_score_sig ), ]
-    found_identifier = paste( found_res_tab$CL, found_res_tab$CL_source, sep = "_")
+    found_identifier = paste(
+        found_res_tab$CL, found_res_tab$CL_source, sep = "_"
+    )
     
     found_identifier = unique( c( manual_identifier, found_identifier ) )
     
     for ( identifier in found_identifier ){
         
         if ( identifier != "" ){
-        
+            
             print(identifier)
             
             name_training_bed_file = stringr::str_replace(
@@ -79,7 +72,7 @@ create_bed_file = function(
                         collapse = ""
                     )
             )
-            name_missed_bed_file   = stringr::str_replace(
+            name_missed_bed_file = stringr::str_replace(
                 output_file,
                 "_uniquorn_ident.tab",
                 paste0(
@@ -93,7 +86,6 @@ create_bed_file = function(
             )
             
             # training
-            
             training_bed_file = paste0( 
                 c( 
                     'track name=',
@@ -108,30 +100,33 @@ create_bed_file = function(
             
             training_coords = sim_list$Fingerprint[ sim_list$CL == identifier ]
             training_coords = stringr::str_trim( training_coords )
-            training_coords = training_coords[ ! grepl("^[c(']", training_coords ) ]
+            training_coords = training_coords[
+                !grepl("^[c(']", training_coords)]
             training_coords = stringr::str_split( training_coords, "_" )
             
-            training_coords_res = sapply( training_coords, FUN = function( vec ){ 
-                chrom = paste( "chr", stringr::str_trim( vec[1] ), sep = "" )
-                return( 
-                    paste0( 
-                        c(
-                            chrom,
-                            as.character(
+            training_coords_res = sapply(training_coords, 
+                FUN = function( vec ){ 
+                    chrom = paste( "chr", stringr::str_trim(vec[1]), sep = "" )
+                    return( 
+                        paste0( 
+                            c(
+                                chrom,
+                                as.character(
+                                    as.integer(
+                                        vec[2]
+                                    ) - 1
+                                ),
                                 as.integer(
-                                    vec[2]
-                                ) - 1
-                            ),
-                            as.integer(
-                                as.integer(
-                                    vec[3]
+                                    as.integer(
+                                        vec[3]
+                                    )
                                 )
-                            )
-                        ),
-                        collapse = "\t"
+                            ),
+                            collapse = "\t"
+                        )
                     )
-                )
-            } )
+                }
+            )
             training_coords_res = c(
                 training_bed_file,
                 training_coords_res
@@ -171,32 +166,32 @@ create_bed_file = function(
                     paste0(
                         c(
                             chrom,
-                            as.character(
+                                as.character(
+                                    as.integer(
+                                        vec[2]
+                                    ) - 1 
+                                ),
                                 as.integer(
-                                    vec[2]
-                                ) - 1 ),
-                            as.integer(
-                                as.integer(
-                                    vec[3]
+                                    as.integer(
+                                        vec[3]
+                                    )
                                 )
-                            )
                         ),
                         collapse = "\t"
                     )
                 )
             } )
             query_res = c( query_bed_file, query_coords_res )
-            
             utils::write.table( 
                 x = query_res,
                 file =  name_query_bed_file,
                 sep = "",
                 row.names = FALSE,
                 col.names = FALSE,
-                quote     = FALSE )        
+                quote     = FALSE 
+            )        
                     
             # missed
-            
             missed_bed_file = paste0( 
                 c( 
                     'track name=',
@@ -209,12 +204,30 @@ create_bed_file = function(
                 collapse = ""
             )
             
-            missed_coords = training_coords[ which( ! ( training_coords %in% query_coords ) ) ]
+            missed_coords = training_coords[
+                which( ! ( training_coords %in% query_coords ) ) ]
             
             missed_coords = sapply( missed_coords, FUN = function( vec ){ 
                 chrom = paste( "chr", stringr::str_trim( vec[1] ), sep = "" )
-                return( paste0( c( chrom, as.character( as.integer( vec[2] ) -1 ), as.integer( as.integer( vec[3] ) ) ), collapse = "\t" ) )
-            } )
+                return(
+                    paste0(
+                        c(
+                            chrom,
+                                as.character(
+                                    as.integer(
+                                        vec[2]
+                                    ) -1
+                                ),
+                                as.integer(
+                                    as.integer(
+                                        vec[3]
+                                    )
+                                )
+                        ),
+                        collapse = "\t"
+                    )
+                )
+            })
             missed_coords_res = c( missed_bed_file, missed_coords )
             
             utils::write.table(
