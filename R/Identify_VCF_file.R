@@ -16,46 +16,42 @@
 #' @param mutational_weight_inclusion_threshold Include only mutations 
 #' with a weight of at least x. Range: 0.0 to 1.0. 1= unique to CL. 
 #' ~0 = found in many CL samples. 
+#' @param only_first_candidate Only the CL identifier with highest 
+#' score is predicted to be present in the sample
 #' @param minimum_matching_mutations The minimum amount of mutations that 
 #' has to match between query and training sample for a positive prediction
-#' @param top_hits_per_library Limit the number of significant similarities
-#' per library to n (default 3) many hits. Is particularrly used in contexts
-#' when heterogeneous query and reference CCLs are being compared.
 #' @param manual_identifier_bed_file Manually enter a vector of CL 
 #' name(s) whose bed files should be created, independently from 
 #' them passing the detection threshold
 #' @param output_bed_file If BED files for IGV visualization should be 
 #' created for the Cancer Cell lines that pass the threshold
 #' @param verbose Print additional information
-#' @param p_value Required p-value for identification.
-#' Note that if you set the confidence score, the confidence score
-#' overrides the p-value
-#' @param confidence_score Cutoff for positive prediction between 0 and 100.
-#' Calculated by transforming the p-value by -1 * log(p-value)
-#' Note that if you set the confidence score, the confidence score
-#' overrides the p-value
+#' @param p_value Required p-value for identification
+#' @param q_value Required q-value for identification
 #' @param n_threads Number of threads to be used
-#' @import WriteXLS
+#' @param confidence_score Threshold above which a positive prediction occurs
+#' default 10.0
+#' @import DBI WriteXLS RSQLite stats BiocParallel
 #' @usage 
 #' identify_vcf_file( 
-#'     vcf_file,
-#'     output_file,
-#'     ref_gen,
-#'     minimum_matching_mutations,
-#'     mutational_weight_inclusion_threshold,
-#'     write_xls,
-#'     output_bed_file,
-#'     top_hits_per_library,
-#'     manual_identifier_bed_file,
-#'     verbose,
-#'     p_value,
-#'     confidence_score,
-#'     n_threads
-#' )
+#' vcf_file,
+#' output_file = "",
+#' ref_gen = "GRCH37",
+#' minimum_matching_mutations = 0,
+#' mutational_weight_inclusion_threshold = 0.5,
+#' only_first_candidate = FALSE,
+#' write_xls = FALSE,
+#' output_bed_file = FALSE,
+#' manual_identifier_bed_file = "",
+#' verbose = FALSE,
+#' p_value = .05,
+#' q_value = .05,
+#' confidence_score = 10.0,
+#' n_threads = 1)
 #' @examples 
-#' HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package = "Uniquorn");
+#' HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn");
 #' 
-#' identification = identify_vcf_file(HT29_vcf_file)
+#' identification = identify_vcf_file( HT29_vcf_file )
 #' @return R table with a statistic of the identification result
 #' @export
 identify_vcf_file = function(
@@ -64,120 +60,229 @@ identify_vcf_file = function(
     ref_gen = "GRCH37",
     minimum_matching_mutations = 0,
     mutational_weight_inclusion_threshold = 0.5,
+    only_first_candidate = FALSE,
     write_xls = FALSE,
     output_bed_file = FALSE,
-    top_hits_per_library = 3,
     manual_identifier_bed_file = "",
-    verbose = TRUE,
+    verbose = FALSE,
     p_value = .05,
-    confidence_score = NA,
+    q_value = .05,
+    confidence_score = 10.0,
     n_threads = 1
-){
+    ){
+  
+    if (n_threads >1)
+        BiocParallel::register(BiocParallel::MulticoreParam( n_threads ))
     
-    if ( ! is.na(confidence_score) ){
-        message(
-            "Confidence score has been set to ",
-            as.character(confidence_score),
-            ", overriding the p_value"
-        )
-        confidence_score[confidence_score < 0 ] = 0
-        confidence_score[confidence_score > 100 ] = 100
-        p_value = exp(-1 * confidence_score)
-    }
-    
-    g_query = parse_vcf_file(
-        vcf_file,
+    path_names = init_and_load_identification( 
+        verbose = verbose, 
+        vcf_file = vcf_file, 
         ref_gen = ref_gen,
-        library_name = ""
+        output_file = output_file,
+        n_threads = n_threads
+    )
+    if (n_threads >1)
+      register(SerialParam(), default=TRUE)
+    
+    vcf_file_name   = path_names$vcf_file_name
+    output_file     = path_names$output_file
+    output_file_xls = path_names$output_file_xls
+    vcf_fingerprint = path_names$vcf_fingerprint
+
+    sim_list       = initiate_db_and_load_data( 
+        ref_gen = ref_gen, 
+        request_table = "sim_list" 
+    )
+    sim_list_stats = initiate_db_and_load_data(
+        ref_gen = ref_gen, 
+        request_table = "sim_list_stats"
     )
     
-    library_names = read_library_names(ref_gen = ref_gen)
-    match_t <<- data.frame(
-        CCL = as.character(),
-        Matches = as.character(),
-        Library = as.character()
+    if ( ( 
+        sum( 
+            grepl( 
+                "_COSMIC", sim_list_stats$CL ) ) + sum( grepl( "_CCLE", sim_list_stats$CL ) 
+            ) 
+        ) == 0 
     )
-    
-    message(
-        "Limiting out to top ",
-        as.character(top_hits_per_library),
-        " hits per library."
-    )
-    
-    for( library_name in library_names ){
         
-        options(warn = -1)
-        hit_list = match_query_ccl_to_database(
-            g_query,
-            ref_gen = ref_gen,
-            library_name = library_name,
-            mutational_weight_inclusion_threshold =
-                mutational_weight_inclusion_threshold
+      if( verbose )
+          warning("CCLE & CoSMIC CLP cancer cell line fingerprint NOT 
+              found, defaulting to 60 CellMiner cancer cell lines! 
+              It is strongly advised to add ~1900 CCLE & CoSMIC CLs, see readme."
         )
-        options(warn = 0)
-        #assign("match_t", rbind(match_t,hit_list),envir = parent.frame())
-        match_t = rbind(match_t, hit_list)
-        
-        message(
-            library_name, ": ",
-            as.character(hit_list$CCL[1]),
-            ", matching variants: ",
-            as.character(hit_list$Matches[1])
-        )
-    }
+
+    sim_list = sim_list[ sim_list$Ref_Gen == ref_gen  ,]
+    sim_list_stats = sim_list_stats[ sim_list_stats$Ref_Gen == ref_gen  ,]
     
-    # statistics
+    if (verbose)
+        print( base::paste0( c("Found ", base::as.character( 
+            base::length( unique(sim_list$CL) ) ), " many CLs for reference genome ", 
+            ref_gen ), collapse = "" ) )
     
-    match_t = add_p_q_values_statistics(
-        g_query,
-        match_t,
-        p_value,
+    if (verbose)
+        print("Finished reading database, identifying CL")
+    
+    filtered_res = filter_for_weights( 
+        sim_list = sim_list,
+        sim_list_stats = sim_list_stats,
         ref_gen = ref_gen,
+        mutational_weight_inclusion_threshold = mutational_weight_inclusion_threshold,
+        verbose = verbose
+    )
+    sim_list = filtered_res$sim_list
+    sim_list_stats = filtered_res$sim_list_stats
+    
+    contained_cls_original = sim_list_stats$CL
+    
+    dif = length(contained_cls_original) - 
+        length (sim_list_stats$CL)
+    
+    dif_cls = contained_cls_original[
+        which(!(contained_cls_original %in% sim_list_stats$CL))
+    ]
+    
+    if ( ( dif != 0 ) & verbose )
+        
+        warning(paste0(c(
+            as.character(dif),
+            " CLs have no mutations for the chosen weight 
+            and cannot be identified: ",
+            paste0(c(dif_cls), collapse = ", ")
+            , " Probably they are too closely simlar to other training CLs"),
+            collapse=""
+    ))
+    
+    ### important mapping function which establishes the similarity
+    
+    found_mut_mapping = which(
+        sim_list$Fingerprint %in% as.character(
+            unlist(
+                vcf_fingerprint
+            )
+        )
+    ) # mapping
+    
+    list_of_cls = unique( sim_list$CL )
+    
+    panels = unique( sapply( list_of_cls, FUN = function( cl_name ){
+        return(
+            paste0( "_",
+                    utils::tail( 
+                        unlist( stringr::str_split( cl_name, pattern = "_") ),
+                        1 ) 
+            )
+        )
+    } ) )
+    
+    res_table = calculate_similarity_results(
+        sim_list = sim_list,
+        sim_list_stats = sim_list_stats,
+        found_mut_mapping = found_mut_mapping,
         minimum_matching_mutations = minimum_matching_mutations,
-        top_hits_per_library
+        p_value = p_value,
+        q_value = q_value,
+        confidence_score = confidence_score,
+        vcf_fingerprint,
+        panels = panels,
+        list_of_cls = list_of_cls
     )
-    match_t = add_penality_statistics(match_t,minimum_matching_mutations)
-    match_t$Identification_sig = match_t$P_value_sig & match_t$Above_Penality
-    match_t = match_t[order(as.double(match_t$P_values),decreasing = FALSE),]
     
-    ### io stuff
+    res_table = add_missing_cls( res_table, dif_cls )
     
-    if(output_file == ""){
-        output_file = str_replace(
-            vcf_file,pattern = "(\\.vcf)|(\\.VCF)", ".ident.tsv" )
+    ### correction background
+    
+    res_table_statistic = res_table[ 
+        res_table$Found_muts != res_table$Count_mutations
+    , ]
+    # this is done to avoid distortion of the statistic
+    # due to benchmarking the DB with its own fingerprints
+    
+    nr_matching_variants = as.double( res_table_statistic$Found_muts[ 
+        as.double( res_table_statistic$Found_muts ) > 0 
+    ] )
+    
+    if ( length(nr_matching_variants) == 0 ){
+        
+        penalty = 0
+        penalty_mutations = 0
+        
+    } else{ 
+        
+        mean_match = mean( nr_matching_variants )
+        max_match  = max( nr_matching_variants )
+
+        penalty = integrate(
+            f = pbeta,
+            0,
+            1,
+            max_match,
+            max_match/ mean_match,
+            stop.on.error = FALSE
+        )$value
+        
+        penalty_mutations = 
+            ceiling(
+                mean_match + 
+                    ( max_match * penalty ) / 
+                    ( 1 - penalty )
+            )
     }
     
-    if (verbose){
+    
+    if ( ( minimum_matching_mutations == 0 ) & ( penalty != 0.0) ){
         
-        message("Candidate(s): ", paste0(unique( 
-            as.character( match_t$CCL )[ match_t$Identification_sig  ]))
+        res_table$Conf_score_sig = as.character( 
+            ( as.integer( res_table$Found_muts ) > 
+                  as.integer( penalty_mutations ) ) &
+            as.logical( res_table$Conf_score_sig )
         )
-        message("Storing information in table: ", output_file)
-    }
         
+        message( paste0( collapse = "", c( 
+            "Correcting the background due to traces of random, scale-freeness amounts of matches, 
+            requiring at least ", 
+            as.character( penalty_mutations ), " variants to match." ) )
+        )
+    }
+    
+    if (only_first_candidate)
+        
+      res_table$Conf_score_sig[ seq(2, length(res_table$Conf_score_sig)) ] = FALSE
+    
+    if ( verbose )
+        
+      print( paste0( "Candidate(s): ", paste0( ( unique( 
+            as.character( res_table$CL )[ res_table$Conf_score_sig == TRUE  ]) ), 
+            collapse = "," ) )  )
+    
+    if( verbose )
+        
+      print( paste0("Storing information in table: ",output_file ) )
+    
     utils::write.table( 
-        match_t,
+        res_table,
         output_file,
         sep ="\t",
         row.names = FALSE,
         quote = FALSE
     )
     
-    if (output_bed_file & ( sum( as.logical(match_t$Q_value_sig) ) > 0 ))
-        create_bed_file( 
-            match_t, 
-            vcf_fingerprint, 
-            res_table, 
-            output_file, 
-            ref_gen, 
-            manual_identifier_bed_file
+    if (output_bed_file & ( sum( as.logical(res_table$Q_value_sig) ) > 0 ))
+         create_bed_file( 
+             sim_list, 
+             vcf_fingerprint, 
+             res_table, 
+             output_file, 
+             ref_gen, 
+             manual_identifier_bed_file
         )
     
     if ( !verbose )
-        match_t = match_t[ ,
-            !( colnames( match_t ) %in% c(
+        res_table = res_table[ ,
+            !( colnames( res_table ) %in% c(
                 "P_values",
                 "Q_values",
+                "P_value_sig",
                 "Q_value_sig"
                 )
             )
@@ -187,12 +292,13 @@ identify_vcf_file = function(
     if ( write_xls )
 
         WriteXLS::WriteXLS( 
-            x = match_t,
+            x = res_table,
             path.expand(
                 output_file_xls
             ),
             row.names = FALSE
         )
     
-    return( match_t )
+    return( res_table )
 }
+

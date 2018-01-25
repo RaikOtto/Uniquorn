@@ -5,11 +5,11 @@
 \title{init_and_load_identification}
 \usage{
 init_and_load_identification( 
-    verbose,
-    ref_gen,
-    vcf_file,
-    output_dir
-)
+verbose,
+ref_gen,
+vcf_file,
+output_file,
+n_threads)
 }
 \arguments{
 \item{verbose}{Print additional information}
@@ -19,7 +19,9 @@ associated with a reference genome version. Default: GRCH37}
 
 \item{vcf_file}{Path to vcf_file}
 
-\item{output_dir}{Output directory for identification results}
+\item{output_file}{Path to output report file}
+
+\item{n_threads}{Specifies number of threads to be used}
 }
 \value{
 Three file path instances and the fingerprint
