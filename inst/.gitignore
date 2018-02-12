@@ -1,0 +1,9 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+./Uniquorn/inst/uniquorn_distinct_panels_db.sqlite
+./Uniquorn/inst/uniquorn_db_snp_GRCH37.sqlite
+/home/ottoraik/Uniquorn_rna_panel_project/.git/objects/pack/tmp_pack_jmFoRF
+/home/ottoraik/Uniquorn_rna_panel_project/Uniquorn/inst/uniquorn_distinct_panels_db.sqlite
+/home/ottoraik/Uniquorn_rna_panel_project/Uniquorn/inst/uniquorn_db_snp_GRCH37.sqlite
