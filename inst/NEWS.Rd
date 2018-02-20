@@ -1,5 +1,155 @@
 \name{NEWS}
 \title{NEWS file for the \pkg{Uniquorn} bioconductor package }
+\section{Changes in version 1.99.2 [2018-20-02]}{
+    \subsection{Added RNA-seq and panel-seq capability}{
+        \itemize{
+            \item Some more minor bugfixes
+        }
+    }
+}
+\section{Changes in version 1.99.1 [2018-12-02]}{
+    \subsection{Added RNA-seq and panel-seq capability}{
+        \itemize{
+            \item Minor bugfixes
+        }
+    }
+}
+\section{Changes in version 1.99.0 [2018-15-01]}{
+    \subsection{Added RNA-seq and panel-seq capability}{
+        \itemize{
+            \item Modified the package to work with large scale RNA-seq and small scale panel-seq data
+            \item Please note that this might break custom libraries. In case of questions please contact the author
+        }
+    }
+}
+\section{Changes in version 1.4.2 [2017-15-05]}{
+    \subsection{Added critical scripts}{
+        \itemize{
+            \item Added a script to parse vcf files in a non-parallelized fashion.
+        }
+    }
+}
+\section{Changes in version 1.4.1 [2017-12-05]}{
+    \subsection{Fixed yet another penalty function bug}{
+        \itemize{
+            \item Fixed critical bug which disabled identifying CCLs in single-thread mode.
+        }
+    }
+}
+\section{Changes in version 1.3.1 [2016-28-11]}{
+    \subsection{Fixed yet another penalty function bug}{
+        \itemize{
+            \item Fixed rather major bug that led to too high penalty scores.
+        }
+    }
+}
+\section{Changes in version 1.1.3 [2016-28-11]}{
+    \subsection{Fixed penalty function bug}{
+        \itemize{
+            \item Fixed minor bug that led to incorrect penalty score calculation.
+        }
+    }
+}
+\section{Changes in version 1.1.2 [2016-28-11]}{
+    \subsection{Change of penalty function}{
+        \itemize{
+            \item The function that measures random background-noise matches and calculates a threshold above the background strength has been updated to be more strict.
+        }
+    }
+}
+\section{Changes in version 1.1.1 [2016-10-18]}{
+    \subsection{Change of default inclusion threshold}{
+        \itemize{
+            \item the new default inclusion weight has been set to 0.5 to optimally fit the new probabilistic model of version 1.0.9.
+        }
+    }
+}
+\section{Changes in version 1.0.9 [2016-10-11]}{
+    \subsection{Re-engineering of probabilistic model}{
+        \itemize{
+            \item The likelihood to observe a mutation/ variant in a query that matches a reference CCL's variant has been changed. The likelihood was 1 / #all variants in library and is now set to # number of variants in reference CCL / #all variants in library
+        }
+    }
+}
+\section{Changes in version 1.0.8 [2016-06-17]}{
+    \subsection{Optimization confidence score}{
+        \itemize{
+            \item Fixed the installation of the package
+        }
+    }
+}
+\section{Changes in version 1.0.7 [2016-06-13]}{
+    \subsection{Optimization confidence score}{
+        \itemize{
+            \item Optimized the way confidence scores are calculated to increase the sensitivity and specificity of the method 
+        }
+    }
+}
+\section{Changes in version 1.0.6 [2016-06-05]}{
+    \subsection{Optimization of default confidence score}{
+        \itemize{
+            \item Adjusted default confidence score to optimal threshold 
+        }
+    }
+}
+\section{Changes in version 1.0.5 [2016-05-30]}{
+    \subsection{Minor Bugfixes}{
+        \itemize{
+            \item Fixed errors connected to adding CLs
+        }
+    }
+}
+\section{Changes in version 1.0.4 [2016-05-27]}{
+    \subsection{Introduction of confidence score}{
+        \itemize{
+            \item Confidence score is the central threshold now
+            \item Default is 3.0
+            \item The score is the negative log e of the q-value
+        }
+    }
+}
+\section{Changes in version 1.0.3 [2016-05-18]}{
+    \subsection{Changes to treshold calculation}{
+        \itemize{
+            \item Fixed error in threshold calculation
+        }
+    }
+}
+\section{Changes in version 1.0.1 [2016-05-09]}{
+    \subsection{Minor update of BED files}{
+        \itemize{
+            \item Extended length of BED file mutations shown in the IGV
+        }
+    }
+}
+\section{Changes in version 0.99.16 [2016-05-04]}{
+    \subsection{Further minor update of statistics module}{
+        \itemize{
+            \item Further minor fixes to statistics
+        }
+    }
+}
+\section{Changes in version 0.99.15 [2016-05-03]}{
+    \subsection{Minor Update of statistics}{
+        \itemize{
+            \item Minor fixes to statistics
+        }
+    }
+}
+\section{Changes in version 0.99.14 [2016-05-03]}{
+    \subsection{Major Update of statistics}{
+        \itemize{
+            \item Replaced the absolute and relative cutoff with a p an q-value based on a binomial distribution
+        }
+    }
+}
+\section{Changes in version 0.99.13 [2016-04-08]}{
+    \subsection{Fixed unit tests}{
+        \itemize{
+            \item Further update test suite
+        }
+    }
+}
 \section{Changes in version 0.99.12 [2016-04-08]}{
     \subsection{Fixed unit tests}{
         \itemize{

@@ -5,38 +5,33 @@
 \title{create_bed_file}
 \usage{
 create_bed_file(
-
-sim_list,
-
+match_t,
 vcf_fingerprint,
-
-res_table,
-
 output_file,
-
 ref_gen,
-
 manual_identifier
 
 )
 }
 \arguments{
-\item{sim_list}{R table which contains the mutations from the training database for the cancer cell lines}
+\item{match_t}{R table which contains the mutations from the 
+training database for the cancer cell lines}
 
-\item{vcf_fingerprint}{contains the mutations that are present in the query cancer cell line's vcf file}
-
-\item{res_table}{Table containing the identification results}
+\item{vcf_fingerprint}{contains the mutations that are present 
+in the query cancer cell line's vcf file}
 
 \item{output_file}{Path to output file}
 
 \item{ref_gen}{Reference genome version}
 
-\item{manual_identifier}{Manually enter a vector of CL name(s) whose bed files should be created, independently from them passing the detection threshold}
+\item{manual_identifier}{Manually enter a vector of CL name(s) 
+whose bed files should be created, independently from them 
+passing the detection threshold}
 }
 \value{
-Returns a message which indicates if the BED file creation has succeeded
+Returns a message which indicates if the BED file 
+creation has succeeded
 }
 \description{
 Creates BED files from the found and not found annotated mutations
 }
-
