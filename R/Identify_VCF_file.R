@@ -21,7 +21,7 @@
 #' @param top_hits_per_library Limit the number of significant similarities
 #' per library to n (default 3) many hits. Is particularrly used in contexts
 #' when heterogeneous query and reference CCLs are being compared.
-#' @param manual_identifier_bed_file Manually enter a vector of CL 
+#' @param manual_identifier Manually enter a vector of CL 
 #' name(s) whose bed files should be created, independently from 
 #' them passing the detection threshold
 #' @param output_bed_file If BED files for IGV visualization should be 
@@ -47,7 +47,7 @@
 #'     write_xls,
 #'     output_bed_file,
 #'     top_hits_per_library,
-#'     manual_identifier_bed_file,
+#'     manual_identifier,
 #'     verbose,
 #'     p_value,
 #'     confidence_score,
@@ -73,7 +73,7 @@ identify_vcf_file = function(
     write_xls = FALSE,
     output_bed_file = FALSE,
     top_hits_per_library = 3,
-    manual_identifier_bed_file = "",
+    manual_identifier = "",
     verbose = TRUE,
     p_value = .05,
     confidence_score = NA,
@@ -176,10 +176,8 @@ identify_vcf_file = function(
         create_bed_file( 
             match_t, 
             vcf_fingerprint, 
-            res_table, 
             output_file, 
-            ref_gen, 
-            manual_identifier_bed_file
+            manual_identifier
         )
     
     if ( !verbose )

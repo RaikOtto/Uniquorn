@@ -13,7 +13,7 @@ identify_vcf_file(
     write_xls,
     output_bed_file,
     top_hits_per_library,
-    manual_identifier_bed_file,
+    manual_identifier,
     verbose,
     p_value,
     confidence_score,
@@ -47,7 +47,7 @@ created for the Cancer Cell lines that pass the threshold}
 per library to n (default 3) many hits. Is particularrly used in contexts
 when heterogeneous query and reference CCLs are being compared.}
 
-\item{manual_identifier_bed_file}{Manually enter a vector of CL 
+\item{manual_identifier}{Manually enter a vector of CL 
 name(s) whose bed files should be created, independently from 
 them passing the detection threshold}
 
