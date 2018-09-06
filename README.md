@@ -11,7 +11,7 @@ Start an R session e.g. using RStudio
 `if (!requireNamespace("BiocManager", quietly=TRUE))`
     `install.packages("BiocManager")`
 
-`biocLite("Uniquorn")`
+`BiocManager::install("Uniquorn")`
 
 ## Test run
 
