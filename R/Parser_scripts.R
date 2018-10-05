@@ -26,13 +26,11 @@ parse_vcf_file = function(
     switch(ref_gen,
         "GRCH37" = {ref_gen = "hg19"}
     )
-    #seq_obj = VariantAnnotation::seqinfo(
-    #    VariantAnnotation::scanVcfHeader(vcf_file)
-    #)
+    
     g_query =  VariantAnnotation::readVcf(file = vcf_file)
     
     # process variants
-    chroms = str_replace(as.character(seqnames(g_query)),
+    chroms = stringr::str_replace(as.character(seqnames(g_query)),
                          pattern = "chr|CHR", "")
     start_var = start(g_query)
     end_var = start_var + width(g_query) - 1
@@ -45,6 +43,7 @@ parse_vcf_file = function(
     
     cl_id = gsub("^.*/", "", vcf_file)
     cl_id = gsub(".vcf", "", cl_id, fixed = TRUE)
+    cl_id = gsub(".VCF", "", cl_id, fixed = TRUE)
     cl_id = gsub(".hg19", "", cl_id, fixed = TRUE)
     cl_id = toupper(cl_id)
     cl_id = str_replace_all(cl_id, pattern = "\\.", "_")

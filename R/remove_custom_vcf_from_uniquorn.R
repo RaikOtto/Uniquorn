@@ -25,76 +25,75 @@
 #' @return Message that indicates whether the removal was succesful.
 #' @export
 remove_ccls_from_database = function( 
-    ccl_names,
-    ref_gen = "GRCH37",
-    library_name,
-    test_mode = FALSE
+  ccl_names,
+  ref_gen = "GRCH37",
+  library_name,
+  test_mode = FALSE
 ){
-    message("Reference genome: ", ref_gen)
+  message("Reference genome: ", ref_gen)
+  
+  package_path = system.file("", package = "Uniquorn")
+  library_path = paste(c(package_path, "/Libraries/", ref_gen),
+                       sep ="", collapse= "")
+  
+  if (length(library_name) > 1)
+    stop("Cannot process more than one library per run, please 
+         provide single libraries.")
+  
+  g_mat = read_mutation_grange_objects(
+    library_name = library_name,
+    ref_gen = ref_gen,
+    mutational_weight_inclusion_threshold = 0
+  )
+  
+  for (ccl_id in ccl_names){
     
-    package_path = system.file("", package = "Uniquorn")
-    library_path = paste(c(package_path, "/Libraries/", ref_gen),
-                            sep ="", collapse= "")
+    ccl_lib = paste(ccl_id, library_name, sep = "_")
+    message("Deleting ", ccl_id)
+    search_term = paste(c(
+      paste( "(",ccl_lib,",",")", sep = "" ),
+      paste( "(",ccl_lib,")", sep = "" ),
+      "(.*,$)"
+    ), collapse= "|")
     
-    if (length(library_name) > 1)
-        stop("Cannot process more than one library per run, please 
-            provide single libraries.")
+    member_ccls = str_replace_all(mcols(g_mat)$Member_CCLs,
+                                  pattern = search_term, replacement = "")
+    member_ccls = str_replace_all(member_ccls, pattern = ",$", "")
     
-    g_mat = read_mutation_grange_objects(
-        library_name = library_name,
-        ref_gen = ref_gen,
-        mutational_weight_inclusion_threshold = 0,
-        test_mode = test_mode
+    non_empty_vec = member_ccls != ""
+    g_mat = g_mat[non_empty_vec,]
+    member_ccls = member_ccls[ non_empty_vec ]
+    mcols(g_mat)$Member_CCLs = as.character(member_ccls)
+    
+    message(
+      "Excluded ",
+      as.character(sum(non_empty_vec == FALSE)),
+      " variant entries after removal."
     )
     
-    for (ccl_id in ccl_names){
-        
-        ccl_lib = paste(ccl_id, library_name, sep = "_")
-        message("Deleting ", ccl_id)
-        search_term = paste(c(
-            paste( "(",ccl_lib,",",")", sep = "" ),
-            paste( "(",ccl_lib,")", sep = "" ),
-            "(.*,$)"
-        ), collapse= "|")
-        
-        member_ccls = str_replace_all(mcols(g_mat)$Member_CCLs,
-                pattern = search_term, replacement = "")
-        member_ccls = str_replace_all(member_ccls, pattern = ",$", "")
-        
-        non_empty_vec = member_ccls != ""
-        g_mat = g_mat[non_empty_vec,]
-        member_ccls = member_ccls[ non_empty_vec ]
-        mcols(g_mat)$Member_CCLs = as.character(member_ccls)
-        
-        message(
-            "Excluded ",
-            as.character(sum(non_empty_vec == FALSE)),
-            " variant entries after removal."
-        )
-        
-        if( test_mode == FALSE ){
-            stats_path = paste( c( library_path,"/",library_name,
-                "/CCL_List_Uniquorn_DB.RData"), sep ="", collapse= "")
-            g_library = readRDS(stats_path)
-            g_library = data.frame(g_library, stringsAsFactors = FALSE)
-            g_library = g_library[ g_library$CCL!= "",]
-            g_library = g_library[!is.na(g_library$CCL),]
-            g_library = g_library[g_library$CCL != ccl_id,]
-            saveRDS(g_library, file = stats_path)
-        }
+    if( test_mode == FALSE ){
+      stats_path = paste( c( library_path,"/",library_name,
+                             "/CCL_List_Uniquorn_DB.RData"), sep ="", collapse= "")
+      g_library = readRDS(stats_path)
+      g_library = data.frame(g_library, stringsAsFactors = FALSE)
+      g_library = g_library[ g_library$CCL!= "",]
+      g_library = g_library[!is.na(g_library$CCL),]
+      g_library = g_library[g_library$CCL != ccl_id,]
+      saveRDS(g_library, file = stats_path)
     }
-    
-    #member_ccls = str_replace(member_ccls, pattern = ",$","")
-    message("Finished removing all ccls. Recalculating DB")
-    
-    if( test_mode == FALSE){
-        write_w0_and_split_w0_into_lower_weights(
-            g_mat = g_mat,
-            ref_gen = ref_gen,
-            library_name = library_name
-        )
-    }
-    message("Finished removing all cancer cell lines")
+  }
+  
+  #member_ccls = str_replace(member_ccls, pattern = ",$","")
+  message("Finished removing all ccls. Recalculating DB")
+  
+  if( test_mode == FALSE){
+    write_w0_and_split_w0_into_lower_weights(
+      g_mat = g_mat,
+      ref_gen = ref_gen,
+      library_name = library_name
+    )
+  }
+  message("Finished removing all cancer cell lines")
 }
 
 
@@ -110,7 +109,14 @@ remove_ccls_from_database = function(
 #'  Default is \code{"GRCH37"}.
 #' @param test_mode is this a test? Just for internal use.
 #' @import stringr
+#' @usage 
+#' remove_library_from_database(library, ref_gen = "GRCH37", test_mode = FALSE)
+#' @examples 
+#' remove_custom_vcf_from_database(library = "CELLMINER",
+#'                                 ref_gen = "GRCH37",
+#'                                 test_mode = FALSE)
 #' @return Message that indicates whether the removal was succesful.
+#' @export
 remove_library_from_database = function( 
     library,
     ref_gen = "GRCH37",
@@ -118,5 +124,9 @@ remove_library_from_database = function(
 ){
     message("Reference genome: ", ref_gen)
     message("Removing library ", library, " and all associated",
-        " cancer cell lines done.")
+            " cancer cell lines.")
+    ccls = show_contained_ccls(ref_gen= ref_gen)
+    ccls = ccls[ccls$Library == library, "CCL"]
+    remove_ccls_from_database(ccls, library_name = library)
+    message("Done")
 }
