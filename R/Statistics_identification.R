@@ -101,7 +101,7 @@ add_p_q_values_statistics = function(
 #' @importFrom stats integrate
 #' @importFrom stats pbeta
 #' @return The updated statistics
-add_penality_statistics = function(match_t, minimum_matching_mutations){
+add_penalty_statistics = function(match_t, minimum_matching_mutations){
 
     matching_variants = as.integer(match_t$Matches)
     minimum_matching_mutations = min(matching_variants)
@@ -139,7 +139,7 @@ add_penality_statistics = function(match_t, minimum_matching_mutations){
             as.character(penalty_mutations), " variants to match."
         )
     }
-    match_t$Above_Penality = 
+    match_t$Above_Penalty = 
         as.integer(as.character(match_t$Matches)) > penalty
     
     return(match_t)

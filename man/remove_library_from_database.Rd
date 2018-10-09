@@ -23,3 +23,8 @@ Message that indicates whether the removal was succesful.
 This function removes a entire library from the database by removing all 
 associated cancer cell line fingerprints from the database.
 }
+\examples{
+remove_custom_vcf_from_database(library = "CELLMINER",
+                                ref_gen = "GRCH37",
+                                test_mode = TRUE)
+}

@@ -143,8 +143,8 @@ identify_vcf_file = function(
         minimum_matching_mutations = minimum_matching_mutations,
         top_hits_per_library
     )
-    match_t = add_penality_statistics(match_t,minimum_matching_mutations)
-    match_t$Identification_sig = match_t$P_value_sig & match_t$Above_Penality
+    match_t = add_penalty_statistics(match_t,minimum_matching_mutations)
+    match_t$Identification_sig = match_t$P_value_sig & match_t$Above_Penalty
     match_t = match_t[order(as.double(match_t$P_values),decreasing = FALSE),]
     
     ### io stuff
