@@ -6,6 +6,9 @@
 inst/.DS_Store
 inst/Libraries/.DS_Store
 inst/Libraries/GRCH37/.DS_Store
+inst/Libraries/GRCH37/COSMIC
+inst/Libraries/GRCH37/CCLE
+inst/Libraries/GRCH37/CUSTOM
 inst/doc/.DS_Store
 ./Uniquorn/inst/uniquorn_distinct_panels_db.sqlite
 ./Uniquorn/inst/uniquorn_db_snp_GRCH37.sqlite

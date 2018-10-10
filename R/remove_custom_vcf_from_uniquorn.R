@@ -19,7 +19,7 @@
 #' remove_ccls_from_database(
 #'     ccl_names = "HT29",
 #'     ref_gen = "GRCH37",
-#'     library_name = "CUSTOM",
+#'     library_name = "CELLMINER",
 #'     test_mode = TRUE
 #' )
 #' @return Message that indicates whether the removal was succesful.
@@ -112,7 +112,7 @@ remove_ccls_from_database = function(
 #' @usage 
 #' remove_library_from_database(library, ref_gen = "GRCH37", test_mode = FALSE)
 #' @examples 
-#' remove_custom_vcf_from_database(library = "CELLMINER",
+#' remove_library_from_database(library = "CELLMINER",
 #'                                 ref_gen = "GRCH37",
 #'                                 test_mode = TRUE)
 #' @return Message that indicates whether the removal was succesful.

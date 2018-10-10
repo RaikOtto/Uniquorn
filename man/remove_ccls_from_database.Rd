@@ -31,7 +31,7 @@ This function removes a cancer cell line training fingerprint (VCF file)
 remove_ccls_from_database(
     ccl_names = "HT29",
     ref_gen = "GRCH37",
-    library_name = "CUSTOM",
+    library_name = "CELLMINER",
     test_mode = TRUE
 )
 }
