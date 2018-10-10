@@ -8,7 +8,7 @@
 #' Ensure that the right reference genome is used
 #' @param ref_gen Reference genome version
 #' @return Returns message if parsing process has succeeded
-#' @import R.utils stringr
+#' @import R.utils stringr data.table
 #' @usage 
 #' initiate_canonical_databases(
 #'     cosmic_file = "CosmicCLP_MutantExport.tsv",

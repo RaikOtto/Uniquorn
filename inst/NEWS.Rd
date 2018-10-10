@@ -1,5 +1,12 @@
 \name{NEWS}
 \title{NEWS file for the \pkg{Uniquorn} bioconductor package }
+\section{Changes in version 2.1.4 [2018-10-10]}{
+    \subsection{Bioconductor compliance}{
+        \itemize{
+            \item Minor bugfixes regarding the removal of CCLs
+        }
+    }
+}
 \section{Changes in version 2.1.3 [2018-10-03]}{
     \subsection{Bioconductor compliance}{
         \itemize{
