@@ -8,7 +8,8 @@
 #' Ensure that the right reference genome is used
 #' @param ref_gen Reference genome version
 #' @return Returns message if parsing process has succeeded
-#' @import R.utils stringr data.table
+#' @importFrom data.table fread data.table .SD
+#' @import R.utils stringr
 #' @usage 
 #' initiate_canonical_databases(
 #'     cosmic_file = "CosmicCLP_MutantExport.tsv",
@@ -66,7 +67,7 @@ initiate_canonical_databases = function(
 #' 
 #' @param cosmic_file Path to cosmic clp file in hard disk
 #' @param ref_gen Reference genome version
-#' @importFrom data.table fread data.table
+#' @importFrom data.table fread data.table .SD
 #' @importFrom IRanges IRanges
 #' @importFrom stats aggregate
 #' @return The R Table sim_list which contains the CoSMIC CLP fingerprints 
@@ -146,7 +147,7 @@ parse_cosmic_genotype_data = function(cosmic_file, ref_gen = "GRCH37"){
 #' 
 #' @param ccle_file Path to CCLE file on hard disk
 #' @param ref_gen Reference genome version
-#' @importFrom data.table fread data.table
+#' @importFrom data.table fread data.table .SD
 #' @importFrom IRanges IRanges
 #' @importFrom stats aggregate
 #' @return The R Table sim_list which contains the CCLE fingerprints
