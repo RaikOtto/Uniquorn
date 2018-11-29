@@ -1,5 +1,12 @@
 \name{NEWS}
 \title{NEWS file for the \pkg{Uniquorn} bioconductor package }
+\section{Changes in version 2.1.5 [2018-11-29]}{
+    \subsection{Updated BiocView}{
+        \itemize{
+            \item Updated BiocView
+        }
+    }
+}
 \section{Changes in version 2.1.4 [2018-10-10]}{
     \subsection{Bioconductor compliance}{
         \itemize{
