@@ -1,5 +1,12 @@
 \name{NEWS}
 \title{NEWS file for the \pkg{Uniquorn} bioconductor package }
+\section{Changes in version 2.3.2 [2019-01-09]}{
+    \subsection{Updated BiocView}{
+        \itemize{
+            \item Removed data.table import due to biocondcutor request
+        }
+    }
+}
 \section{Changes in version 2.1.5 [2018-11-29]}{
     \subsection{Updated BiocView}{
         \itemize{
