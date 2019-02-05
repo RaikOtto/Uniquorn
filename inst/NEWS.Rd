@@ -1,6 +1,13 @@
 \name{NEWS}
 \title{NEWS file for the \pkg{Uniquorn} bioconductor package }
-\section{Changes in version 2.1.5 [2018-11-29]}{
+\section{Changes in version 2.3.2 [2019-02-04]}{
+    \subsection{Remove dependency}{
+        \itemize{
+            \item Removed dependency on data.table
+        }
+    }
+}
+\section{Changes in version 2.3.1 [2018-11-29]}{
     \subsection{Updated BiocView}{
         \itemize{
             \item Updated BiocView
