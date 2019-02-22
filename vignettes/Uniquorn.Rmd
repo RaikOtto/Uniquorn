@@ -14,22 +14,13 @@ Package to identify cancer cell lines (CCL)s based on their weighted mutational 
 
 # 1 How to make it work:  Quickstart
 
-## Installing the Uniquorn
-
-Start an R session e.g. using RStudio
-
-`if (!requireNamespace("BiocManager", quietly=TRUE))`
-    `install.packages("BiocManager")`
-
-`BiocManager::install("Uniquorn")`
-
 ## Test run
 
 Here the NCI-60 exome sequenced HT29 Cancer Cell line, reference genome GRCh37/ HG19
 
 ```{r}
 library("Uniquorn")
-HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package="Uniquorn")
+HT29_vcf_file = system.file("extdata/HT29.vcf", package="Uniquorn")
 ident_result = identify_vcf_file( HT29_vcf_file, ref_gen = "GRCH37"  )
 head( ident_result )
 ```
@@ -37,8 +28,10 @@ This will show a table with potential identification candidate, how many mutatio
 
 ### Explanation test data
 
-The HT29 cancer cell line vcf file which contains the somatic mutations of the HT-29 cancer cell line was taken from http://watson.nci.nih.gov/projects/nci60/wes/VCF/ (not reachable anymore as of December 2016).
-The Watson repository contains the same cancer cell line samples as Uniquorn's default training dataset, the original CellMiner panel, available @ http://discover.nci.nih.gov/cellminer/. 
+The HT29 cancer cell line vcf file which contains the somatic mutations of the HT-29 cancer cell line was taken from 
+[Watson](http://watson.nci.nih.gov/projects/nci60/wes/VCF/)
+(not reachable anymore as of December 2016).
+The Watson repository contains the same cancer cell line samples as Uniquorn's default training dataset, the original CellMiner panel, available @ [cellminer](http://discover.nci.nih.gov/cellminer/).
 However, the cancer cell line vcf sample was differentely filtered and different algorithms have been used to predict mutations and variations. Therefore, it was used as example set to show the difficulties associated with an identification of cancer cell line sample: Some mutations are found only in the query version (here HT-29 from Watson) and some only in the training dataset (here HT-29 from CellMiner original panel). Moreover, some mutations of the query cancer cell line map to different cancer cell lines in the CellMiner training database what can lead to an incorrect identification of a cancer cell line. 
 
 Therefore, a robust yet sensitive cancer cell line identification algorithm is required.

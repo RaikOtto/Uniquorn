@@ -78,7 +78,7 @@ on the pattern (start & length) of all contained mutations/ variations.
 the identity of the sample
 }
 \examples{
-HT29_vcf_file = system.file("extdata/HT29.vcf.gz", package = "Uniquorn");
+HT29_vcf_file = system.file("extdata/HT29.vcf", package = "Uniquorn");
 
 identification = identify_vcf_file(
     vcf_file = HT29_vcf_file, 

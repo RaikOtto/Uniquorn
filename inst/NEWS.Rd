@@ -1,5 +1,12 @@
 \name{NEWS}
 \title{NEWS file for the \pkg{Uniquorn} bioconductor package }
+\section{Changes in version 2.3.3 [2019-02-22]}{
+    \subsection{Unzip test vcf file}{
+        \itemize{
+            \item Unzipped the tested vcf file since VarriantAnnotion parser failed to read zipped file in future R version 3.6
+        }
+    }
+}
 \section{Changes in version 2.3.2 [2019-02-04]}{
     \subsection{Remove dependency}{
         \itemize{

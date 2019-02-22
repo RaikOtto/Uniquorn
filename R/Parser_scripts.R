@@ -27,7 +27,9 @@ parse_vcf_file = function(
         "GRCH37" = {ref_gen = "hg19"}
     )
     
-    g_query =  VariantAnnotation::readVcf(file = vcf_file)
+    g_query =  VariantAnnotation::readVcf(
+      file = vcf_file
+    )
     
     # process variants
     chroms = stringr::str_replace(as.character(seqnames(g_query)),
