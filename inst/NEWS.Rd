@@ -1,5 +1,12 @@
 \name{NEWS}
 \title{NEWS file for the \pkg{Uniquorn} bioconductor package }
+\section{Changes in version 2.3.4 [2019-02-25]}{
+    \subsection{Fixed windows VCF parse error}{
+        \itemize{
+            \item Uniquorn experienced an error when parsing the internal test vcf file on Windows systems.
+        }
+    }
+}
 \section{Changes in version 2.3.3 [2019-02-22]}{
     \subsection{Unzip test vcf file}{
         \itemize{
