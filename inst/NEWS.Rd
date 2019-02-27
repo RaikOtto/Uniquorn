@@ -1,5 +1,12 @@
 \name{NEWS}
 \title{NEWS file for the \pkg{Uniquorn} bioconductor package }
+\section{Changes in version 2.3.5 [2019-02-27]}{
+    \subsection{Fixed another windows VCF parse error}{
+        \itemize{
+            \item Fixed yet another VCF file parsing error associated with the VariantAnnotation R package parser.
+        }
+    }
+}
 \section{Changes in version 2.3.4 [2019-02-25]}{
     \subsection{Fixed windows VCF parse error}{
         \itemize{
