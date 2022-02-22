@@ -1,6 +1,7 @@
 Package: Uniquorn
-Title: Identification of cancer cell lines based on their weighted mutational/ variational fingerprint
-Version: 2.3.5
+Title: Identification of cancer cell lines based on their weighted
+        mutational/ variational fingerprint
+Version: 2.3.6
 Authors@R: person("Raik", "Otto", email = "raik.otto@hu-berlin.de", role = c("aut", "cre"))
 Description: This packages enables users to identify cancer cell lines. Cancer cell line misidentification and 
  cross-contamination reprents a significant challenge for cancer researchers. 
@@ -11,37 +12,18 @@ Description: This packages enables users to identify cancer cell lines. Cancer c
  The implemented method is optimized for the Next-generation whole exome and whole genome DNA-sequencing 
     technology. RNA-seq data is very likely to work as well but hasn't been rigiously tested yet. Panel-seq
     will require manual adjustment of thresholds
-Imports:
-    stringr,
-    R.utils,
-    WriteXLS,
-    stats,
-    doParallel,
-    foreach,
-    GenomicRanges,
-    IRanges,
-    VariantAnnotation
-Depends: 
-    R (>= 3.5)
+Imports: stringr, R.utils, WriteXLS, stats, doParallel, foreach,
+        GenomicRanges, IRanges, VariantAnnotation, data.table
+Depends: R (>= 3.5)
 License: Artistic-2.0
-LazyData: TRUE
 Type: Package
 Maintainer: 'Raik Otto' <raik.otto@hu-berlin.de>
-Date: 2019-01-09
+Date: 2022-02-22
 Author: Raik Otto
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.2
 NeedsCompilation: no
-Packaged: 2016-01-06 17:31:35 UTC; raikotto
-Suggests: 
-    testthat,
-    knitr,
-    rmarkdown,
-    BiocGenerics,
-    RUnit
-biocViews:
-    ImmunoOncology,
-    StatisticalMethod,
-    WholeGenome,
-    ExomeSeq
+Packaged: 2022-02-22 13:02:32 UTC; ottoraik
+Suggests: testthat, knitr, rmarkdown, BiocGenerics, RUnit
+biocViews: ImmunoOncology, StatisticalMethod, WholeGenome, ExomeSeq
 VignetteBuilder: knitr
 Encoding: UTF-8

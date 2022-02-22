@@ -2,30 +2,33 @@
 #' 
 #' Parses data into r list variable
 #' 
-#' @param cosmic_file The path to the cosmic DNA genotype data file. 
+#' @param cosmic_file The path to the Cosmic CLP file. The Cosmic file 
+#' can be obtained from "https://cancer.sanger.ac.uk/cell_lines/download" and 
+#' should be labeled "CellLinesCodingMuts.vcf.gz".
 #' Ensure that the right reference genome is used
 #' @param ccle_file The path to the ccle DNA genotype data file. 
+#' It should be labeled "CCLE_mutations.csv".
 #' Ensure that the right reference genome is used
 #' @param ref_gen Reference genome version
 #' @return Returns message if parsing process has succeeded
 #' @import R.utils stringr
 #' @usage
 #' initiate_canonical_databases(
-#'     cosmic_file = "CosmicCLP_MutantExport.tsv",
-#'     ccle_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.maf",
-#'     ref_gen = "GRCH37"
+#'     cosmic_file = "CellLinesCodingMuts.vcf.gz",
+#'     ccle_file = "CCLE_mutations.csv",
+#'     ref_gen = "GRCH38"
 #' )
 #' @examples 
 #' initiate_canonical_databases(
-#'     cosmic_file = "CosmicCLP_MutantExport.tsv",
-#'     ccle_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.maf",
-#'     ref_gen = "GRCH37"
+#'     cosmic_file = "CellLinesCodingMuts.vcf.gz",
+#'     ccle_file = "CCLE_mutations.csv",
+#'     ref_gen = "GRCH38"
 #' )
 #' @export
 initiate_canonical_databases = function(
-    cosmic_file = "CosmicCLP_MutantExport.tsv",
-    ccle_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.maf",
-    ref_gen = "GRCH37"
+    cosmic_file = "CellLinesCodingMuts.vcf.gz",
+    ccle_file = "CCLE_mutations.csv",
+    ref_gen = "GRCH38"
 ){
 
     message("Reference genome: ", ref_gen)
@@ -38,7 +41,6 @@ initiate_canonical_databases = function(
             gunzip(cosmic_file, overwrite = TRUE)
             cosmic_file = gsub(".gz$", "", cosmic_file, ignore.case = TRUE)
         }
-        
         parse_cosmic_genotype_data( cosmic_file, ref_gen = ref_gen )
     }
 
@@ -66,10 +68,12 @@ initiate_canonical_databases = function(
 #' 
 #' @param cosmic_file Path to cosmic clp file in hard disk
 #' @param ref_gen Reference genome version
-#' @importFrom IRanges IRanges
 #' @importFrom stats aggregate
+#' @importFrom data.table fread
+#' @import IRanges
 #' @return The R Table sim_list which contains the CoSMIC CLP fingerprints 
-parse_cosmic_genotype_data = function(cosmic_file, ref_gen = "GRCH37"){
+#' @keywords internal
+parse_cosmic_genotype_data = function(cosmic_file, ref_gen = "GRCH38"){
     
     # Only read in columns specified with subset
     library_name = "COSMIC"
@@ -84,12 +88,12 @@ parse_cosmic_genotype_data = function(cosmic_file, ref_gen = "GRCH37"){
         subset = c(5, 19)
     }
     
-    cosmic_genotype_tab = fread(cosmic_file, select = subset,
+    cosmic_genotype_tab = data.table::fread(cosmic_file, select = subset,
         sep = "\t", showProgress = FALSE)
     colnames(cosmic_genotype_tab) = c("sample", "position")
     
     # Extract and process coordinates and CL IDs
-    message("Parsing Cosmic Coordinates, that might take some time")
+    message("Parsing Cosmic Coordinates")
     coords = cosmic_genotype_tab[, gsub(":|-", "_", position)]
     seq_name = vapply(strsplit(coords, "_"), `[`, 1, FUN.VALUE = character(1))
     starts = vapply(strsplit(coords, "_"), `[`, 2, FUN.VALUE = character(1))
@@ -103,7 +107,7 @@ parse_cosmic_genotype_data = function(cosmic_file, ref_gen = "GRCH37"){
     c_matches = match(coords, unique(coords), nomatch = 0)
     
     message("Aggregating Cosmic CCL names")
-    new_cls = data.table(
+    new_cls = data.table::data.table(
       "CLS" = cls,
       "Index" = c_matches
     )
@@ -145,16 +149,18 @@ parse_cosmic_genotype_data = function(cosmic_file, ref_gen = "GRCH37"){
 #' 
 #' @param ccle_file Path to CCLE file on hard disk
 #' @param ref_gen Reference genome version
-#' @importFrom IRanges IRanges
+#' @import IRanges
 #' @importFrom stats aggregate
+#' @importFrom data.table fread
 #' @return The R Table sim_list which contains the CCLE fingerprints
-parse_ccle_genotype_data = function(ccle_file, ref_gen = "GRCH37"){
+#' @keywords internal
+parse_ccle_genotype_data = function(ccle_file, ref_gen = "GRCH38"){
     
     library_name = "CCLE"
     
     # Only read in columns specified with subset
     subset = c(5, 6, 7, 16)
-    ccle_genotype_tab = fread(
+    ccle_genotype_tab = data.table::fread(
         ccle_file,
         select = subset,
         sep = "\t",
@@ -174,7 +180,7 @@ parse_ccle_genotype_data = function(ccle_file, ref_gen = "GRCH37"){
     #new_cls <<- c()
     
     message("Aggregating CCLE CCL names")
-    new_cls = data.table(
+    new_cls = data.table::data.table(
       "CLS" = cls,
       "Index" = c_matches
     )

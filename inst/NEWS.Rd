@@ -1,5 +1,13 @@
 \name{NEWS}
 \title{NEWS file for the \pkg{Uniquorn} bioconductor package }
+\section{Changes in version 2.3.6 [2022-02-22]}{
+    \subsection{Fixed parsing problem}{
+        \itemize{
+            \item Fixed a parsing problem regarding the Cosmic and CCLE
+            databases
+        }
+    }
+}
 \section{Changes in version 2.3.5 [2019-02-27]}{
     \subsection{Fixed another windows VCF parse error}{
         \itemize{
