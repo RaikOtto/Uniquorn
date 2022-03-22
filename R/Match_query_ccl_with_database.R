@@ -60,7 +60,7 @@ match_query_ccl_to_database = function(
     
     ### add stats info
     
-    cl_data <<-  show_contained_ccls( verbose = FALSE)
+    cl_data <<-  show_contained_ccls( verbose = FALSE, ref_gen = ref_gen)
     cl_data = cl_data[cl_data$Library == library_name,]
     
     switch(as.character(mutational_weight_inclusion_threshold),

@@ -4,7 +4,7 @@
 \alias{parse_cosmic_genotype_data}
 \title{parse_cosmic_genotype_data}
 \usage{
-parse_cosmic_genotype_data(cosmic_file, ref_gen = "GRCH37")
+parse_cosmic_genotype_data(cosmic_file, ref_gen = "GRCH38")
 }
 \arguments{
 \item{cosmic_file}{Path to cosmic clp file in hard disk}
@@ -17,3 +17,4 @@ The R Table sim_list which contains the CoSMIC CLP fingerprints
 \description{
 Parses cosmic genotype data
 }
+\keyword{internal}

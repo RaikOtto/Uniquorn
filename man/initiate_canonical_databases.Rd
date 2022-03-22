@@ -5,17 +5,25 @@
 \title{initiate_canonical_databases}
 \usage{
 initiate_canonical_databases(
-    cosmic_file = "CosmicCLP_MutantExport.tsv",
-    ccle_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.maf",
-    ref_gen = "GRCH37"
+    cosmic_file = "CosmicMutantExport.tsv.gz",
+    ccle_file = "CCLE_mutations.csv",
+    ccle_sample_file = "sample_info.csv",
+    ref_gen = "GRCH38"
 )
 }
 \arguments{
-\item{cosmic_file}{The path to the cosmic DNA genotype data file. 
+\item{cosmic_file}{The path to the Cosmic CLP file. The Cosmic file 
+can be obtained from "https://cancer.sanger.ac.uk/cell_lines/download" and 
+should be labeled "CosmicCLP_MutantExport.tsv.gz".
 Ensure that the right reference genome is used}
 
 \item{ccle_file}{The path to the ccle DNA genotype data file. 
+It should be labeled "CCLE_mutations.csv".
 Ensure that the right reference genome is used}
+
+\item{ccle_sample_file}{The path to the CCLE sample file.
+It should be labeled "sample_info.csv" containing both the
+DepMap ID and corresponding cell line name.}
 
 \item{ref_gen}{Reference genome version}
 }
@@ -27,8 +35,9 @@ Parses data into r list variable
 }
 \examples{
 initiate_canonical_databases(
-    cosmic_file = "CosmicCLP_MutantExport.tsv",
-    ccle_file = "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_CDS_2012.05.07.maf",
-    ref_gen = "GRCH37"
+    cosmic_file = "CosmicMutantExport.tsv.gz",
+    ccle_file = "CCLE_mutations.csv",
+    ccle_sample_file = "sample_info.csv",
+    ref_gen = "GRCH38"
 )
 }

@@ -4,10 +4,12 @@
 \alias{parse_ccle_genotype_data}
 \title{parse_ccle_genotype_data}
 \usage{
-parse_ccle_genotype_data(ccle_file, ref_gen = "GRCH37")
+parse_ccle_genotype_data(ccle_file, ccle_sample_file, ref_gen = "GRCH38")
 }
 \arguments{
 \item{ccle_file}{Path to CCLE file on hard disk}
+
+\item{ccle_sample_file}{Path to CCLE sample file}
 
 \item{ref_gen}{Reference genome version}
 }
@@ -17,3 +19,4 @@ The R Table sim_list which contains the CCLE fingerprints
 \description{
 Parses ccle genotype data
 }
+\keyword{internal}

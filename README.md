@@ -23,13 +23,13 @@ Here the NCI-60 exome sequenced HT29 Cancer Cell line, reference genome GRCh37/ 
 
 `ident_result = identify_vcf_file( HT29_vcf_file, ref_gen = "GRCH37"  )`
 
-`head( ident_result )` will show a table with potential identification candidate, how many mutations overall and weighted of the training set have been found and if any training samples have surpased the identification threshold.
+`head( ident_result )` will show a table with potential identification candidate, how many mutations overall and weighted of the training set have been found and if any training samples have surpassed the identification threshold.
 
 ### Explanation test data
 
 The HT29 cancer cell line vcf file which contains the somatic mutations of the HT-29 cancer cell line is taken from http://watson.nci.nih.gov/projects/nci60/wes/VCF
-The Watson repository contains the same cancer cell line samples as Uniquorn's default training dataset, the original CellMiner panel, available @ http://discover.nci.nih.gov/cellminer/. 
-However, the cancer cell line vcf sample was differentely filtered and different algorithms have been used to predict mutations and variations. Therefore, it was used as example set to show the difficulties associated with an identification of cancer cell line sample: Some mutations are found only in the query version (here HT-29 from Watson) and some only in the training dataset (here HT-29 from CellMiner original panel). Moreover, some mutations of the query cancer cell line map to different cancer cell lines in the CellMiner training database what can lead to an incorrect identification of a cancer cell line. 
+The Watson repository contains the same cancer cell line samples as Uniquorn's default training dataset, the original CellMiner panel, available at http://discover.nci.nih.gov/cellminer/. 
+However, the cancer cell line vcf sample was differently filtered and different algorithms have been used to predict mutations and variations. Therefore, it was used as an example set to show the difficulties associated with an identification of cancer cell line sample: Some mutations are found only in the query version (here HT-29 from Watson) and some only in the training dataset (here HT-29 from CellMiner original panel). Moreover, some mutations of the query cancer cell line map to different cancer cell lines in the CellMiner training database what can lead to an incorrect identification of a cancer cell line. 
 
 Therefore, a robust yet sensitive cancer cell line identification algorithm is required.
 
@@ -37,7 +37,26 @@ You will find a file with the ending '_uniquorn_identification.tab' next to the 
 
 # 2 Add CCLE and CoSMIC CLP CL data
 
-Please add the CCLE and CoSMIC CLP Cancer Cell Line (CL) data manually due to legal regulations! Else only the vanilla 60 CellMiner CLs will be available for identification. You can however manually add custom CLs.
+Please add the CCLE and COSMIC CLP Cancer Cell Line (CL) data manually due to legal regulations! Else only the vanilla 60 CellMiner CLs will be available for identification. You can, however, manually add custom CLs.
+
+### Current release (CCLE: DepMap Public 22Q1; COSMIC: v95)
+
+'CosmicMutantExport.tsv.gz', unpack with e.g. gunzip on linux or 7zip on windows from http://cancer.sanger.ac.uk/cell_lines/download. Registration for the website is without charge and not complicated.
+
+'CCLE_mutations.csv' and 'sample_info.csv' from https://depmap.org/portal/download/all/
+
+`initiate_canonical_databases(cosmic_file = 'path/to/cosmic/CosmicMutantExport.tsv',
+                              ccle_file = 'path/to/ccle/CCLE_mutations.csv',
+                              ccle_sample_file = 'path/to/sample_info/sample_info.csv',
+                              ref_gen = 'GRCH38')`
+
+Once the initialization succeeds, about 2000 cancer cell line training sample for about 1200 different cancer cell lines are available in the Uniquorn's database.
+
+Note: Currently (March 2022), the COSMIC and CCLE data are available for the reference Genome versio GRCh38. It is neccesary, that the reference genome for the training samples is specified if the version is not GRCh37.
+
+### Older releases
+
+Note: The mentioned COSMIC and CCLE files are obsolescent and are not compatible with the current version of Uniquorn (2.3.7).   
 
 'CosmicCLP_MutantExport.tsv.gz', unpack with e.g. gunzip on linux or 7zip on windows from http://cancer.sanger.ac.uk/cell_lines/download
 
@@ -47,15 +66,15 @@ Registration for both websites is without charge and not complicated.
 
 `initiate_canonical_databases(ccle_file = 'path_to_ccle/CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf', cosmic_file = 'path_to_cosmic/CosmicCLP_MutantExport.tsv.gz', ref_gen = "GRCH37")`
 
-One the initialization succeeds, about 2000 cancer cell line training sample for about 1200 different cancer cell lines are available in the Uniquorn's database.
+Once the initialization succeeds, about 2000 cancer cell line training sample for about 1200 different cancer cell lines are available in the Uniquorn's database.
 
-Note: Currently (January 2016), only the CoSMIC CLP data is available for the reference Genome version GRCh38. It is neccesary, that the reference genome for the training samples is specified if the version is not GRCh37
+Note: The CoSMIC CLP data is available for the reference Genome version GRCh38. It is neccesary, that the reference genome for the training samples is specified if the version is not GRCh37.
 
 `initiate_canonical_databases(ccle_file = 'path_to_ccle/CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf', cosmic_file = 'path_to_cosmic/CosmicCLP_MutantExport.tsv.gz', ref_gen = "GRCH38")`
 
 # 3 Add training CL samples & utility functions
 
-If you want to identify CL samples not contained in the 'canonical' CL set, you can add your own custom CL samples. These samples will be treated just as the 'canonical' training-datasets from e.g. CCLE. Note however, that it is strongly recommended to add at least 10 sample because overfitting might occur if too little custom training-samples are available. 
+If you want to identify CL samples not contained in the 'canonical' CL set, you can add your own custom CL samples. These samples will be treated just as the 'canonical' training-datasets from e.g. CCLE. Note, however, that it is strongly recommended to add at least 10 sample because overfitting might occur if too little custom training-samples are available. 
 
 `add_custom_vcf_to_database( "path_to_file/my_own_CL_samples.vcf"  )`
 

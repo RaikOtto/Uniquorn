@@ -5,8 +5,12 @@
 \title{parse_vcf_query_into_db
 This function adds the variants of parsed custom CCLs to a monet DB instance}
 \usage{
-parse_vcf_query_into_db(g_query, ref_gen = "GRCH37", library_name,
-  test_mode = FALSE)
+parse_vcf_query_into_db(
+  g_query,
+  ref_gen = "GRCH37",
+  library_name,
+  test_mode = FALSE
+)
 }
 \arguments{
 \item{g_query}{a GenomicRanges object}

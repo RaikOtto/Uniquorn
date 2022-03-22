@@ -4,8 +4,14 @@
 \alias{add_p_q_values_statistics}
 \title{add_p_q_values_statistics}
 \usage{
-add_p_q_values_statistics(g_query, match_t, p_value, ref_gen,
-  minimum_matching_mutations, top_hits_per_library)
+add_p_q_values_statistics(
+  g_query,
+  match_t,
+  p_value,
+  ref_gen,
+  minimum_matching_mutations,
+  top_hits_per_library
+)
 }
 \arguments{
 \item{g_query}{IRanges object that contains the query variants}

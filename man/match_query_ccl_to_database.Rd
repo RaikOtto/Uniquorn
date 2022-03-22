@@ -4,8 +4,12 @@
 \alias{match_query_ccl_to_database}
 \title{match_query_ccl_to_database}
 \usage{
-match_query_ccl_to_database(g_query, ref_gen = "GRCH37", library_name,
-  mutational_weight_inclusion_threshold)
+match_query_ccl_to_database(
+  g_query,
+  ref_gen = "GRCH37",
+  library_name,
+  mutational_weight_inclusion_threshold
+)
 }
 \arguments{
 \item{g_query}{IRanges object that contains the variants}

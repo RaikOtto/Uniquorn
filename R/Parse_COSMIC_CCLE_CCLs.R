@@ -4,30 +4,36 @@
 #' 
 #' @param cosmic_file The path to the Cosmic CLP file. The Cosmic file 
 #' can be obtained from "https://cancer.sanger.ac.uk/cell_lines/download" and 
-#' should be labeled "CellLinesCodingMuts.vcf.gz".
+#' should be labeled "CosmicCLP_MutantExport.tsv.gz".
 #' Ensure that the right reference genome is used
 #' @param ccle_file The path to the ccle DNA genotype data file. 
 #' It should be labeled "CCLE_mutations.csv".
 #' Ensure that the right reference genome is used
+#' @param ccle_sample_file The path to the CCLE sample file.
+#' It should be labeled "sample_info.csv" containing both the
+#' DepMap ID and corresponding cell line name.
 #' @param ref_gen Reference genome version
 #' @return Returns message if parsing process has succeeded
 #' @import R.utils stringr
 #' @usage
 #' initiate_canonical_databases(
-#'     cosmic_file = "CellLinesCodingMuts.vcf.gz",
+#'     cosmic_file = "CosmicMutantExport.tsv.gz",
 #'     ccle_file = "CCLE_mutations.csv",
+#'     ccle_sample_file = "sample_info.csv",
 #'     ref_gen = "GRCH38"
 #' )
 #' @examples 
 #' initiate_canonical_databases(
-#'     cosmic_file = "CellLinesCodingMuts.vcf.gz",
+#'     cosmic_file = "CosmicMutantExport.tsv.gz",
 #'     ccle_file = "CCLE_mutations.csv",
+#'     ccle_sample_file = "sample_info.csv",
 #'     ref_gen = "GRCH38"
 #' )
 #' @export
 initiate_canonical_databases = function(
-    cosmic_file = "CellLinesCodingMuts.vcf.gz",
+    cosmic_file = "CosmicMutantExport.tsv.gz",
     ccle_file = "CCLE_mutations.csv",
+    ccle_sample_file = "sample_info.csv",
     ref_gen = "GRCH38"
 ){
 
@@ -45,13 +51,14 @@ initiate_canonical_databases = function(
     }
 
     # Parse CCLE file
-    if (file.exists(ccle_file)){
-        message("Found CCLE: ", file.exists(ccle_file))
-        parse_ccle_genotype_data(ccle_file, ref_gen = ref_gen)
+    if (file.exists(ccle_file) && file.exists(ccle_sample_file)){
+        message("Found CCLE and sample info: ", 
+                file.exists(ccle_file) && file.exists(ccle_sample_file))
+        parse_ccle_genotype_data(ccle_file, ccle_sample_file, ref_gen = ref_gen)
     }
     
     if ((!file.exists(cosmic_file)) & (!file.exists(ccle_file))){ 
-        warning("Did neither find CCLE & CoSMIC CLP file! Aborting.")
+        warning("Did neither find CCLE & CoSMIC file! Aborting.")
     } else {
         message("Finished parsing, ",
             "aggregating over parsed Cancer Cell Line data")
@@ -79,9 +86,9 @@ parse_cosmic_genotype_data = function(cosmic_file, ref_gen = "GRCH38"){
     library_name = "COSMIC"
     package_path = system.file("", package = "Uniquorn")
     
-    subset = c(5, 24)
+    subset = c(5, 26)
     
-    if (!grepl("CosmicCLP_MutantExport", cosmic_file)){ # MutantExport
+    if (!grepl("CosmicMutantExport", cosmic_file)){ 
         stop("Warning. This is not the recommended COSMIC genotype file!",
             " The recommended file is the 'CosmicCLP_MutantExport.tsv.gz'",
             " file.")
@@ -89,8 +96,13 @@ parse_cosmic_genotype_data = function(cosmic_file, ref_gen = "GRCH38"){
     }
     
     cosmic_genotype_tab = data.table::fread(cosmic_file, select = subset,
-        sep = "\t", showProgress = FALSE)
-    colnames(cosmic_genotype_tab) = c("sample", "position")
+       sep = "\t", showProgress = FALSE)
+    colnames(cosmic_genotype_tab) = c("sample", "position") 
+    
+    # Remove CLs with NA or "" position
+    empty_position <- c(which(cosmic_genotype_tab$position == ""), 
+                        which(is.na(cosmic_genotype_tab$position)))
+    cosmic_genotype_tab <- cosmic_genotype_tab[-empty_position,]
     
     # Extract and process coordinates and CL IDs
     message("Parsing Cosmic Coordinates")
@@ -148,30 +160,42 @@ parse_cosmic_genotype_data = function(cosmic_file, ref_gen = "GRCH38"){
 #' Parses ccle genotype data
 #' 
 #' @param ccle_file Path to CCLE file on hard disk
+#' @param ccle_sample_file Path to CCLE sample file
 #' @param ref_gen Reference genome version
 #' @import IRanges
 #' @importFrom stats aggregate
 #' @importFrom data.table fread
 #' @return The R Table sim_list which contains the CCLE fingerprints
 #' @keywords internal
-parse_ccle_genotype_data = function(ccle_file, ref_gen = "GRCH38"){
+parse_ccle_genotype_data = function(ccle_file, ccle_sample_file, ref_gen = "GRCH38"){
     
     library_name = "CCLE"
     
     # Only read in columns specified with subset
-    subset = c(5, 6, 7, 16)
+    subset = c(4, 5, 6, 16)
     ccle_genotype_tab = data.table::fread(
         ccle_file,
         select = subset,
-        sep = "\t",
+        sep = ",",
         showProgress = FALSE
     )
     
-    cls = ccle_genotype_tab[, gsub("\\_.*", "", Tumor_Sample_Barcode)]
+    subset = c(1,2)
+    ccle_sample_tab = data.table::fread(
+      ccle_sample_file,
+      select = subset,
+      sep = ",",
+      showProgress = FALSE
+    )
+    
+    depmap_ID_macthes <- match(ccle_genotype_tab$DepMap_ID, ccle_sample_tab$DepMap_ID)
+    ccle_genotype_tab$Cell_line <- ccle_sample_tab$cell_line_name[depmap_ID_macthes]
+    
+    cls = ccle_genotype_tab[, gsub("\\_.*", "", Cell_line)] 
     cls = str_replace(cls, paste( "_", library_name, sep = "" ), "")
     
     coords = paste(
-        str_replace(ccle_genotype_tab$Chromosome, pattern = "^chr", "" ),
+        ccle_genotype_tab$Chromosome,
         ccle_genotype_tab$Start_position,
         ccle_genotype_tab$End_position,
         sep = "_"
@@ -188,11 +212,10 @@ parse_ccle_genotype_data = function(ccle_file, ref_gen = "GRCH38"){
     
     # Extract and process coordinates and CL IDs
     g_mat = GenomicRanges::GRanges(
-        seqnames = str_replace(
-            ccle_genotype_tab$Chromosome, pattern = "^chr", "" ),
-        IRanges(
-            start = ccle_genotype_tab$Start_position,
-            end = ccle_genotype_tab$End_position
+      seqnames = ccle_genotype_tab$Chromosome,
+      IRanges(
+        start = ccle_genotype_tab$Start_position,
+        end = ccle_genotype_tab$End_position
         )
     )
     g_mat = unique(g_mat)

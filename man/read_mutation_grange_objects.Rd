@@ -4,8 +4,12 @@
 \alias{read_mutation_grange_objects}
 \title{read_mutation_grange_objects}
 \usage{
-read_mutation_grange_objects(library_name,
-  mutational_weight_inclusion_threshold, ref_gen, test_mode)
+read_mutation_grange_objects(
+  library_name,
+  mutational_weight_inclusion_threshold,
+  ref_gen,
+  test_mode
+)
 }
 \arguments{
 \item{library_name}{a character string giving the name of the library}
