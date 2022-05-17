@@ -5,7 +5,7 @@
 \title{initiate_canonical_databases}
 \usage{
 initiate_canonical_databases(
-    cosmic_file = "CosmicMutantExport.tsv.gz",
+    cosmic_file = "CosmicCLP_MutantExport.tsv.gz",
     ccle_file = "CCLE_mutations.csv",
     ccle_sample_file = "sample_info.csv",
     ref_gen = "GRCH38"
@@ -35,7 +35,7 @@ Parses data into r list variable
 }
 \examples{
 initiate_canonical_databases(
-    cosmic_file = "CosmicMutantExport.tsv.gz",
+    cosmic_file = "CosmicCLP_MutantExport.tsv.gz",
     ccle_file = "CCLE_mutations.csv",
     ccle_sample_file = "sample_info.csv",
     ref_gen = "GRCH38"

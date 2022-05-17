@@ -41,11 +41,11 @@ Please add the CCLE and COSMIC CLP Cancer Cell Line (CL) data manually due to le
 
 ### Current release (CCLE: DepMap Public 22Q1; COSMIC: v95)
 
-'CosmicMutantExport.tsv.gz', unpack with e.g. gunzip on linux or 7zip on windows from http://cancer.sanger.ac.uk/cell_lines/download. Registration for the website is without charge and not complicated.
+'CosmicCLP_MutantExport.tsv.gz', unpack with e.g. gunzip on linux or 7zip on windows from http://cancer.sanger.ac.uk/cell_lines/download. Registration for the website is without charge and not complicated.
 
 'CCLE_mutations.csv' and 'sample_info.csv' from https://depmap.org/portal/download/all/
 
-`initiate_canonical_databases(cosmic_file = 'path/to/cosmic/CosmicMutantExport.tsv',
+`initiate_canonical_databases(cosmic_file = 'path/to/cosmic/CosmicCLP_MutantExport.tsv',
                               ccle_file = 'path/to/ccle/CCLE_mutations.csv',
                               ccle_sample_file = 'path/to/sample_info/sample_info.csv',
                               ref_gen = 'GRCH38')`

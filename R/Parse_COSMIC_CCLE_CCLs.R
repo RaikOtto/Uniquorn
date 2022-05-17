@@ -17,21 +17,21 @@
 #' @import R.utils stringr
 #' @usage
 #' initiate_canonical_databases(
-#'     cosmic_file = "CosmicMutantExport.tsv.gz",
+#'     cosmic_file = "CosmicCLP_MutantExport.tsv.gz",
 #'     ccle_file = "CCLE_mutations.csv",
 #'     ccle_sample_file = "sample_info.csv",
 #'     ref_gen = "GRCH38"
 #' )
 #' @examples 
 #' initiate_canonical_databases(
-#'     cosmic_file = "CosmicMutantExport.tsv.gz",
+#'     cosmic_file = "CosmicCLP_MutantExport.tsv.gz",
 #'     ccle_file = "CCLE_mutations.csv",
 #'     ccle_sample_file = "sample_info.csv",
 #'     ref_gen = "GRCH38"
 #' )
 #' @export
 initiate_canonical_databases = function(
-    cosmic_file = "CosmicMutantExport.tsv.gz",
+    cosmic_file = "CosmicCLP_MutantExport.tsv.gz",
     ccle_file = "CCLE_mutations.csv",
     ccle_sample_file = "sample_info.csv",
     ref_gen = "GRCH38"
@@ -88,7 +88,7 @@ parse_cosmic_genotype_data = function(cosmic_file, ref_gen = "GRCH38"){
     
     subset = c(5, 26)
     
-    if (!grepl("CosmicMutantExport", cosmic_file)){ 
+    if (!grepl("CosmicCLP_MutantExport", cosmic_file)){ 
         stop("Warning. This is not the recommended COSMIC genotype file!",
             " The recommended file is the 'CosmicCLP_MutantExport.tsv.gz'",
             " file.")

@@ -143,7 +143,7 @@ parse_vcf_query_into_db = function(
     } else {
         
         g_mat_new = unique(GenomicRanges::GRanges(g_query))
-        fo_g_mat = GenomicRanges::GenomicRangesList()
+        fo_g_mat = GenomicRanges::GRangesList()
     }
     GenomicRanges::mcols(g_mat_new)$Member_CCLs = 
         rep("", length(g_mat_new))
