@@ -21,6 +21,7 @@ Start an R session e.g. using RStudio
 Here the NCI-60 exome sequenced HT29 Cancer Cell line, reference genome GRCh37/ HG19
 
 `library("Uniquorn")`
+`library("tidyverse")`
 
 `HT29_vcf_file = system.file("extdata/HT29.vcf", package="Uniquorn")`
 
@@ -29,8 +30,8 @@ Here the NCI-60 exome sequenced HT29 Cancer Cell line, reference genome GRCh37/ 
 `ident_result %>% dplyr::select(-Library) %>% head()` will show a table with potential identification candidate, how many mutations overall and weighted of the training set have been found and if any training samples have surpassed the identification threshold.
 
 Let us take a look at the amount of matches
-`match_statistic = ident_result %>% dplyr::arrange(desc(Matches)) %>% select(CCL,Matches) `
-`match_statistic %>% head() %>% ggplot2::ggplot(aes(CCL, Matches)) + ggplot2::geom_col() `
+`match_statistic = ident_result %>% arrange(desc(Matches)) %>% select(CCL,Matches) `
+`match_statistic %>% head() %>% ggplot(aes(CCL, Matches)) + geom_col() `
 
 As we can see, multiple matches are observed by chance which is why a p-value on the
  likelihood of observing matches is required
