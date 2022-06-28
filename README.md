@@ -8,10 +8,10 @@ Package to identify cancer cell lines (CL)s based on their weighted mutational f
 
 Start an R session e.g. using RStudio
 
-`if (!requireNamespace("BiocManager", quietly=TRUE))`
-    `install.packages("BiocManager")`
+`if (!requireNamespace("devtools", quietly=TRUE))`
+    `install.packages("devtools")`
 
-`BiocManager::install("Uniquorn")`
+`devtools::install_github("RaikOtto/Uniquorn")`
 
 ## Test run
 
