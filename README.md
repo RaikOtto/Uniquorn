@@ -13,17 +13,21 @@ Start an R session e.g. using RStudio
 
 `devtools::install_github("RaikOtto/Uniquorn")`
 
+`if (!requireNamespace("tidyverse", quietly=TRUE))`
+    `install.packages("tidyverse")`
+
 ## Test run
 
 Here the NCI-60 exome sequenced HT29 Cancer Cell line, reference genome GRCh37/ HG19
 
 `library("Uniquorn")`
+`library("tidyverse")`
 
 `HT29_vcf_file = system.file("extdata/HT29.vcf", package="Uniquorn")`
 
 `ident_result = identify_vcf_file( HT29_vcf_file, ref_gen = "GRCH37"  )`
 
-`head( ident_result )` will show a table with potential identification candidate, how many mutations overall and weighted of the training set have been found and if any training samples have surpassed the identification threshold.
+`ident_result %>% select(-Library) %>% head()` will show a table with potential identification candidate, how many mutations overall and weighted of the training set have been found and if any training samples have surpassed the identification threshold.
 
 ### Explanation test data
 
