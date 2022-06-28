@@ -38,7 +38,7 @@ add_p_q_values_statistics = function(
             match_t$All_variants))[index_library]
         
         if( length(white_balls_possible) == 0){
-            stop("There is only one CL in the custom set.",  
+            stop("There is only one CCL in the custom set.",  
                 "A confidence score calculation is only ", 
                 "possible with more than one sample!")
         }
@@ -52,9 +52,6 @@ add_p_q_values_statistics = function(
             white_balls_found >= mean(white_balls_found)
         )
         
-        #likelihood_found = ( white_balls_possible / 
-        #    sum(white_balls_possible) ) **
-        #    (white_balls_found / sum(white_balls_found))
         likelihood_found = white_balls_possible / sum(white_balls_possible)
 
         q = white_balls_found - 1
@@ -63,7 +60,6 @@ add_p_q_values_statistics = function(
         p_values_panel = as.double(stats::pbinom(
             q = q,
             size = sum(white_balls_found),
-            #size = balls_in_query,
             p = likelihood_found,
             lower.tail = FALSE 
         ))
@@ -140,7 +136,7 @@ add_penalty_statistics = function(match_t, minimum_matching_mutations){
         )
     }
     match_t$Above_Penalty = 
-        as.integer(as.character(match_t$Matches)) > penalty
+        as.integer(as.character(match_t$Matches)) > penalty_mutations
     
     return(match_t)
 }

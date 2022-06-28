@@ -1,5 +1,12 @@
 \name{NEWS}
 \title{NEWS file for the \pkg{Uniquorn} bioconductor package }
+\section{Changes in version 2.17.2 [2022-06-28]}{
+    \subsection{Fixed parsing problem}{
+        \itemize{
+            \item minor bugfixes
+        }
+    }
+}
 \section{Changes in version 2.17.0 [2022-03-22]}{
     \subsection{Fixed parsing problem}{
         \itemize{
