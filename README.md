@@ -1,6 +1,6 @@
 # Uniquorn R package
 
-Package to identify cancer cell lines (CL)s based on their weighted mutational fingerprint.
+Package to identify cancer cell lines (CCL)s based on their weighted mutational fingerprint.
 
 # 1 How to make it work:  Quickstart
 
@@ -24,9 +24,16 @@ Here the NCI-60 exome sequenced HT29 Cancer Cell line, reference genome GRCh37/ 
 
 `HT29_vcf_file = system.file("extdata/HT29.vcf", package="Uniquorn")`
 
-`ident_result = identify_vcf_file( HT29_vcf_file, ref_gen = "GRCH37"  )`
+`ident_result = identify_vcf_file( HT29_vcf_file, ref_gen = "GRCH37")`
 
 `ident_result %>% dplyr::select(-Library) %>% head()` will show a table with potential identification candidate, how many mutations overall and weighted of the training set have been found and if any training samples have surpassed the identification threshold.
+
+Let us take a look at the amount of matches
+`match_statistic = ident_result %>% dplyr::arrange(desc(Matches)) %>% select(CCL,Matches) `
+`match_statistic %>% head() %>% ggplot2::ggplot(aes(CCL, Matches)) + ggplot2::geom_col() `
+
+As we can see, multiple matches are observed by chance which is why a p-value on the
+ likelihood of observing matches is required
 
 ### Explanation test data
 
@@ -40,7 +47,7 @@ You will find a file with the ending '_uniquorn_identification.tab' next to the 
 
 # 2 Add CCLE and CoSMIC CLP CL data
 
-Please add the CCLE and COSMIC CLP Cancer Cell Line (CL) data manually due to legal regulations! Else only the vanilla 60 CellMiner CLs will be available for identification. You can, however, manually add custom CLs.
+Please add the CCLE and COSMIC CLP Cancer Cell Line (CCL) data manually due to legal regulations! Else only the vanilla 60 CellMiner CLs will be available for identification. You can, however, manually add custom CLs.
 
 ### Current release (CCLE: DepMap Public 22Q1; COSMIC: v95)
 
@@ -93,7 +100,7 @@ If you want to know which mutations are overall contained in the training set fo
 
 `show_contained_mutations( ref_gen = "GRCH37" )`
 
-Same if you want to know which genomic loci are associated with a particular CL:
+Same if you want to know which genomic loci are associated with a particular CCL:
 
 `show_contained_mutations_for_cl("SF_268_CELLMINER")`
 
