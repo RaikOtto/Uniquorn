@@ -8,31 +8,60 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-# Uniquorn R package
-
-Package to identify cancer cell lines (CCL)s based on their weighted mutational fingerprint.
-
 # 1 How to make it work:  Quickstart
+
+## Installing the Uniquorn
+
+Start an R session e.g. using RStudio
+
+`if (!requireNamespace("devtools", quietly=TRUE))`  
+    `install.packages("devtools")`  
+
+`devtools::install_github("RaikOtto/Uniquorn")`  
+
+`if (!requireNamespace("tidyverse", quietly=TRUE))`  
+    `install.packages("tidyverse")`  
 
 ## Test run
 
 Here the NCI-60 exome sequenced HT29 Cancer Cell line, reference genome GRCh37/ HG19
 
-```{r}
-library("Uniquorn")
-HT29_vcf_file = system.file("extdata/HT29.vcf", package="Uniquorn")
-ident_result = identify_vcf_file( HT29_vcf_file, ref_gen = "GRCH37"  )
-head( ident_result )
-```
-This will show a table with potential identification candidate, how many mutations overall and weighted of the training set have been found and if any training samples have surpased the identification threshold.
+`library("Uniquorn")`  
+`library("tidyverse")`  
 
+`HT29_vcf_file = system.file("extdata/HT29.vcf", package="Uniquorn")`  
+
+`ident_result = as_tibble(HT29_vcf_file %>% identify_vcf_file(  ref_gen = "GRCH37"))`  
+
+`ident_result %>% dplyr::select(-Library) %>% head()`  
+will show a table with potential identification candidate, how many mutations overall and weighted of the training set have been found and if any training samples have surpassed the identification threshold.
+
+Let us take a look at the amount of matches  
+`match_statistic = ident_result %>% arrange(desc(Matches)) %>% select(CCL,Matches,Library)`  
+`match_statistic %>% head() %>% ggplot(aes(CCL, Matches,fill=Library)) + geom_col() `  
+
+As we can see, multiple matches are observed by chance which is why a p-value on the
+ likelihood of observing matches is required.  
+ 
+Now we will take a look at the mean amount of matching variants per library
+`match_statistic %>% group_by(Library) %>% summarize(mean_match = mean(Matches)) `  
+
+# Addition
+
+### Demonstration of the impact of data heterogeneity and incompleteness 
+
+Let us identify the same CCL again, this time with CCLE and CLP libraries with the incorrect
+ reference genome GRCH38
+
+`ident_result = as_tibble(HT29_vcf_file %>% identify_vcf_file(  ref_gen = "GRCH38"))` 
+`ident_result %>% arrange(desc(Matches)) %>% select(CCL,Matches,Library)`  
+
+We see that even for the incorrect reference random hits are observed. 
 ### Explanation test data
 
-The HT29 cancer cell line vcf file which contains the somatic mutations of the HT-29 cancer cell line was taken from 
-[Watson](http://watson.nci.nih.gov/projects/nci60/wes/VCF/)
-(not reachable anymore as of December 2016).
-The Watson repository contains the same cancer cell line samples as Uniquorn's default training dataset, the original CellMiner panel, available @ [cellminer](http://discover.nci.nih.gov/cellminer/).
-However, the cancer cell line vcf sample was differentely filtered and different algorithms have been used to predict mutations and variations. Therefore, it was used as example set to show the difficulties associated with an identification of cancer cell line sample: Some mutations are found only in the query version (here HT-29 from Watson) and some only in the training dataset (here HT-29 from CellMiner original panel). Moreover, some mutations of the query cancer cell line map to different cancer cell lines in the CellMiner training database what can lead to an incorrect identification of a cancer cell line. 
+The HT29 cancer cell line vcf file which contains the somatic mutations of the HT-29 cancer cell line is taken from http://watson.nci.nih.gov/projects/nci60/wes/VCF
+The Watson repository contains the same cancer cell line samples as Uniquorn's default training dataset, the original CellMiner panel, available at http://discover.nci.nih.gov/cellminer/. 
+However, the cancer cell line vcf sample was differently filtered and different algorithms have been used to predict mutations and variations. Therefore, it was used as an example set to show the difficulties associated with an identification of cancer cell line sample: Some mutations are found only in the query version (here HT-29 from Watson) and some only in the training dataset (here HT-29 from CellMiner original panel). Moreover, some mutations of the query cancer cell line map to different cancer cell lines in the CellMiner training database what can lead to an incorrect identification of a cancer cell line. 
 
 Therefore, a robust yet sensitive cancer cell line identification algorithm is required.
 
@@ -40,15 +69,15 @@ You will find a file with the ending '_uniquorn_identification.tab' next to the 
 
 # 2 Add CCLE and CoSMIC CLP CL data
 
-Please add the CCLE and COSMIC CLP Cancer Cell Line (CL) data manually due to legal regulations! Else only the vanilla 60 CellMiner CLs will be available for identification. You can, however, manually add custom CLs.
+Please add the CCLE and COSMIC CLP Cancer Cell Line (CCL) data manually due to legal regulations! Else only the vanilla 60 CellMiner CLs will be available for identification. You can, however, manually add custom CLs.
 
 ### Current release (CCLE: DepMap Public 22Q1; COSMIC: v95)
 
-'CosmicMutantExport.tsv.gz', unpack with e.g. gunzip on linux or 7zip on windows from http://cancer.sanger.ac.uk/cell_lines/download. Registration for the website is without charge and not complicated.
+'CosmicCLP_MutantExport.tsv.gz', unpack with e.g. gunzip on linux or 7zip on windows from http://cancer.sanger.ac.uk/cell_lines/download. Registration for the website is without charge and not complicated.
 
 'CCLE_mutations.csv' and 'sample_info.csv' from https://depmap.org/portal/download/all/
 
-`initiate_canonical_databases(cosmic_file = 'path/to/cosmic/CosmicMutantExport.tsv',
+`initiate_canonical_databases(cosmic_file = 'path/to/cosmic/CosmicCLP_MutantExport.tsv',
                               ccle_file = 'path/to/ccle/CCLE_mutations.csv',
                               ccle_sample_file = 'path/to/sample_info/sample_info.csv',
                               ref_gen = 'GRCH38')`
@@ -75,9 +104,9 @@ Note: The CoSMIC CLP data is available for the reference Genome version GRCh38. 
 
 `initiate_canonical_databases(ccle_file = 'path_to_ccle/CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf', cosmic_file = 'path_to_cosmic/CosmicCLP_MutantExport.tsv.gz', ref_gen = "GRCH38")`
 
-# 3 Add training CCL samples & utility functions
+# 3 Add training CL samples & utility functions
 
-If you want to identify CL samples not contained in the 'canonical' CCL set, you can add your own custom CCL samples. These samples will be treated just as the 'canonical' training-datasets from e.g. CCLE. Note however, that it is strongly recommended to add at least 10 sample because overfitting might occur if too little custom training-samples are available. 
+If you want to identify CL samples not contained in the 'canonical' CL set, you can add your own custom CL samples. These samples will be treated just as the 'canonical' training-datasets from e.g. CCLE. Note, however, that it is strongly recommended to add at least 10 sample because overfitting might occur if too little custom training-samples are available. 
 
 `add_custom_vcf_to_database( "path_to_file/my_own_CL_samples.vcf"  )`
 
@@ -93,7 +122,7 @@ If you want to know which mutations are overall contained in the training set fo
 
 `show_contained_mutations( ref_gen = "GRCH37" )`
 
-Same if you want to know which genomic loci are associated with a particular CL:
+Same if you want to know which genomic loci are associated with a particular CCL:
 
 `show_contained_mutations_for_cl("SF_268_CELLMINER")`
 
