@@ -31,11 +31,15 @@ Here the NCI-60 exome sequenced HT29 Cancer Cell line, reference genome GRCh37/ 
 will show a table with potential identification candidate, how many mutations overall and weighted of the training set have been found and if any training samples have surpassed the identification threshold.
 
 Let us take a look at the amount of matches  
-`match_statistic = ident_result %>% arrange(desc(Matches)) %>% select(CCL,Matches)`  
-`match_statistic %>% head() %>% ggplot(aes(CCL, Matches)) + geom_col() `  
+`match_statistic = ident_result %>% arrange(desc(Matches)) %>% select(CCL,Matches,Library)`  
+`match_statistic %>% head() %>% ggplot(aes(CCL, Matches,fill=Library)) + geom_col() `  
 
 As we can see, multiple matches are observed by chance which is why a p-value on the
- likelihood of observing matches is required
+ likelihood of observing matches is required.  
+ 
+Now we will take a look at the mean amount of matching variants per library
+`match_statistic %>% group_by(Library) %>% summarize(mean_match = mean(Matches)) `  
+
 
 ### Explanation test data
 
@@ -113,3 +117,12 @@ training, query and missed mutations in the genome. This feature can be switched
 option `output_bed_file` in the `identify_vcf_file` function `FALSE`.
 
 Contact: raik.otto@hu-berlin.de
+
+# Addition
+
+### Demonstration of the impact of data heterogeneity and incompleteness 
+
+Let us identify the same CCL again, this time with CCLE and CLP libraries with the incorrect
+ reference genome GRCH38
+
+`ident_result = as_tibble(HT29_vcf_file %>% identify_vcf_file(  ref_gen = "GRCH38"))` 
