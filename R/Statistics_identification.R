@@ -43,20 +43,26 @@ add_p_q_values_statistics = function(
                 "possible with more than one sample!")
         }
         
+        # matching features
         white_balls_found = as.integer(
             as.character(match_t$Matches))[index_library]
         white_balls_found_least_one = sum(white_balls_found > 0)
+        
+        # not matching features
         black_balls = sum(white_balls_possible) - white_balls_possible
         
+        # estimation of 'noise'
         background_cls_traces = sum(
             white_balls_found >= mean(white_balls_found)
         )
         
+        # here, we apply a heuristic on the likelihood to match
         likelihood_found = white_balls_possible / sum(white_balls_possible)
 
         q = white_balls_found - 1
         q[q < 0]   = 0
         
+        # here we calculate the p-value for the amount of matches
         p_values_panel = as.double(stats::pbinom(
             q = q,
             size = sum(white_balls_found),
@@ -105,14 +111,17 @@ add_penalty_statistics = function(match_t, minimum_matching_mutations){
     
     if ( length(matching_variants) == 0 ){
         
+        # initalize penality values -> defensive programming
         penalty = 0
         penalty_mutations = 0
         
     } else{ 
         
+        # these are the two parameter relevant for generalization
         mean_match = mean( matching_variants )
         max_match  = max( matching_variants )
         
+        # here, we utilize the conjugate prior beta distribution
         penalty = integrate(
             f = pbeta,
             0,
@@ -121,7 +130,8 @@ add_penalty_statistics = function(match_t, minimum_matching_mutations){
             max_match/ mean_match,
             stop.on.error = FALSE
             )$value
-            
+        
+        # this is the precise amount of penality applied    
         penalty_mutations = ceiling(
             mean_match + (max_match * penalty) / (1 - penalty)
         )

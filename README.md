@@ -1,6 +1,6 @@
 # Uniquorn R package
 
-Package to identify cancer cell lines (CL)s based on their weighted mutational fingerprint.
+Package to identify cancer cell lines (CCL)s based on their weighted mutational fingerprint.
 
 # 1 How to make it work:  Quickstart
 
@@ -8,22 +8,38 @@ Package to identify cancer cell lines (CL)s based on their weighted mutational f
 
 Start an R session e.g. using RStudio
 
-`if (!requireNamespace("devtools", quietly=TRUE))`
-    `install.packages("devtools")`
+`if (!requireNamespace("devtools", quietly=TRUE))`  
+    `install.packages("devtools")`  
 
-`devtools::install_github("RaikOtto/Uniquorn")`
+`devtools::install_github("RaikOtto/Uniquorn")`  
+
+`if (!requireNamespace("tidyverse", quietly=TRUE))`  
+    `install.packages("tidyverse")`  
 
 ## Test run
 
 Here the NCI-60 exome sequenced HT29 Cancer Cell line, reference genome GRCh37/ HG19
 
-`library("Uniquorn")`
+`library("Uniquorn")`  
+`library("tidyverse")`  
 
-`HT29_vcf_file = system.file("extdata/HT29.vcf", package="Uniquorn")`
+`HT29_vcf_file = system.file("extdata/HT29.vcf", package="Uniquorn")`  
 
-`ident_result = identify_vcf_file( HT29_vcf_file, ref_gen = "GRCH37"  )`
+`ident_result = as_tibble(HT29_vcf_file %>% identify_vcf_file(  ref_gen = "GRCH37"))`  
 
-`head( ident_result )` will show a table with potential identification candidate, how many mutations overall and weighted of the training set have been found and if any training samples have surpassed the identification threshold.
+`ident_result %>% dplyr::select(-Library) %>% head()`  
+will show a table with potential identification candidate, how many mutations overall and weighted of the training set have been found and if any training samples have surpassed the identification threshold.
+
+Let us take a look at the amount of matches  
+`match_statistic = ident_result %>% arrange(desc(Matches)) %>% select(CCL,Matches,Library)`  
+`match_statistic %>% head() %>% ggplot(aes(CCL, Matches,fill=Library)) + geom_col() `  
+
+As we can see, multiple matches are observed by chance which is why a p-value on the
+ likelihood of observing matches is required.  
+ 
+Now we will take a look at the mean amount of matching variants per library
+`match_statistic %>% group_by(Library) %>% summarize(mean_match = mean(Matches)) `  
+
 
 ### Explanation test data
 
@@ -37,7 +53,7 @@ You will find a file with the ending '_uniquorn_identification.tab' next to the 
 
 # 2 Add CCLE and CoSMIC CLP CL data
 
-Please add the CCLE and COSMIC CLP Cancer Cell Line (CL) data manually due to legal regulations! Else only the vanilla 60 CellMiner CLs will be available for identification. You can, however, manually add custom CLs.
+Please add the CCLE and COSMIC CLP Cancer Cell Line (CCL) data manually due to legal regulations! Else only the vanilla 60 CellMiner CLs will be available for identification. You can, however, manually add custom CLs.
 
 ### Current release (CCLE: DepMap Public 22Q1; COSMIC: v95)
 
@@ -90,7 +106,7 @@ If you want to know which mutations are overall contained in the training set fo
 
 `show_contained_mutations( ref_gen = "GRCH37" )`
 
-Same if you want to know which genomic loci are associated with a particular CL:
+Same if you want to know which genomic loci are associated with a particular CCL:
 
 `show_contained_mutations_for_cl("SF_268_CELLMINER")`
 
@@ -101,3 +117,12 @@ training, query and missed mutations in the genome. This feature can be switched
 option `output_bed_file` in the `identify_vcf_file` function `FALSE`.
 
 Contact: raik.otto@hu-berlin.de
+
+# Addition
+
+### Demonstration of the impact of data heterogeneity and incompleteness 
+
+Let us identify the same CCL again, this time with CCLE and CLP libraries with the incorrect
+ reference genome GRCH38
+
+`ident_result = as_tibble(HT29_vcf_file %>% identify_vcf_file(  ref_gen = "GRCH38"))` 

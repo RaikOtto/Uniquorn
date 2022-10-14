@@ -150,6 +150,9 @@ identify_vcf_file = function(
     match_t$Identification_sig = match_t$P_value_sig & match_t$Above_Penalty
     match_t = match_t[order(as.double(match_t$P_values),decreasing = FALSE),]
     
+    match_t$Matches = as.integer(match_t$Matches)
+    match_t$All_variants = as.integer(match_t$All_variants)
+    
     ### io stuff
     
     if(output_file == ""){
