@@ -1,6 +1,13 @@
 \name{NEWS}
 \title{NEWS file for the \pkg{Uniquorn} bioconductor package }
-\section{Changes in version 2.17.2 [2022-06-28]}{
+\section{Changes in version 2.17.3 [2022-10-13]}{
+    \subsection{Fixed parsing problem}{
+        \itemize{
+            \item Fixd critial install error in R dpendency "Runit""
+        }
+    }
+}
+\section{Changes in version 2.17.1 [2022-06-28]}{
     \subsection{Fixed parsing problem}{
         \itemize{
             \item minor bugfixes
