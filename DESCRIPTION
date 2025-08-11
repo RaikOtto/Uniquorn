@@ -1,6 +1,6 @@
 Package: Uniquorn
 Title: Identification of cancer cell lines based on their weighted mutational/ variational fingerprint
-Version: 2.17.3
+Version: 2.17.4
 Authors@R: person("Raik", "Otto", email = "raik.otto@hu-berlin.de", role = c("aut", "cre"))
 Description: 'Uniquorn' enables users to identify cancer cell lines.
  Cancer cell line misidentification and cross-contamination reprents a significant challenge for cancer researchers. 
@@ -8,14 +8,14 @@ Description: 'Uniquorn' enables users to identify cancer cell lines.
  The input format is vcf/ vcf.gz and the files have to contain a single cancer cell line sample 
  (i.e. a single member/genotype/gt column in the vcf file).
 Imports: stringr, R.utils, WriteXLS, stats, doParallel, foreach,
-        GenomicRanges, IRanges, VariantAnnotation, data.table
+        GenomicRanges, IRanges, VariantAnnotation, data.table, GenomeInfoDb
 Depends: R (>= 3.5)
 License: Artistic-2.0
 Type: Package
 Maintainer: 'Raik Otto' <raik.otto@hu-berlin.de>
 Date: 2022-06-28
 Author: Raik Otto
-RoxygenNote: 7.2.1
+RoxygenNote: 7.3.2
 NeedsCompilation: no
 Packaged: 2022-02-22 13:02:32 UTC; ottoraik
 Suggests: testthat, knitr, rmarkdown, BiocGenerics
